@@ -1,2 +1,2 @@
-# AperturePlus-
+# AperturePlus
 一个为新兴摄影师与模特打造的集社交、效率与创作于一体的一站式生态平台。
