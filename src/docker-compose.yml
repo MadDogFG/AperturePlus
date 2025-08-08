@@ -1,0 +1,86 @@
+# docker-compose.yml
+# AperturePlus 项目的开发环境基础设施定义
+# 使用 'docker-compose up -d' 命令启动所有服务
+# 使用 'docker-compose down' 命令停止所有服务
+
+version: '3.8'
+
+services:
+  # SQL Server: 用于关系型数据存储 (用户、活动等)
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: aperture-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      # 从 .env 文件中读取密码，而不是硬编码
+      - SA_PASSWORD=${SQL_SERVER_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - aperture-network
+
+  # RabbitMQ: 核心消息队列，用于服务间的异步通信
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: aperture-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - aperture-network
+
+  # Redis: 高性能缓存，用于 Session、SignalR backplane 等
+  redis:
+    image: redis:latest
+    container_name: aperture-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aperture-network
+
+  # MongoDB: 用于存储半结构化数据 (如工作流中的图片列表)
+  mongo:
+    image: mongo:latest
+    container_name: aperture-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - aperture-network
+
+  # MinIO: S3 兼容的对象存储，用于存放用户上传的图片等文件
+  minio:
+    image: minio/minio:latest
+    container_name: aperture-minio
+    environment:
+      # 从 .env 文件中读取访问凭证
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - aperture-network
+
+# 定义数据卷，用于持久化存储
+volumes:
+  sqlserver_data:
+  rabbitmq_data:
+  redis_data:
+  mongo_data:
+  minio_data:
+
+# 定义一个统一的网络，让所有容器可以互相通信
+networks:
+  aperture-network:
+    driver: bridge
