@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35303.130
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EC69EF25-3959-454D-B4E3-3351F813C54D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{B33AE0A3-632F-492B-BCB8-E932696B9C75}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityService", "IdentityService", "{1E2A81CF-8575-4528-B809-CD58A22A1455}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.IdentityService.Api", "src\services\IdentityService\AperturePlus.IdentityService.Api\AperturePlus.IdentityService.Api.csproj", "{C18DBD72-4B8E-4E58-AB65-044821442EAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.IdentityService.Application", "src\services\IdentityService\AperturePlus.IdentityService.Application\AperturePlus.IdentityService.Application.csproj", "{359C34EA-4B20-4CDF-8625-6D573F94F9A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.IdentityService.Domain", "src\services\IdentityService\AperturePlus.IdentityService.Domain\AperturePlus.IdentityService.Domain.csproj", "{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.IdentityService.Infrastructure", "src\services\IdentityService\AperturePlus.IdentityService.Infrastructure\AperturePlus.IdentityService.Infrastructure.csproj", "{06B83A6D-7053-4EB2-9E95-A7D554E81B82}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C18DBD72-4B8E-4E58-AB65-044821442EAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C18DBD72-4B8E-4E58-AB65-044821442EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C18DBD72-4B8E-4E58-AB65-044821442EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C18DBD72-4B8E-4E58-AB65-044821442EAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{359C34EA-4B20-4CDF-8625-6D573F94F9A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{359C34EA-4B20-4CDF-8625-6D573F94F9A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{359C34EA-4B20-4CDF-8625-6D573F94F9A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{359C34EA-4B20-4CDF-8625-6D573F94F9A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06B83A6D-7053-4EB2-9E95-A7D554E81B82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06B83A6D-7053-4EB2-9E95-A7D554E81B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06B83A6D-7053-4EB2-9E95-A7D554E81B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06B83A6D-7053-4EB2-9E95-A7D554E81B82}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B33AE0A3-632F-492B-BCB8-E932696B9C75} = {EC69EF25-3959-454D-B4E3-3351F813C54D}
+		{1E2A81CF-8575-4528-B809-CD58A22A1455} = {B33AE0A3-632F-492B-BCB8-E932696B9C75}
+		{C18DBD72-4B8E-4E58-AB65-044821442EAB} = {1E2A81CF-8575-4528-B809-CD58A22A1455}
+		{359C34EA-4B20-4CDF-8625-6D573F94F9A4} = {1E2A81CF-8575-4528-B809-CD58A22A1455}
+		{89FBDBD6-7AC6-4A51-82DD-44EC219E2312} = {1E2A81CF-8575-4528-B809-CD58A22A1455}
+		{06B83A6D-7053-4EB2-9E95-A7D554E81B82} = {1E2A81CF-8575-4528-B809-CD58A22A1455}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B7680315-BDAD-415C-B570-D58AEDF48454}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,6 @@
+@AperturePlus.IdentityService.Api_HostAddress = http://localhost:5185
+
+GET {{AperturePlus.IdentityService.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

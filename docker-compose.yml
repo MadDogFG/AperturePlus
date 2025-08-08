@@ -15,7 +15,7 @@ services:
       # 从 .env 文件中读取密码，而不是硬编码
       - SA_PASSWORD=${SQL_SERVER_PASSWORD}
     ports:
-      - "1433:1433"
+      - "11433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
     networks:
