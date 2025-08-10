@@ -9,8 +9,13 @@ namespace AperturePlus.IdentityService.Domain.Entities
 {
     public class ApplicationRole : IdentityRole<Guid>
     {
-        public DateTime CreatedAt { get; init; }
+        public DateTime CreatedAt { get; private set; }
         public string? Description { get; private set; }
+
+        private ApplicationRole(string roleName) : base(roleName)
+        {
+            this.CreatedAt = DateTime.UtcNow;
+        }
 
         public void SetDescription(string? description)
         {

@@ -1,3 +1,5 @@
+using AperturePlus.IdentityService.Application.Interfaces;
+using AperturePlus.IdentityService.Application.Services;
 using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -55,6 +57,7 @@ namespace AperturePlus.IdentityService.Api
                         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
                     };
                 });
+            builder.Services.AddScoped<IAccountService, AccountService>();//注册自己写的账户服务
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
