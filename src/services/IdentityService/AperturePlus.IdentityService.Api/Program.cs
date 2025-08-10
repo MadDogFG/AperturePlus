@@ -1,10 +1,14 @@
 using AperturePlus.IdentityService.Application.Interfaces;
 using AperturePlus.IdentityService.Application.Services;
+using AperturePlus.IdentityService.Application.Validators;
 using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Infrastructure.Persistence;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace AperturePlus.IdentityService.Api
 {
@@ -58,6 +62,7 @@ namespace AperturePlus.IdentityService.Api
                     };
                 });
             builder.Services.AddScoped<IAccountService, AccountService>();//注册自己写的账户服务
+            builder.Services.AddValidatorsFromAssemblyContaining<RegisterCommandValidator>();//注册程序集中的所有验证器
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -11,7 +11,10 @@ namespace AperturePlus.IdentityService.Domain.Entities
     {
         public DateTime CreatedAt { get; private set; }
         public string? Description { get; private set; }
+        private ApplicationRole() : base()
+        {
 
+        }
         private ApplicationRole(string roleName) : base(roleName)
         {
             this.CreatedAt = DateTime.UtcNow;

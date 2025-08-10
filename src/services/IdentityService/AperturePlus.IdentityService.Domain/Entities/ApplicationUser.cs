@@ -10,7 +10,10 @@ namespace AperturePlus.IdentityService.Domain.Entities
     public class ApplicationUser:IdentityUser<Guid>
     {
         public DateTime CreatedAt {  get; private set; }
-
+        private ApplicationUser() : base()
+        {
+            //空构造函数，不然EF Core报错，好像是反射获取不到了
+        }
         private ApplicationUser(string userName):base(userName)
         {
             this.CreatedAt = DateTime.UtcNow;
