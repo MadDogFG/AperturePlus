@@ -13,5 +13,6 @@ namespace AperturePlus.IdentityService.Application.Interfaces
     public interface IAccountService
     {
         Task<IdentityResult> RegisterAccountAsync (RegisterCommand registerRequest);
+        Task<IdentityResult> LoginAccountAsync(LoginCommand loginCommand);
     }
 }

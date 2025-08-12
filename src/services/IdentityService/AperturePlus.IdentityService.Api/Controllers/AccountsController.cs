@@ -28,9 +28,7 @@ namespace AperturePlus.IdentityService.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register (RegisterRequest registerRequest)
         {
-
-            RegisterCommand command = new RegisterCommand(registerRequest.Username, registerRequest.Password, registerRequest.Email);
-
+            RegisterCommand command = new RegisterCommand(registerRequest.username, registerRequest.password, registerRequest.email);
             var validationResult = await registerCommandValidator.ValidateAsync(command);//异步方法只能手动验证，而且自动验证在新版本的FluentValidation已不支持
             if (!validationResult.IsValid)
             {

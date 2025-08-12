@@ -22,7 +22,6 @@ namespace AperturePlus.IdentityService.Domain.Entities
         public static ApplicationUser CreateWithEmail(string userName,string email)//未来可能会有手机号注册的需求，所以把构造函数设为私有的，用静态方法来通过不同的注册方式创建用户
         {
             return new ApplicationUser(userName) { Email = email };
-
         }
     }
 }

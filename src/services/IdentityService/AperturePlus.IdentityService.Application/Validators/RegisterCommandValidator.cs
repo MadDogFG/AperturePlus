@@ -15,7 +15,8 @@ namespace AperturePlus.IdentityService.Application.Validators
         private readonly UserManager<ApplicationUser> userManager;
         public RegisterCommandValidator(UserManager<ApplicationUser> userManager)
         {
-            RuleFor(x => x.Username).NotEmpty().WithMessage("用户名不能为空。").MustAsync(async (username, cancellationToken) =>
+            this.userManager = userManager;
+            RuleFor(x => x.username).NotEmpty().WithMessage("用户名不能为空。").MustAsync(async (username, cancellationToken) =>
             {
                 Console.WriteLine($"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 if (await userManager.FindByNameAsync(username) != null)//判断用户名是否已存在
@@ -23,9 +24,18 @@ namespace AperturePlus.IdentityService.Application.Validators
                     return false;
                 }
                 return true;
-            }).WithMessage("用户名已存在");
+            }).WithMessage("用户名已存在");//待补，用户名不能为邮箱或手机号格式
 
-            RuleFor(x => x.Email).MustAsync(async (email, cancellationToken) =>
+            RuleFor(c => c).Must( command =>
+            {
+                if (string.IsNullOrEmpty(command.email))//未来在这里判断是否有一个注册要求的手机号或者邮箱，必须得有一个
+                {
+                    return false;
+                }
+                return true;
+            });
+
+            RuleFor(x => x.email).MustAsync(async (email, cancellationToken) =>
             {
                 if (await userManager.FindByEmailAsync(email) != null)//判断邮箱是否已存在
                 {
