@@ -1,7 +1,10 @@
+using AperturePlus.IdentityService.Api.Options;
 using AperturePlus.IdentityService.Application.Commands;
+using AperturePlus.IdentityService.Application.Interfaces;
 using AperturePlus.IdentityService.Application.Validators;
 using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Infrastructure.Persistence;
+using AperturePlus.IdentityService.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,10 +26,12 @@ namespace AperturePlus.IdentityService.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
             builder.Services.AddDbContext<IdentityServiceDbContext>(opt =>
             {
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
             builder.Services.AddIdentityCore<ApplicationUser>(opt =>
             {
                 opt.Lockout.MaxFailedAccessAttempts = 5;//最大失败次数
@@ -39,6 +44,9 @@ namespace AperturePlus.IdentityService.Api
                 //opt.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;//将密码重置功能的令牌生成与验证逻辑，绑定到默认电子邮件令牌提供者（DefaultEmailProvider）
                 //opt.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;//将电子邮件确认功能的令牌生成与验证逻辑，绑定到默认电子邮件令牌提供者（DefaultEmailProvider）
             }).AddRoles<ApplicationRole>().AddEntityFrameworkStores<IdentityServiceDbContext>();
+
+            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));//将配置文件中的JwtSettings部分绑定到JwtSettings类
+
             builder.Services.AddAuthentication()
                 .AddJwtBearer(opt =>
                 {
@@ -65,6 +73,7 @@ namespace AperturePlus.IdentityService.Api
             {
                 cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly);
             });
+            builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();//注册JWT令牌生成器服务
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

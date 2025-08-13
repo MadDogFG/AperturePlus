@@ -1,4 +1,6 @@
 ﻿using AperturePlus.IdentityService.Application.Commands;
+using AperturePlus.IdentityService.Application.DTOs;
+using AperturePlus.IdentityService.Application.Interfaces;
 using AperturePlus.IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -11,39 +13,46 @@ using static AperturePlus.IdentityService.Domain.ValueObjects.LoginIdentifier;
 
 namespace AperturePlus.IdentityService.Application.Handlers
 {
-    public class LoginCommandHandler : IRequestHandler<LoginCommand, IdentityResult>
+    public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResult>
     {
         private readonly UserManager<ApplicationUser> userManager;
-        
-        public LoginCommandHandler(UserManager<ApplicationUser> userManager)
+        private readonly IJwtTokenGenerator jwtTokenGenerator;
+
+        public LoginCommandHandler(UserManager<ApplicationUser> userManager,IJwtTokenGenerator jwtTokenGenerator)
         {
             this.userManager = userManager;
+            this.jwtTokenGenerator = jwtTokenGenerator;
         }
-        public async Task<IdentityResult> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<LoginResult> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             ApplicationUser user = null;
-            if (request.loginIdentifier.type == LoginIdentifierType.Email)
+            if (request.Identifier.Type == LoginIdentifierType.Email)
             {
-                user = await userManager.FindByEmailAsync(request.loginIdentifier.value);
+                user = await userManager.FindByEmailAsync(request.Identifier.Value);
             }
-            else if (request.loginIdentifier.type == LoginIdentifierType.Username)
+            else if (request.Identifier.Type == LoginIdentifierType.Username)
             {
-                user = await userManager.FindByNameAsync(request.loginIdentifier.value);
+                user = await userManager.FindByNameAsync(request.Identifier.Value);
             }
             if (user != null)
             {
-                if (await userManager.CheckPasswordAsync(user, request.password))
+                if (await userManager.CheckPasswordAsync(user, request.Password))
                 {
-                    return IdentityResult.Success; //登录成功
+                    string token = jwtTokenGenerator.GenerateToken(user);
+                    if(string.IsNullOrEmpty(token))
+                    {
+                        return LoginResult.Failure(new[] {"无法生成Token"});
+                    }
+                    return LoginResult.Success(token); //登录成功
                 }
                 else
                 {
-                    return IdentityResult.Failed(new IdentityError { Code = "LoginAccountAsync", Description = "登录失败，密码错误" });
+                    return LoginResult.Failure(new [] {"登录失败，密码错误" });
                 }
             }
             else
             {
-                return IdentityResult.Failed(new IdentityError { Code = "LoginAccountAsync", Description = "登录失败，用户不存在" });
+                return LoginResult.Failure(new [] {"登录失败，用户不存在" });
             }
         }
     }

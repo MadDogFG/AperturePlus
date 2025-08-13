@@ -1,6 +1,6 @@
 ﻿using AperturePlus.IdentityService.Api.DTOs;
 using AperturePlus.IdentityService.Application.Commands;
-
+using AperturePlus.IdentityService.Application.DTOs;
 using AperturePlus.IdentityService.Application.Validators;
 using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Domain.ValueObjects;
@@ -56,13 +56,12 @@ namespace AperturePlus.IdentityService.Api.Controllers
                 return BadRequest(new { Errors = errors });
             }
 
-            IdentityResult result = await mediator.Send(command);
+            LoginResult result = await mediator.Send(command);
             if (result.Succeeded)
             {
-                return Created("", new { Message = "用户成功登录" });//返回201更规范一点
+                return Ok(new { Token= result.Token,Message = "用户成功登录" });//返回201更规范一点
             }
-            string errorMsg = $"用户登录失败:\n{string.Join(";\n\n", result.Errors.Select(e => $"{e.Code}:{e.Description}"))}";
-            return BadRequest(new { Message = errorMsg });
+            return Unauthorized(new { Errors = result.Errors });
         }
     }
 }

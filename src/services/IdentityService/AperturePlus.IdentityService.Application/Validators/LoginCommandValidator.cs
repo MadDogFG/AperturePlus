@@ -15,7 +15,7 @@ namespace AperturePlus.IdentityService.Application.Validators
     {
         public LoginCommandValidator()
         {
-            RuleFor(l => l.loginIdentifier.value).NotEmpty().WithMessage("登录标识不能为空");
+            RuleFor(l => l.Identifier.Value).NotEmpty().WithMessage("登录标识不能为空");
         }
     }
 }

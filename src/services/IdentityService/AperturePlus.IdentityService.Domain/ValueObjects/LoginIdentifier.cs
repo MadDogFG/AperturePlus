@@ -10,13 +10,13 @@ namespace AperturePlus.IdentityService.Domain.ValueObjects
 {
     public record class LoginIdentifier
     {
-        public string value { get; init; }
-        public LoginIdentifierType type { get; init; }
+        public string Value { get; init; }
+        public LoginIdentifierType Type { get; init; }
 
         private LoginIdentifier(string value)
         {
-            this.value = value;
-            this.type = DetermineType(value);
+            this.Value = value;
+            this.Type = DetermineType(value);
         }
 
         public static LoginIdentifier Create(string value)
