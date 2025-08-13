@@ -11,14 +11,11 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.IdentityService.Application.Validators
 {
-    public class LoginCommandVaildator : AbstractValidator<LoginCommand>
+    public class LoginCommandValidator : AbstractValidator<LoginCommand>
     {
-        private readonly UserManager<ApplicationUser> userManager;
-
-        public LoginCommandVaildator(UserManager<ApplicationUser> userManager)
+        public LoginCommandValidator()
         {
-            this.userManager = userManager;
-            RuleFor(l => l.loginIdentifier).NotEmpty().WithMessage("登录标识不能为空");
+            RuleFor(l => l.loginIdentifier.value).NotEmpty().WithMessage("登录标识不能为空");
         }
     }
 }

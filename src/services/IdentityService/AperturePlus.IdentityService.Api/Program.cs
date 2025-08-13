@@ -1,5 +1,4 @@
-using AperturePlus.IdentityService.Application.Interfaces;
-using AperturePlus.IdentityService.Application.Services;
+using AperturePlus.IdentityService.Application.Commands;
 using AperturePlus.IdentityService.Application.Validators;
 using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Infrastructure.Persistence;
@@ -61,8 +60,11 @@ namespace AperturePlus.IdentityService.Api
                         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
                     };
                 });
-            builder.Services.AddScoped<IAccountService, AccountService>();//注册自己写的账户服务
             builder.Services.AddValidatorsFromAssemblyContaining<RegisterCommandValidator>();//注册程序集中的所有验证器
+            builder.Services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly);
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
