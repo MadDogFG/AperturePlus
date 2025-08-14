@@ -18,7 +18,7 @@ namespace AperturePlus.IdentityService.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -101,6 +101,8 @@ namespace AperturePlus.IdentityService.Api
 
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();//注册JWT令牌生成器服务
 
+            builder.Services.AddTransient<DataSeeder>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -108,6 +110,22 @@ namespace AperturePlus.IdentityService.Api
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                try
+                {
+                    var seeder = services.GetRequiredService<DataSeeder>();
+                    await seeder.SeedAsync();
+                    logger.LogInformation("数据播种成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "数据播种错误");
+                }
             }
 
             app.UseHttpsRedirection();

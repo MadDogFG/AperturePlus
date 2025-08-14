@@ -1,6 +1,7 @@
 ﻿using AperturePlus.IdentityService.Api.Options;
 using AperturePlus.IdentityService.Application.Interfaces;
 using AperturePlus.IdentityService.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -16,23 +17,28 @@ namespace AperturePlus.IdentityService.Infrastructure.Services
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
         private readonly IOptionsSnapshot<JwtSettings> optionsSnapshot;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public JwtTokenGenerator(IOptionsSnapshot<JwtSettings> optionsSnapshot)
+        public JwtTokenGenerator(IOptionsSnapshot<JwtSettings> optionsSnapshot, UserManager<ApplicationUser> userManager)
         {
             this.optionsSnapshot = optionsSnapshot;
+            this.userManager = userManager;
         }
 
-        public string GenerateToken(ApplicationUser user)
+        public async Task<string> GenerateToken(ApplicationUser user)
         {
             SecurityKey securityKey =  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(optionsSnapshot.Value.Key));//创建密钥
 
             List<Claim> claims = new List<Claim>() {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),//Token的唯一标识，方便以后管理JWT
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-                new Claim(ClaimTypes.Name,user.UserName)
-                //new Claim(ClaimTypes.Role,"admin"),
+                new Claim(ClaimTypes.Name,user.UserName),
             };//创建Claims
-            
+            foreach(var role in await userManager.GetRolesAsync(user))
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));//添加角色
+            }//给Claims添加角色信息
+
             JwtSecurityToken token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(optionsSnapshot.Value.ExpiryMinutes),//令牌过期时间
@@ -43,6 +49,5 @@ namespace AperturePlus.IdentityService.Infrastructure.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-            
     }
 }

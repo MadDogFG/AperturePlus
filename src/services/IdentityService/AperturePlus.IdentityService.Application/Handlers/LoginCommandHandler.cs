@@ -38,7 +38,7 @@ namespace AperturePlus.IdentityService.Application.Handlers
             {
                 if (await userManager.CheckPasswordAsync(user, request.Password))
                 {
-                    string token = jwtTokenGenerator.GenerateToken(user);
+                    string token = await jwtTokenGenerator.GenerateToken(user);
                     if(string.IsNullOrEmpty(token))
                     {
                         return LoginResult.Failure(new[] {"无法生成Token"});
