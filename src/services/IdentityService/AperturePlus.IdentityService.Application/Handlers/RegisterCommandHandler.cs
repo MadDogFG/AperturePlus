@@ -31,6 +31,10 @@ namespace AperturePlus.IdentityService.Application.Handlers
                 }
                 ApplicationUser user = ApplicationUser.CreateWithEmail(request.Username, request.Email);
                 IdentityResult result = await userManager.CreateAsync(user, request.Password);
+                if (result.Succeeded)
+                { 
+                    result = await userManager.AddToRoleAsync(user, "User");//默认添加到User角色
+                }
                 return result;
             }
             //未来这里可以扩展为手机号注册

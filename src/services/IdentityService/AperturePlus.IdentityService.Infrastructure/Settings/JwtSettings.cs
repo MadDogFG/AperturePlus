@@ -1,6 +1,6 @@
 ﻿namespace AperturePlus.IdentityService.Api.Options
 {
-    public class JwtSettings
+    public record class JwtSettings
     {
         public string Issuer { get; set; }
         public string Audience { get; set; }

@@ -5,10 +5,12 @@ using AperturePlus.IdentityService.Application.Validators;
 using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Infrastructure.Persistence;
 using AperturePlus.IdentityService.Infrastructure.Services;
+using AperturePlus.IdentityService.Infrastructure.Settings;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -45,8 +47,6 @@ namespace AperturePlus.IdentityService.Api
                 //opt.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;//将电子邮件确认功能的令牌生成与验证逻辑，绑定到默认电子邮件令牌提供者（DefaultEmailProvider）
             }).AddRoles<ApplicationRole>().AddEntityFrameworkStores<IdentityServiceDbContext>();
 
-            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));//将配置文件中的JwtSettings部分绑定到JwtSettings类
-
             builder.Services.AddAuthentication()
                 .AddJwtBearer(opt =>
                 {
@@ -69,11 +69,38 @@ namespace AperturePlus.IdentityService.Api
                     };
                 });
             builder.Services.AddValidatorsFromAssemblyContaining<RegisterCommandValidator>();//注册程序集中的所有验证器
+
             builder.Services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly);
             });
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                var scheme = new OpenApiSecurityScheme()
+                {
+                    Description = "Authorization 请求头. \r\n示例: 'Bearer XXXXXX'",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Authorization"
+                    },
+                    Scheme = "oauth2",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                };
+                c.AddSecurityDefinition("Authorization", scheme);
+                var requirement = new OpenApiSecurityRequirement();
+                requirement[scheme] = new List<string>();
+                c.AddSecurityRequirement(requirement);
+            });
+
+            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));//将配置文件中的JwtSettings部分绑定到JwtSettings类
+            builder.Services.Configure<RoleSettings>(builder.Configuration.GetSection("RoleSettings"));//将配置文件中的RoleSettings部分绑定到RoleSettings类
+
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();//注册JWT令牌生成器服务
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

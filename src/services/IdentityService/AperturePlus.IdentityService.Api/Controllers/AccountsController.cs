@@ -6,10 +6,12 @@ using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AperturePlus.IdentityService.Api.Controllers
 {

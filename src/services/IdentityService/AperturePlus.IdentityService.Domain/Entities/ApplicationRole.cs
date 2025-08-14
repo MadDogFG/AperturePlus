@@ -20,6 +20,11 @@ namespace AperturePlus.IdentityService.Domain.Entities
             this.CreatedAt = DateTime.UtcNow;
         }
 
+        public static ApplicationRole Create(string roleName)
+        {
+            return new ApplicationRole(roleName);
+        }
+
         public void SetDescription(string? description)
         {
             if (description == null)
