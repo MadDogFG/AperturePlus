@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AperturePlus.IdentityService.Application\AperturePlus.IdentityService.Application.csproj" />
+    <ProjectReference Include="..\AperturePlus.IdentityService.Domain\AperturePlus.IdentityService.Domain.csproj" />
   </ItemGroup>
 
 </Project>
