@@ -3,6 +3,7 @@ using AperturePlus.IdentityService.Application.Commands;
 using AperturePlus.IdentityService.Application.Interfaces;
 using AperturePlus.IdentityService.Application.Validators;
 using AperturePlus.IdentityService.Domain.Entities;
+using AperturePlus.IdentityService.Domain.Events;
 using AperturePlus.IdentityService.Infrastructure.Persistence;
 using AperturePlus.IdentityService.Infrastructure.Services;
 using AperturePlus.IdentityService.Infrastructure.Settings;

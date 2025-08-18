@@ -1,5 +1,6 @@
 ﻿using AperturePlus.IdentityService.Application.Commands;
 using AperturePlus.IdentityService.Domain.Entities;
+using AperturePlus.IdentityService.Domain.Events;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -13,9 +14,11 @@ namespace AperturePlus.IdentityService.Application.Handlers
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, IdentityResult>
     {
         private readonly UserManager<ApplicationUser> userManager;
-        public RegisterCommandHandler(UserManager<ApplicationUser> userManager)
+        private readonly IPublisher publisher;
+        public RegisterCommandHandler(UserManager<ApplicationUser> userManager, IPublisher publisher)
         {
             this.userManager = userManager;
+            this.publisher = publisher;
         }
         public async Task<IdentityResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
@@ -34,6 +37,7 @@ namespace AperturePlus.IdentityService.Application.Handlers
                 if (result.Succeeded)
                 { 
                     result = await userManager.AddToRoleAsync(user, "User");//默认添加到User角色
+                    await publisher.Publish(new UserRegisteredEvent(user.Id));//发布用户注册事件
                 }
                 return result;
             }

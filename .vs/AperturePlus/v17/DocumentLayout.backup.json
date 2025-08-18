@@ -3,8 +3,36 @@
   "WorkspaceRootPath": "D:\\Code\\AperturePlus\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.application\\handlers\\registercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\handlers\\registercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C18DBD72-4B8E-4E58-AB65-044821442EAB}|src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C18DBD72-4B8E-4E58-AB65-044821442EAB}|src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.application\\commands\\registercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\commands\\registercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.application\\eventhandlers\\userregisteredwelcomeemailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\eventhandlers\\userregisteredwelcomeemailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.domain\\events\\userregisteredevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.domain\\events\\userregisteredevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.application\\validators\\registercommandvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\validators\\registercommandvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.domain\\entities\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.domain\\entities\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.domain\\valueobjects\\loginidentifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.domain\\valueobjects\\loginidentifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{06B83A6D-7053-4EB2-9E95-A7D554E81B82}|src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\AperturePlus.IdentityService.Infrastructure.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.infrastructure\\persistence\\dataseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -35,10 +63,6 @@
       "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\interfaces\\ijwttokengenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.application\\handlers\\registercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\handlers\\registercommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{C18DBD72-4B8E-4E58-AB65-044821442EAB}|src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.api\\dtos\\registerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C18DBD72-4B8E-4E58-AB65-044821442EAB}|src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.api\\dtos\\registerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -48,14 +72,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{06B83A6D-7053-4EB2-9E95-A7D554E81B82}|src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\AperturePlus.IdentityService.Infrastructure.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.infrastructure\\settings\\rolesettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{06B83A6D-7053-4EB2-9E95-A7D554E81B82}|src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\AperturePlus.IdentityService.Infrastructure.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.infrastructure\\settings\\rolesettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.application\\commands\\registercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\commands\\registercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.domain\\entities\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.domain\\entities\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C18DBD72-4B8E-4E58-AB65-044821442EAB}|src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -74,10 +90,6 @@
       "RelativeMoniker": "D:0:0:{C18DBD72-4B8E-4E58-AB65-044821442EAB}|src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.domain\\valueobjects\\loginidentifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89FBDBD6-7AC6-4A51-82DD-44EC219E2312}|src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.domain\\valueobjects\\loginidentifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.application\\commands\\logincommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\commands\\logincommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -88,10 +100,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{C18DBD72-4B8E-4E58-AB65-044821442EAB}|src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.api\\dtos\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C18DBD72-4B8E-4E58-AB65-044821442EAB}|src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.api\\dtos\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.application\\validators\\registercommandvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{359C34EA-4B20-4CDF-8625-6D573F94F9A4}|src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\AperturePlus.IdentityService.Application.csproj|solutionrelative:src\\services\\identityservice\\apertureplus.identityservice.application\\validators\\registercommandvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{06B83A6D-7053-4EB2-9E95-A7D554E81B82}|src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\AperturePlus.IdentityService.Infrastructure.csproj|d:\\code\\apertureplus\\src\\services\\identityservice\\apertureplus.identityservice.infrastructure\\persistence\\identityservicedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -153,46 +161,122 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "IJwtTokenGenerator.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Interfaces\\IJwtTokenGenerator.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Interfaces\\IJwtTokenGenerator.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Interfaces\\IJwtTokenGenerator.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Interfaces\\IJwtTokenGenerator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-13T16:55:05.475Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "LoginCommandValidator.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\LoginCommandValidator.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\LoginCommandValidator.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\LoginCommandValidator.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\LoginCommandValidator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T09:09:18.541Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "AccountsController.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AccountsController.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AccountsController.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AccountsController.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AccountsController.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAYwEIAAAAJAAAAAAAAAA==",
+              "Title": "UserRegisteredEvent.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Events\\UserRegisteredEvent.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Events\\UserRegisteredEvent.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Events\\UserRegisteredEvent.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Events\\UserRegisteredEvent.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T09:26:25.462Z",
+              "WhenOpened": "2025-08-18T05:30:17.081Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
+              "Title": "LoginCommandHandler.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\LoginCommandHandler.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\LoginCommandHandler.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\LoginCommandHandler.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\LoginCommandHandler.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAwCIAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-13T10:49:54.415Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Program.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Program.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Program.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Program.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAADwv0wAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T16:40:03.599Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "DataSeeder.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\DataSeeder.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\DataSeeder.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\DataSeeder.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\DataSeeder.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAmwDYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-14T10:00:13.417Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationUser.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationUser.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationUser.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAawBUAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T15:53:00.151Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RegisterCommandHandler.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\RegisterCommandHandler.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\RegisterCommandHandler.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\RegisterCommandHandler.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\RegisterCommandHandler.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAQwDAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-13T10:49:41.557Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RegisterCommand.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\RegisterCommand.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\RegisterCommand.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\RegisterCommand.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\RegisterCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-10T15:07:27.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserRegisteredWelcomeEmailSender.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\EventHandlers\\UserRegisteredWelcomeEmailSender.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\EventHandlers\\UserRegisteredWelcomeEmailSender.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\EventHandlers\\UserRegisteredWelcomeEmailSender.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\EventHandlers\\UserRegisteredWelcomeEmailSender.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-18T05:46:27.83Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RegisterCommandValidator.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\RegisterCommandValidator.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\RegisterCommandValidator.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\RegisterCommandValidator.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\RegisterCommandValidator.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABwAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-10T16:21:02.76Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "RegisterRequest.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\DTOs\\RegisterRequest.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\DTOs\\RegisterRequest.cs",
@@ -204,46 +288,56 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LoginCommandHandler.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\LoginCommandHandler.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\LoginCommandHandler.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\LoginCommandHandler.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\LoginCommandHandler.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAAwCIAAAAQAAAAAAAAAA==",
+              "DocumentIndex": 11,
+              "Title": "AccountsController.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AccountsController.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AccountsController.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AccountsController.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AccountsController.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAYwEIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-13T10:49:54.415Z",
+              "WhenOpened": "2025-08-10T09:26:25.462Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "LoginCommandValidator.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\LoginCommandValidator.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\LoginCommandValidator.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\LoginCommandValidator.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\LoginCommandValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-12T09:09:18.541Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "LoginIdentifier.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\ValueObjects\\LoginIdentifier.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\ValueObjects\\LoginIdentifier.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\ValueObjects\\LoginIdentifier.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\ValueObjects\\LoginIdentifier.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAYwDMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-12T09:35:53.632Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Program.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Program.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Program.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Program.cs",
-              "ViewState": "AgIAAEwAAAAAAAAAAAAQwF8AAAA2AAAAAAAAAA==",
+              "DocumentIndex": 14,
+              "Title": "IJwtTokenGenerator.cs",
+              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Interfaces\\IJwtTokenGenerator.cs",
+              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Interfaces\\IJwtTokenGenerator.cs",
+              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Interfaces\\IJwtTokenGenerator.cs",
+              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Interfaces\\IJwtTokenGenerator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-08T16:40:03.599Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-13T16:55:05.475Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DataSeeder.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\DataSeeder.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\DataSeeder.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\DataSeeder.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\DataSeeder.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAmwDYAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-14T10:00:13.417Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 13,
               "Title": "JwtTokenGenerator.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Services\\JwtTokenGenerator.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Services\\JwtTokenGenerator.cs",
@@ -251,25 +345,11 @@
               "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Services\\JwtTokenGenerator.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAkwA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-13T16:57:24.992Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-13T16:57:24.992Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "RegisterCommandHandler.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\RegisterCommandHandler.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\RegisterCommandHandler.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\RegisterCommandHandler.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Handlers\\RegisterCommandHandler.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-13T10:49:41.557Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 10,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AdminController.cs",
@@ -277,12 +357,11 @@
               "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\Controllers\\AdminController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-14T11:17:26.332Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-14T11:17:26.332Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 17,
               "Title": "RoleSettings.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Settings\\RoleSettings.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Settings\\RoleSettings.cs",
@@ -294,7 +373,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 16,
               "Title": "secrets.json",
               "DocumentMoniker": "C:\\Users\\a1347\\AppData\\Roaming\\Microsoft\\UserSecrets\\347e26e7-4830-42da-8df6-3dca3335c820\\secrets.json",
               "ToolTip": "C:\\Users\\a1347\\AppData\\Roaming\\Microsoft\\UserSecrets\\347e26e7-4830-42da-8df6-3dca3335c820\\secrets.json",
@@ -304,31 +383,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "RegisterCommand.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\RegisterCommand.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\RegisterCommand.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\RegisterCommand.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\RegisterCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T15:07:27.097Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "ApplicationUser.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationUser.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationUser.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationUser.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationUser.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAawBUAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-08T15:53:00.151Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 18,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\appsettings.json",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\appsettings.json",
@@ -340,7 +395,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 19,
               "Title": "ApplicationRole.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationRole.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\Entities\\ApplicationRole.cs",
@@ -352,7 +407,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 20,
               "Title": "JwtSettings.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Settings\\JwtSettings.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Settings\\JwtSettings.cs",
@@ -364,7 +419,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 21,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\appsettings.Development.json",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\appsettings.Development.json",
@@ -376,7 +431,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 24,
               "Title": "LoginRequest.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\DTOs\\LoginRequest.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\DTOs\\LoginRequest.cs",
@@ -388,19 +443,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "LoginIdentifier.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\ValueObjects\\LoginIdentifier.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\ValueObjects\\LoginIdentifier.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\ValueObjects\\LoginIdentifier.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\ValueObjects\\LoginIdentifier.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAuwBIAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T09:35:53.632Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
               "Title": "LoginCommand.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\LoginCommand.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Commands\\LoginCommand.cs",
@@ -412,7 +455,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 23,
               "Title": "LoginResult.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\DTOs\\LoginResult.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\DTOs\\LoginResult.cs",
@@ -424,19 +467,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "RegisterCommandValidator.cs",
-              "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\RegisterCommandValidator.cs",
-              "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\RegisterCommandValidator.cs",
-              "ToolTip": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\RegisterCommandValidator.cs",
-              "RelativeToolTip": "src\\services\\IdentityService\\AperturePlus.IdentityService.Application\\Validators\\RegisterCommandValidator.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAIBJwBwAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T16:21:02.76Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "IdentityServiceDbContext.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\IdentityServiceDbContext.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Persistence\\IdentityServiceDbContext.cs",
@@ -448,7 +479,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "ApplicationRoleConfig.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Configurations\\ApplicationRoleConfig.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Configurations\\ApplicationRoleConfig.cs",
@@ -460,7 +491,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "20250808174952_Identity_v_2.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Migrations\\20250808174952_Identity_v_2.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Migrations\\20250808174952_Identity_v_2.cs",
@@ -472,7 +503,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "20250808174225_InitialIdentitySchema.cs",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Migrations\\20250808174225_InitialIdentitySchema.cs",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Infrastructure\\Migrations\\20250808174225_InitialIdentitySchema.cs",
@@ -484,7 +515,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "AperturePlus.IdentityService.Domain.csproj",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Domain\\AperturePlus.IdentityService.Domain.csproj",
@@ -496,7 +527,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "AperturePlus.IdentityService.Api.csproj",
               "DocumentMoniker": "D:\\Code\\AperturePlus\\src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj",
               "RelativeDocumentMoniker": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj",
