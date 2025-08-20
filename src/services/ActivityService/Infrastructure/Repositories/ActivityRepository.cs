@@ -13,6 +13,12 @@ namespace AperturePlus.ActivityService.Infrastructure.Repositories
     public class ActivityRepository : IActivityRepository
     {
         private readonly ActivityServiceDbContext dbContext;
+
+        public ActivityRepository(ActivityServiceDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         public async Task AddActivityAsync(Activity activity, CancellationToken cancellationToken)
         {
             await dbContext.AddAsync(activity, cancellationToken);

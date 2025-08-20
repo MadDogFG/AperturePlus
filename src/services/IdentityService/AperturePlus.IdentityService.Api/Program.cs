@@ -103,7 +103,6 @@ namespace AperturePlus.IdentityService.Api
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();//注册JWT令牌生成器服务
 
             builder.Services.AddTransient<DataSeeder>();
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
