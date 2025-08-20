@@ -1,4 +1,6 @@
+using AperturePlus.ActivityService.Application.Interfaces;
 using AperturePlus.ActivityService.Infrastructure.Persistence;
+using AperturePlus.ActivityService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api
@@ -18,7 +20,7 @@ namespace Api
             {
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-
+            builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

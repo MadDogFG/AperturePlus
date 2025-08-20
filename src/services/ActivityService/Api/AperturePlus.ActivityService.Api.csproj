@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Application\AperturePlus.ActivityService.Application.csproj" />
-    <ProjectReference Include="..\..\..\..\Infrastructure\AperturePlus.ActivityService.Infrastructure.csproj" />
+    <ProjectReference Include="..\Application\AperturePlus.ActivityService.Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\AperturePlus.ActivityService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
