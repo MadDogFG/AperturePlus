@@ -1,5 +1,6 @@
 ﻿using AperturePlus.ActivityService.Api.DTOs;
 using AperturePlus.ActivityService.Application.Commands;
+using AperturePlus.ActivityService.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,7 @@ namespace AperturePlus.ActivityService.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("CreateActivity")]
         public async Task<IActionResult> CreateActivity([FromBody] CreateActivityRequest request)
         {
             CreateActivityCommand command = new CreateActivityCommand(
@@ -32,13 +33,21 @@ namespace AperturePlus.ActivityService.Api.Controllers
             var result = await mediator.Send(command);
             if (result.Successed)
             {
-                return Created("", new {Message = "活动创建成功", ActivityId = result.ActivityId});
+                return Created("", new { Message = "活动创建成功", ActivityId = result.ActivityId });
             }
             else
             {
-                return BadRequest(new {Message = result.Error});
+                return BadRequest(new { Message = result.Error });
             }
 
+        }
+
+        [Authorize]
+        [HttpGet("GetAllActivity")]
+        public async Task<IActionResult> GetAllActivity()
+        {
+            var result = await mediator.Send(new GetAllActivityQuery());
+            return Ok(result);
         }
     }
 }
