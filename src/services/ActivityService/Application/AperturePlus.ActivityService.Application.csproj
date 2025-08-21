@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="DTOs\ActivityDto.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Domain\AperturePlus.ActivityService.Domain.csproj" />
   </ItemGroup>
 
