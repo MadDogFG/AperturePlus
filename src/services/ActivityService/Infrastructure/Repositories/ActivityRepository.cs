@@ -34,9 +34,9 @@ namespace AperturePlus.ActivityService.Infrastructure.Repositories
             return await dbContext.Activities.ToListAsync(cancellationToken);
         }
 
-        public async Task<Activity> GetByIdAsync(Guid activityId, CancellationToken cancellationToken)
+        public async Task<Activity?> GetByIdAsync(Guid activityId, CancellationToken cancellationToken)
         {
-            return dbContext.Activities.Where(a => a.ActivityId == activityId).Single();
+            return await dbContext.Activities.FirstOrDefaultAsync(a=>a.ActivityId==activityId,cancellationToken);
         }
 
         public void UpdateActivity(Activity activity)

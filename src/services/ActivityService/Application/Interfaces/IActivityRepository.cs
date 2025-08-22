@@ -12,7 +12,7 @@ namespace AperturePlus.ActivityService.Application.Interfaces
         Task AddActivityAsync(Activity activity,CancellationToken cancellationToken);
         void UpdateActivity(Activity activity);
         void DeleteActivity(Activity activity);
-        Task<Activity> GetByIdAsync(Guid activityId, CancellationToken cancellationToken);
+        Task<Activity?> GetByIdAsync(Guid activityId, CancellationToken cancellationToken);
         Task<List<Activity>> GetAllAsync(CancellationToken cancellationToken);
     }
 }

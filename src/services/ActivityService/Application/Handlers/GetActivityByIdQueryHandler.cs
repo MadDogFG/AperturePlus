@@ -10,28 +10,30 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.ActivityService.Application.Handlers
 {
-    public class GetAllActivityQueryHandler : IRequestHandler<GetAllActivityQuery, IEnumerable<ActivityDto>>
+    public class GetActivityByIdQueryHandler : IRequestHandler<GetActivityByIdQuery, ActivityDto?>
     {
         private readonly IActivityRepository activityRepository;
-
-        public GetAllActivityQueryHandler(IActivityRepository activityRepository)
+        public GetActivityByIdQueryHandler(IActivityRepository activityRepository)
         {
             this.activityRepository = activityRepository;
         }
-
-        public async Task<IEnumerable<ActivityDto>> Handle(GetAllActivityQuery request, CancellationToken cancellationToken)
+        public async Task<ActivityDto?> Handle(GetActivityByIdQuery request, CancellationToken cancellationToken)
         {
-            var activityList = await activityRepository.GetAllAsync(cancellationToken);
-            return activityList.Select(activity => new ActivityDto
+            var activity = await activityRepository.GetByIdAsync(request.ActivityId, cancellationToken);
+            if (activity == null)
+            {
+                return null;
+            }
+            return new ActivityDto
             (
                 activity.ActivityId,
                 activity.ActivityTitle,
                 activity.ActivityDescription,
                 activity.ActivityLocation,
                 activity.ActivityStartTime,
-                new PostedByUserDto(activity.PostedByUserId,"占位"),//未来需要用集成事件来获取用户信息
+                new PostedByUserDto(activity.PostedByUserId, "占位"),//未来需要用集成事件来获取用户信息
                 activity.Status.ToString()
-            ));
+            );
         }
     }
 }

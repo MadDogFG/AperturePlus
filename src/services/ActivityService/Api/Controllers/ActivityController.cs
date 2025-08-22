@@ -42,11 +42,21 @@ namespace AperturePlus.ActivityService.Api.Controllers
 
         }
 
-        [Authorize]
         [HttpGet("GetAllActivity")]
         public async Task<IActionResult> GetAllActivity()
         {
             var result = await mediator.Send(new GetAllActivityQuery());
+            return Ok(result);
+        }
+
+        [HttpGet("GetActivityById/{id}")]
+        public async Task<IActionResult> GetActivityById(Guid id)
+        {
+            var result = await mediator.Send(new GetActivityByIdQuery(id));
+            if(result == null)
+            {
+                return NotFound(new { Message = "活动未找到" });
+            }
             return Ok(result);
         }
     }
