@@ -3,56 +3,99 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-AperturePlus 是一个基于 .NET 构建的现代化后端解决方案，旨在提供一个健壮、可扩展且易于维护的应用程序基础。项目从一个功能完备的身份认证微服务 (`IdentityService`) 开始，并严格遵循**整洁架构 (Clean Architecture)** 和**领域驱动设计 (DDD)** 的原则。
+AperturePlus 是一个基于 .NET 构建的现代化微服务后端解决方案，旨在提供一个健壮、可扩展且易于维护的应用程序基础。项目严格遵循**整洁架构 (Clean Architecture)** 和**领域驱动设计 (DDD)** 的原则。
 
-## ✨ 核心架构
+目前，系统包含以下核心微服务：
+- **IdentityService**: 负责用户身份认证、授权和管理。
+- **ActivityService**: 负责管理用户创建和参与的活动。
 
-本项目采用整洁架构，将系统分为多个独立的层次，确保了关注点分离和低耦合。这种架构使得系统更容易测试、维护和扩展。
+## ✨ 系统架构
+
+本项目采用微服务架构，每个服务都遵循整洁架构（Clean Architecture），确保了关注点分离和低耦合。服务间的通信可以通过同步（HTTP）或异步（消息队列）方式进行。
 
 ```mermaid
 graph TD
-    subgraph "IdentityService (Clean Architecture)"
-        direction TB
-        
-        Api["<b>Api Layer</b><br>ASP.NET Core Controllers<br><i>(AperturePlus.IdentityService.Api)</i>"]
-        App["<b>Application Layer</b><br>Commands, Handlers, Interfaces<br><i>(AperturePlus.IdentityService.Application)</i>"]
-        Domain["<b>Domain Layer</b><br>Entities, Core Logic<br><i>(AperturePlus.IdentityService.Domain)</i>"]
-        Infra["<b>Infrastructure Layer</b><br>Database, JWT Service<br><i>(AperturePlus.IdentityService.Infrastructure)</i>"]
-
-        %% Dependencies (Arrows show the direction of dependency)
-        Api -- "依赖 (Depends on)" --> App
-        App -- "依赖 (Depends on)" --> Domain
-        Infra -- "实现 (Implements) Application's Interfaces" --> App
-        Infra -- "引用 (References) Domain's Entities" --> Domain
+    subgraph "客户端 (Clients)"
+        direction LR
+        WebApp["Web App"]
+        MobileApp["Mobile App"]
     end
 
-    ExternalClient["External Client / User"] --> Api
-```
+    subgraph "后端基础设施 (Backend Infrastructure)"
+        direction TB
+        
+        subgraph "核心微服务 (Core Microservices)"
+            direction LR
+            
+            subgraph "IdentityService"
+                Api1["Api Layer"]
+                App1["Application Layer"]
+                Domain1["Domain Layer"]
+                Infra1["Infrastructure Layer"]
+            end
 
--   **Domain Layer**: 包含所有业务实体和核心业务规则，是整个应用程序的心脏，不依赖任何其他层。
--   **Application Layer**: 包含应用程序的用例（Use Cases），通过命令（Commands）和查询（Queries）来编排领域层的逻辑。
--   **Infrastructure Layer**: 提供与外部系统（如数据库、文件系统、第三方 API）交互的具体实现。
--   **Api Layer**: 暴露给客户端的接口，例如 RESTful API。
+            subgraph "ActivityService"
+                Api2["Api Layer"]
+                App2["Application Layer"]
+                Domain2["Domain Layer"]
+                Infra2["Infrastructure Layer"]
+            end
+        end
+
+        subgraph "共享基础设施 (Shared Infrastructure)"
+            direction LR
+            SQLServer["SQL Server<br>(用户数据, 活动数据)"]
+            RabbitMQ["RabbitMQ<br>(异步消息)"]
+            Redis["Redis<br>(缓存)"]
+            MinIO["MinIO<br>(对象存储)"]
+            Mongo["MongoDB<br>(文档存储)"]
+        end
+
+        %% Dependencies
+        Api1 -- "依赖 (Depends on)" --> App1
+        App1 -- "依赖 (Depends on)" --> Domain1
+        Infra1 -- "实现 (Implements)" --> App1
+        Infra1 -- "引用 (References)" --> Domain1
+
+        Api2 -- "依赖 (Depends on)" --> App2
+        App2 -- "依赖 (Depends on)" --> Domain2
+        Infra2 -- "实现 (Implements)" --> App2
+        Infra2 -- "引用 (References)" --> Domain2
+        
+        Infra1 --> SQLServer
+        Infra2 --> SQLServer
+        
+        Api1 --> RabbitMQ
+        Api2 --> RabbitMQ
+    end
+
+    WebApp --> Api1
+    WebApp --> Api2
+    MobileApp --> Api1
+    MobileApp --> Api2
+```
 
 ## 🛠️ 技术栈
 
--   **框架**: .NET 8 / ASP.NET Core 8
--   **数据访问**: Entity Framework Core 8
--   **架构模式**: Clean Architecture, DDD, CQRS
--   **身份认证**: JWT (JSON Web Tokens)
--   **容器化**: Docker / Docker Compose
+- **框架**: .NET 8 / ASP.NET Core 8
+- **架构模式**: Microservices, Clean Architecture, DDD, CQRS
+- **数据库**: SQL Server, Redis, MongoDB
+- **数据访问**: Entity Framework Core 8
+- **消息队列**: RabbitMQ
+- **对象存储**: MinIO (S3-Compatible)
+- **身份认证**: JWT (JSON Web Tokens)
+- **容器化**: Docker / Docker Compose
 
 ## 🚀 如何开始
 
-请遵循以下步骤来在本地运行此项目。
+推荐使用 Docker 来启动和管理项目所需的所有服务。
 
 ### 1. 先决条件
 
 -   [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
--   [Docker Desktop](https://www.docker.com/products/docker-desktop) (推荐)
--   一个代码编辑器，如 [Visual Studio 2022](https://visualstudio.microsoft.com/) 或 [VS Code](https://code.visualstudio.com/)
+-   [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-### 2. 配置
+### 2. 配置 (使用 Docker)
 
 1.  **克隆仓库**
     ```bash
@@ -60,97 +103,71 @@ graph TD
     cd AperturePlus
     ```
 
-2.  **配置 `IdentityService`**
-    打开 `src/services/IdentityService/AperturePlus.IdentityService.Api/appsettings.Development.json` 文件，并更新以下配置：
+2.  **创建环境变量文件**
+    在项目的根目录下，创建一个名为 `.env` 的文件。这个文件用来存放敏感信息，`docker-compose.yml` 会读取它。
+    
+    复制以下内容到 `.env` 文件中，并**务必修改密码**：
+    ```env
+    # .env
+    
+    # 为 SQL Server 设置一个强密码
+    SQL_SERVER_PASSWORD=YourStrongPassword123!
+    
+    # 为 MinIO 对象存储设置凭证
+    MINIO_ROOT_USER=minioadmin
+    MINIO_ROOT_PASSWORD=minioadmin
+    ```
 
+3.  **更新连接字符串**
+    `docker-compose.yml` 会启动一个名为 `aperture-sqlserver` 的 SQL Server 容器。请确保两个服务的 `appsettings.Development.json` 文件中的连接字符串指向这个容器。
+
+    -   `src/services/IdentityService/AperturePlus.IdentityService.Api/appsettings.Development.json`
+    -   `src/services/ActivityService/Api/appsettings.Development.json`
+
+    将 `ConnectionStrings.DefaultConnection` 修改为：
     ```json
-    {
-      "ConnectionStrings": {
-        "DefaultConnection": "Server=localhost;Port=5432;Database=AperturePlus.Identity;User Id=youruser;Password=yourpassword;"
-      },
-      "JwtSettings": {
-        "Secret": "THIS IS A SUPER SECRET KEY, CHANGE IT IN PRODUCTION",
-        "Issuer": "AperturePlus",
-        "Audience": "AperturePlus.Client"
-      },
-      "RoleSettings": {
-        "Roles": [
-          { "Name": "Admin" },
-          { "Name": "User" }
-        ]
-      }
-    }
+    "DefaultConnection": "Server=localhost,11433;Database=AperturePlus.Db;User Id=sa;Password=${SQL_SERVER_PASSWORD};TrustServerCertificate=True;"
     ```
-    > **注意**: `DefaultConnection` 是你的数据库连接字符串。推荐使用 Docker 启动一个 PostgreSQL 实例。`JwtSettings.Secret` 应该被替换为一个更长、更安全的密钥。
-
-3.  **应用数据库迁移**
-    在终端中，导航到 `Infrastructure` 项目并运行 EF Core 的迁移命令来创建数据库和表结构。
-
-    ```bash
-    cd src/services/IdentityService/AperturePlus.IdentityService.Infrastructure
-    dotnet ef database update --context IdentityServiceDbContext
-    ```
+    > **注意**: 我们使用 `localhost,11433` 是因为 `docker-compose.yml` 将容器的 `1433` 端口映射到了主机的 `11433` 端口。`${SQL_SERVER_PASSWORD}` 将由环境变量提供。
 
 ### 3. 运行项目
 
-你有两种方式可以启动此项目：
+1.  **使用 Docker Compose 启动所有服务**
+    在项目根目录下运行以下命令，它将构建并启动所有微服务和基础设施容器。
+    ```bash
+    docker-compose up --build -d
+    ```
+    `-d` 参数表示在后台运行。
 
-#### 方式 A: 使用 .NET CLI
+2.  **应用数据库迁移**
+    当容器启动后，我们需要应用数据库迁移来创建表结构。
+    ```bash
+    # 为 IdentityService 应用迁移
+    dotnet ef database update --project src/services/IdentityService/AperturePlus.IdentityService.Infrastructure --startup-project src/services/IdentityService/AperturePlus.IdentityService.Api
+    
+    # 为 ActivityService 应用迁移
+    dotnet ef database update --project src/services/ActivityService/Infrastructure --startup-project src/services/ActivityService/Api
+    ```
 
-```bash
-# 导航到 Api 项目
-cd src/services/IdentityService/AperturePlus.IdentityService.Api
-
-# 运行项目
-dotnet run
-```
-
-#### 方式 B: 使用 Docker Compose (推荐)
-
-在项目根目录下运行以下命令，它将为你启动应用程序和数据库容器。
-
-```bash
-docker-compose up --build
-```
-
-项目现在应该在 `http://localhost:5000` (或你在 `launchSettings.json` 中配置的端口) 上运行。
+现在，所有服务都已运行。
+- **IdentityService** 运行在 `http://localhost:5001`
+- **ActivityService** 运行在 `http://localhost:5002`
+- **RabbitMQ Management** UI 在 `http://localhost:15672`
+- **MinIO Console** 在 `http://localhost:9001`
 
 ## 📖 API 端点
 
-以下是 `IdentityService` 提供的一些核心 API 端点。
+### IdentityService
 
-### 注册新用户
+-   **注册新用户**: `POST /api/accounts/register`
+-   **用户登录**: `POST /api/accounts/login`
 
--   **URL**: `/api/accounts/register`
--   **Method**: `POST`
--   **Body**:
-    ```json
-    {
-      "email": "test@example.com",
-      "password": "Password123!",
-      "userName": "testuser"
-    }
-    ```
+### ActivityService
 
-### 用户登录
-
--   **URL**: `/api/accounts/login`
--   **Method**: `POST`
--   **Body**:
-    ```json
-    {
-      "email": "test@example.com",
-      "password": "Password123!"
-    }
-    ```
--   **Success Response**:
-    ```json
-    {
-      "token": "ey...",
-      "userName": "testuser",
-      "email": "test@example.com"
-    }
-    ```
+-   **创建活动**: `POST /api/activity/CreateActivity` (需要认证)
+-   **获取所有活动**: `GET /api/activity/GetAllActivity`
+-   **根据ID获取活动**: `GET /api/activity/GetActivityById/{id}`
+-   **更新活动**: `PUT /api/activity/UpdateActivity/{id}` (需要认证)
 
 ## 📄 许可证
 
