@@ -59,5 +59,26 @@ namespace AperturePlus.ActivityService.Api.Controllers
             }
             return Ok(result);
         }
+
+        [Authorize]
+        [HttpPut("UpdateActivity/{id}")]
+        public async Task<IActionResult> UpdateActivity(Guid id,UpdateActivityRequest updateActivityRequest)
+        {
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            UpdateActivityCommand command = new UpdateActivityCommand(
+                id,
+                updateActivityRequest.ActivityTitle,
+                updateActivityRequest.ActivityDescription,
+                updateActivityRequest.ActivityLocation,
+                updateActivityRequest.ActivityStartTime,
+                userId
+            );
+            var result = await mediator.Send(command);
+            if (result == false)
+            {
+                return BadRequest(new { Message = "更新失败" });
+            }
+            return Ok(new { Message = "更新成功" });
+        }
     }
 }

@@ -17,6 +17,10 @@ namespace AperturePlus.ActivityService.Domain.Entities
         public Guid PostedByUserId { get; private set; } //发布活动的用户ID
         public ActivityStatus Status { get; private set; } //活动状态
 
+        private Activity() : base()
+        {
+        }
+
         private Activity(Guid activityId, string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, ActivityStatus status)
         {
             ActivityId = activityId;
@@ -28,11 +32,7 @@ namespace AperturePlus.ActivityService.Domain.Entities
             Status = status;
         }
 
-        private Activity():base()
-        {
-        }
-
-        public static Activity ActivityCreate(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId)
+        public static Activity CreateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId)
         {
             return new Activity(
                 activityId: Guid.NewGuid(),
@@ -43,6 +43,14 @@ namespace AperturePlus.ActivityService.Domain.Entities
                 postedByUserId: postedByUserId,
                 status: ActivityStatus.Open
             );
+        }
+
+        public void UpdateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime)
+        {
+            ActivityTitle = activityTitle;
+            ActivityDescription = activityDescription;
+            ActivityLocation = activityLocation;
+            ActivityStartTime = activityStartTime;
         }
     }
 }

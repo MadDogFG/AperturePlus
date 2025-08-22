@@ -24,7 +24,7 @@ namespace AperturePlus.ActivityService.Application.Handlers
 
         public async Task<CreateActivityResult> Handle(CreateActivityCommand request, CancellationToken cancellationToken)
         {
-            Activity activity = Activity.ActivityCreate(
+            Activity activity = Activity.CreateActivity(
                     request.ActivityTitle,
                     request.ActivityDescription,
                     request.ActivityLocation,
