@@ -64,7 +64,11 @@ namespace AperturePlus.ActivityService.Api.Controllers
         [HttpPut("UpdateActivity/{id}")]
         public async Task<IActionResult> UpdateActivity(Guid id,UpdateActivityRequest updateActivityRequest)
         {
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))//防止找不到用户ID或转换失败
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
             UpdateActivityCommand command = new UpdateActivityCommand(
                 id,
                 updateActivityRequest.ActivityTitle,
@@ -79,6 +83,24 @@ namespace AperturePlus.ActivityService.Api.Controllers
                 return BadRequest(new { Message = "更新失败" });
             }
             return Ok(new { Message = "更新成功" });
+        }
+
+        [Authorize]
+        [HttpPost("CancelActivity/{activityId}")]
+        public async Task<IActionResult> CancelActivity(Guid activityId)
+        {
+            string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))//防止找不到用户ID或转换失败
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            CancelActivityCommand command = new CancelActivityCommand(activityId, userId);
+            var result = await mediator.Send(command);
+            if (result == false)
+            {
+                return BadRequest(new { Message = "取消失败" });
+            }
+            return Ok(new { Message = "取消成功" });
         }
     }
 }

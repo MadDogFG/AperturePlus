@@ -52,5 +52,23 @@ namespace AperturePlus.ActivityService.Domain.Entities
             ActivityLocation = activityLocation;
             ActivityStartTime = activityStartTime;
         }
+
+        public void CancelActivity()
+        {
+            if(Status==ActivityStatus.Completed||Status==ActivityStatus.Cancelled)
+            {
+                throw new InvalidOperationException("活动已取消或完成");
+            }
+            Status = ActivityStatus.Cancelled;
+        }
+
+        public void CompletedActivity()
+        {
+            if (Status == ActivityStatus.Completed || Status == ActivityStatus.Cancelled)
+            {
+                throw new InvalidOperationException("活动已取消或完成");
+            }
+            Status = ActivityStatus.Completed;
+        }
     }
 }
