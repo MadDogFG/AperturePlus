@@ -102,5 +102,23 @@ namespace AperturePlus.ActivityService.Api.Controllers
             }
             return Ok(new { Message = "取消成功" });
         }
+
+        [Authorize]
+        [HttpPost("CompletedActivity/{activityId}")]
+        public async Task<IActionResult> CompletedActivity(Guid activityId)
+        {
+            string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))//防止找不到用户ID或转换失败
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            CompletedActivityCommand command = new CompletedActivityCommand(activityId, userId);
+            var result = await mediator.Send(command);
+            if (result == false)
+            {
+                return BadRequest(new { Message = "完成活动失败" });
+            }
+            return Ok(new { Message = "完成活动成功" });
+        }
     }
 }
