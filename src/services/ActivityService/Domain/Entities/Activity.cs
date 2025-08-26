@@ -16,12 +16,15 @@ namespace AperturePlus.ActivityService.Domain.Entities
         public DateTime ActivityStartTime { get; private set; } //活动开始时间
         public Guid PostedByUserId { get; private set; } //发布活动的用户ID
         public ActivityStatus Status { get; private set; } //活动状态
+        public Decimal Fee { get; private set; } = 0; //活动费用，默认0
+        public List<RoleRequirement> RoleRequirements { get; private set; } = new List<RoleRequirement>(); //角色需求列表
+        public List<Participant> Participants { get; private set; } = new List<Participant>(); //参与者列表
 
         private Activity() : base()
         {
         }
 
-        private Activity(Guid activityId, string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, ActivityStatus status)
+        private Activity(Guid activityId, string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, ActivityStatus status, Decimal fee, List<RoleRequirement> roleRequirements)
         {
             ActivityId = activityId;
             ActivityTitle = activityTitle;
@@ -30,9 +33,11 @@ namespace AperturePlus.ActivityService.Domain.Entities
             ActivityStartTime = activityStartTime;
             PostedByUserId = postedByUserId;
             Status = status;
+            Fee = fee;
+            RoleRequirements = roleRequirements;
         }
 
-        public static Activity CreateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId)
+        public static Activity CreateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, Decimal fee, List<RoleRequirement> roleRequirements)
         {
             return new Activity(
                 activityId: Guid.NewGuid(),
@@ -41,7 +46,9 @@ namespace AperturePlus.ActivityService.Domain.Entities
                 activityLocation: activityLocation,
                 activityStartTime: activityStartTime,
                 postedByUserId: postedByUserId,
-                status: ActivityStatus.Open
+                status: ActivityStatus.Open,
+                fee: fee,
+                roleRequirements: roleRequirements
             );
         }
 
