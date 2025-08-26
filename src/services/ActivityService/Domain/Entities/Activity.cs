@@ -77,5 +77,46 @@ namespace AperturePlus.ActivityService.Domain.Entities
             }
             Status = ActivityStatus.Completed;
         }
+
+        public void RequestJoinActivity(Guid applicationUserId, RoleType role)
+        {
+            if (Status != ActivityStatus.Open)
+            {
+                throw new InvalidOperationException("只能加入处于开放状态的活动");
+            }
+            if (!RoleRequirements.Any(r => r.Role == role))
+            {
+                throw new InvalidOperationException("所请求的角色不在活动需求中");
+            }
+            if (Participants.Count(p => p.Role == role && p.Status == ParticipantStatus.Approved) >= RoleRequirements.FirstOrDefault(r => r.Role == role).Quantity)
+            {
+                throw new InvalidOperationException("所请求的角色名额已满");
+            }
+            if(Participants.Any(p=>p.UserId == applicationUserId))
+            {
+                throw new InvalidOperationException("用户已申请过参加该活动");
+            }
+            Participants.Add(new Participant(applicationUserId, role));
+        }
+
+        public void ApproveParticipant(Guid userId)
+        {
+            var participant = Participants.FirstOrDefault(p => p.UserId == userId);
+            if (participant == null)
+            {
+                throw new InvalidOperationException("未找到该参与者");
+            }
+            participant.Approve();
+        }
+
+        public void RejectParticipant(Guid userId)
+        {
+            var participant = Participants.FirstOrDefault(p => p.UserId == userId);
+            if (participant == null)
+            {
+                throw new InvalidOperationException("未找到该参与者");
+            }
+            participant.Reject();
+        }
     }
 }

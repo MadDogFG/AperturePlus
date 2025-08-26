@@ -22,15 +22,15 @@ namespace AperturePlus.ActivityService.Domain.Entities
 
         public void Approve()
         {
-            if (Status != ParticipantStatus.Pending)
-                throw new InvalidOperationException("只能批准处于待处理状态的参与者");
+            if (Status == ParticipantStatus.Approved)
+                throw new InvalidOperationException("已通过该用户的参与资格");
             Status = ParticipantStatus.Approved;
         }
 
         public void Reject()
         {
-            if (Status != ParticipantStatus.Pending)
-                throw new InvalidOperationException("只能拒绝处于待处理状态的参与者");
+            if (Status == ParticipantStatus.Rejected)
+                throw new InvalidOperationException("已拒绝该用户的参与资格");
             Status = ParticipantStatus.Rejected;
         }
     }
