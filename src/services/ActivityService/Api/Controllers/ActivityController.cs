@@ -171,5 +171,22 @@ namespace AperturePlus.ActivityService.Api.Controllers
             return Ok(new { Message = "批准申请者成功" });
         }
 
+        [Authorize]
+        [HttpPost("RejectParticipant/{activityId}/{applicantId}")]
+        public async Task<IActionResult> RejectParticipant(Guid activityId, Guid applicantId)
+        {
+            string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))//防止找不到用户ID或转换失败
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            RejectParticipantCommand command = new RejectParticipantCommand(activityId, userId, applicantId);
+            var result = await mediator.Send(command);
+            if (result == false)
+            {
+                return BadRequest(new { Message = "拒绝申请者失败" });
+            }
+            return Ok(new { Message = "拒绝申请者成功" });
+        }
     }
 }
