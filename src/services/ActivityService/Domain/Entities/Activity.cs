@@ -1,6 +1,7 @@
 ﻿using AperturePlus.ActivityService.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -99,12 +100,16 @@ namespace AperturePlus.ActivityService.Domain.Entities
             Participants.Add(new Participant(applicationUserId, role));
         }
 
-        public void ApproveParticipant(Guid userId)
+        public void ApproveParticipant(Guid userId, RoleType role)
         {
             var participant = Participants.FirstOrDefault(p => p.UserId == userId);
             if (participant == null)
             {
                 throw new InvalidOperationException("未找到该参与者");
+            }
+            if (Participants.Count(p => p.Role == role && p.Status == ParticipantStatus.Approved) >= RoleRequirements.FirstOrDefault(r => r.Role == role).Quantity)
+            {
+                throw new InvalidOperationException("角色名额已满不能批准");
             }
             participant.Approve();
         }

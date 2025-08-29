@@ -39,14 +39,7 @@ namespace AperturePlus.ActivityService.Application.Handlers
                 return false;
             }
             int result = await unitOfWork.SaveChangesAsync(cancellationToken);
-            if(result > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return result > 0;
         }
     }
 }

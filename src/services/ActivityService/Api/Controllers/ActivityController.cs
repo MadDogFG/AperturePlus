@@ -125,16 +125,16 @@ namespace AperturePlus.ActivityService.Api.Controllers
 
         [Authorize]
         [HttpPost("RequestJoinActivity/{actvityId}")]
-        public async Task<IActionResult> RequestJoinActivity(Guid activityId,RequestJoinActivityRequest requestJoinActivityRequest)
+        public async Task<IActionResult> RequestJoinActivity(Guid activityId,string roleString)
         {
             string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))//防止找不到用户ID或转换失败
             {
                 return Unauthorized(new { Message = "无效的用户ID" });
             }
-            if (!Enum.TryParse<RoleType>(requestJoinActivityRequest.RoleString, out RoleType roleType)) 
+            if (!Enum.TryParse<RoleType>(roleString, out RoleType roleType)) 
             {
-                return BadRequest(new { Message = $"无效角色名:{requestJoinActivityRequest.RoleString}" });
+                return BadRequest(new { Message = $"无效角色名:{roleString}" });
             }
             if (!User.IsInRole(roleType.ToString()))
             {
@@ -148,5 +148,28 @@ namespace AperturePlus.ActivityService.Api.Controllers
             }
             return Ok(new { Message = "申请活动成功" });
         }
+
+        [Authorize]
+        [HttpPost("ApproveParticipant/{activityId}/{applicantId}")]
+        public async Task<IActionResult> ApproveParticipant(Guid activityId, Guid applicantId,string roleString)
+        {
+            string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))//防止找不到用户ID或转换失败
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            if (!Enum.TryParse<RoleType>(roleString, out RoleType roleType))
+            {
+                return BadRequest(new { Message = $"无效角色名:{roleString}" });
+            }
+            ApproveParticipantCommand command = new ApproveParticipantCommand(activityId, userId, applicantId,roleType);
+            var result = await mediator.Send(command);
+            if (result == false)
+            {
+                return BadRequest(new { Message = "批准申请者失败" });
+            }
+            return Ok(new { Message = "批准申请者成功" });
+        }
+
     }
 }

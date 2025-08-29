@@ -10,34 +10,37 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.ActivityService.Application.Handlers
 {
-    public class CompletedActivityCommandHandler : IRequestHandler<CompletedActivityCommand, bool>
+    public class ApproveParticipantCommandHandler : IRequestHandler<ApproveParticipantCommand, bool>
     {
         private readonly IActivityRepository activityRepository;
         private readonly IUnitOfWork unitOfWork;
-        public CompletedActivityCommandHandler(IActivityRepository activityRepository, IUnitOfWork unitOfWork)
+
+        public ApproveParticipantCommandHandler(IActivityRepository activityRepository, IUnitOfWork unitOfWork)
         {
             this.activityRepository = activityRepository;
             this.unitOfWork = unitOfWork;
         }
-        public async Task<bool> Handle(CompletedActivityCommand request, CancellationToken cancellationToken)
+
+        public async Task<bool> Handle(ApproveParticipantCommand request, CancellationToken cancellationToken)
         {
-            Activity? activity = await activityRepository.GetByIdAsync(request.ActivityId, cancellationToken);
-            if (activity == null) 
+            Activity? actvity = await activityRepository.GetByIdAsync(request.ActivityId, cancellationToken);
+            if (actvity == null) 
             {
                 return false;
             }
-            if (request.UserId != activity.PostedByUserId)
+            if (actvity.PostedByUserId != request.OwnerUserId)
             {
                 return false;
             }
             try
             {
-                activity.CompletedActivity();
+                actvity.ApproveParticipant(request.ApplicantUserId,request.Role);
             }
-            catch(InvalidOperationException)
+            catch (InvalidOperationException) 
             {
                 return false;
             }
+            activityRepository.UpdateActivity(actvity);
             int result = await unitOfWork.SaveChangesAsync(cancellationToken);
             return result > 0;
         }
