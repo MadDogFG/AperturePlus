@@ -2,6 +2,7 @@
 using AperturePlus.ActivityService.Application.Commands;
 using AperturePlus.ActivityService.Application.Queries;
 using AperturePlus.ActivityService.Domain.ValueObjects;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +31,9 @@ namespace AperturePlus.ActivityService.Api.Controllers
                 request.ActivityDescription,
                 request.ActivityLocation,
                 request.ActivityStartTime,
-                Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))//从User.Claims中获取用户ID（ControllerBase提供的）
+                Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),//从User.Claims中获取用户ID（ControllerBase提供的）
+                request.Fee,
+                request.RoleRequirements
             );
             var result = await mediator.Send(command);
             if (result.Successed)
@@ -77,7 +80,9 @@ namespace AperturePlus.ActivityService.Api.Controllers
                 updateActivityRequest.ActivityDescription,
                 updateActivityRequest.ActivityLocation,
                 updateActivityRequest.ActivityStartTime,
-                userId
+                userId,
+                updateActivityRequest.Fee,
+                updateActivityRequest.RoleRequirements
             );
             var result = await mediator.Send(command);
             if (result == false)

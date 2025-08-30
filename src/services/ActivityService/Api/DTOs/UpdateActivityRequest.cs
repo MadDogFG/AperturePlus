@@ -8,5 +8,7 @@ namespace AperturePlus.ActivityService.Api.DTOs
         public string ActivityDescription { get; set; }
         public Location ActivityLocation { get; set; }
         public DateTime ActivityStartTime { get; set; }
+        public Decimal Fee { get; set; } //活动费用
+        public List<RoleRequirement> RoleRequirements { get; set; } = new List<RoleRequirement>(); //角色需求列表
     }
 }

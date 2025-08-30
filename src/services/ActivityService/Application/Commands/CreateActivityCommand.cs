@@ -16,14 +16,18 @@ namespace AperturePlus.ActivityService.Application.Commands
         public Location ActivityLocation { get; private set; } //活动地点
         public DateTime ActivityStartTime { get; private set; } //活动开始时间
         public Guid PostedByUserId { get; private set; } //发布活动的用户ID
-        public CreateActivityCommand(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId)
+        public Decimal Fee { get; set; } //活动费用
+        public List<RoleRequirement> RoleRequirements { get; set; } = new List<RoleRequirement>(); //角色需求列表
+
+        public CreateActivityCommand(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, decimal fee, List<RoleRequirement> roleRequirements)
         {
             ActivityTitle = activityTitle;
             ActivityDescription = activityDescription;
             ActivityLocation = activityLocation;
             ActivityStartTime = activityStartTime;
             PostedByUserId = postedByUserId;
+            Fee = fee;
+            RoleRequirements = roleRequirements;
         }
-
     }
 }

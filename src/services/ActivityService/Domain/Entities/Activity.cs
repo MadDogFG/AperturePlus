@@ -53,12 +53,14 @@ namespace AperturePlus.ActivityService.Domain.Entities
             );
         }
 
-        public void UpdateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime)
+        public void UpdateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Decimal fee, List<RoleRequirement> roleRequirements)
         {
             ActivityTitle = activityTitle;
             ActivityDescription = activityDescription;
             ActivityLocation = activityLocation;
             ActivityStartTime = activityStartTime;
+            Fee = fee;
+            RoleRequirements = roleRequirements;
         }
 
         public void CancelActivity()

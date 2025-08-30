@@ -16,7 +16,10 @@ namespace AperturePlus.ActivityService.Application.Commands
         public Location ActivityLocation { get; private set; }
         public DateTime ActivityStartTime { get; private set; }
         public Guid UserId { get; private set; } //更新活动的用户ID
-        public UpdateActivityCommand(Guid activityId, string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid userId)
+        public Decimal Fee { get; set; } //活动费用
+        public List<RoleRequirement> RoleRequirements { get; set; } = new List<RoleRequirement>(); //角色需求列表
+
+        public UpdateActivityCommand(Guid activityId, string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid userId, decimal fee, List<RoleRequirement> roleRequirements)
         {
             ActivityId = activityId;
             ActivityTitle = activityTitle;
@@ -24,6 +27,8 @@ namespace AperturePlus.ActivityService.Application.Commands
             ActivityLocation = activityLocation;
             ActivityStartTime = activityStartTime;
             UserId = userId;
+            Fee = fee;
+            RoleRequirements = roleRequirements;
         }
     }
 }
