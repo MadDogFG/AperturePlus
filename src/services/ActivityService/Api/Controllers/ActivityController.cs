@@ -129,8 +129,8 @@ namespace AperturePlus.ActivityService.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("RequestJoinActivity/{actvityId}")]
-        public async Task<IActionResult> RequestJoinActivity(Guid activityId,string roleString)
+        [HttpPost("RequestJoinActivity/{activityId}")]
+        public async Task<IActionResult> RequestJoinActivity(Guid activityId, string roleString)
         {
             string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))//防止找不到用户ID或转换失败

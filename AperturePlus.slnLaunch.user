@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "新建配置文件",
+    "Projects": [
+      {
+        "Path": "src\\services\\IdentityService\\AperturePlus.IdentityService.Api\\AperturePlus.IdentityService.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\services\\ActivityService\\Api\\AperturePlus.ActivityService.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

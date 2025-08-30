@@ -32,7 +32,10 @@ namespace AperturePlus.ActivityService.Application.Handlers
                 activity.ActivityLocation,
                 activity.ActivityStartTime,
                 new PostedByUserDto(activity.PostedByUserId, "占位"),//未来需要用集成事件来获取用户信息
-                activity.Status.ToString()
+                activity.Status.ToString(),
+                activity.Fee,
+                activity.RoleRequirements,
+                activity.Participants
             );
         }
     }
