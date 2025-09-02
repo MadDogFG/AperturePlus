@@ -4,6 +4,7 @@ using AperturePlus.IdentityService.Application.Interfaces;
 using AperturePlus.IdentityService.Application.Validators;
 using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Domain.Events;
+using AperturePlus.IdentityService.Infrastructure.MessageBus;
 using AperturePlus.IdentityService.Infrastructure.Persistence;
 using AperturePlus.IdentityService.Infrastructure.Services;
 using AperturePlus.IdentityService.Infrastructure.Settings;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -32,7 +34,7 @@ namespace AperturePlus.IdentityService.Api
 
             builder.Services.AddDbContext<IdentityServiceDbContext>(opt =>
             {
-                opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
             });
 
             builder.Services.AddIdentityCore<ApplicationUser>(opt =>
@@ -103,6 +105,23 @@ namespace AperturePlus.IdentityService.Api
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();//注册JWT令牌生成器服务
 
             builder.Services.AddTransient<DataSeeder>();
+            
+            try 
+            {
+                var factory = new ConnectionFactory()
+                {
+                    Uri = new Uri(builder.Configuration.GetConnectionString("RabbitMQConnection"))
+                };
+                var connection = await factory.CreateConnectionAsync();
+                builder.Services.AddSingleton<IConnection>(connection);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("无法连接到RabbitMQ服务器: " + ex.Message);
+            }
+
+            builder.Services.AddSingleton<IMessageBus, RabbitMQMessageBus>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
