@@ -8,6 +8,6 @@ namespace AperturePlus.IdentityService.Application.Interfaces
 {
     public interface IMessageBus
     {
-        public void Publish(string exchange, string routingKey, object data);
+        public Task Publish(string exchange, string routingKey, object data);
     }
 }

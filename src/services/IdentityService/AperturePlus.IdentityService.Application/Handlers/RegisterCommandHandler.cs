@@ -1,6 +1,8 @@
 ﻿using AperturePlus.IdentityService.Application.Commands;
+using AperturePlus.IdentityService.Application.Interfaces;
 using AperturePlus.IdentityService.Domain.Entities;
 using AperturePlus.IdentityService.Domain.Events;
+using Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -15,10 +17,12 @@ namespace AperturePlus.IdentityService.Application.Handlers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IPublisher publisher;
-        public RegisterCommandHandler(UserManager<ApplicationUser> userManager, IPublisher publisher)
+        private readonly IMessageBus messageBus;
+        public RegisterCommandHandler(UserManager<ApplicationUser> userManager, IPublisher publisher, IMessageBus messageBus)
         {
             this.userManager = userManager;
             this.publisher = publisher;
+            this.messageBus = messageBus;
         }
         public async Task<IdentityResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
@@ -38,6 +42,9 @@ namespace AperturePlus.IdentityService.Application.Handlers
                 { 
                     result = await userManager.AddToRoleAsync(user, "User");//默认添加到User角色
                     await publisher.Publish(new UserRegisteredEvent(user.Id));//发布用户注册事件
+                    var roles = await userManager.GetRolesAsync(user);
+                    var userRegisterIntegrationEvent = new UserRegisteredIntegrationEvent(user.Id, user.UserName, roles.ToList());
+                    await messageBus.Publish("user_event","user.register", userRegisterIntegrationEvent);//通过消息总线发布用户注册消息
                 }
                 return result;
             }

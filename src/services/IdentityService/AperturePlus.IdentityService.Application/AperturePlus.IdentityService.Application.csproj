@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\EventBus\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\AperturePlus.IdentityService.Domain\AperturePlus.IdentityService.Domain.csproj" />
   </ItemGroup>
 
