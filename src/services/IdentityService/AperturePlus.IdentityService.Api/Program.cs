@@ -112,6 +112,7 @@ namespace AperturePlus.IdentityService.Api
                 {
                     Uri = new Uri(builder.Configuration.GetConnectionString("RabbitMQConnection"))
                 };
+                Console.WriteLine(builder.Configuration.GetConnectionString("RabbitMQConnection"));
                 var connection = await factory.CreateConnectionAsync();
                 builder.Services.AddSingleton<IConnection>(connection);
             }

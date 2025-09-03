@@ -29,6 +29,8 @@ namespace AperturePlus.ActivityService.Infrastructure.Configurations
                 pb.Property(p => p.Status).HasConversion<string>();
                 pb.HasKey("ActivityId", "UserId");
             });
+
+            builder.Property(a => a.Fee).HasColumnType("decimal(18,4)");//指定精度
         }
     }
 }

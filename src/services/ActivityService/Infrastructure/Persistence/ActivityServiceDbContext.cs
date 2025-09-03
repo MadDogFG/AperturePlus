@@ -13,6 +13,7 @@ namespace AperturePlus.ActivityService.Infrastructure.Persistence
     public class ActivityServiceDbContext : DbContext
     {
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<UserSummary> UserSummaries { get; set; }
 
         public ActivityServiceDbContext(DbContextOptions options) : base(options)
         {

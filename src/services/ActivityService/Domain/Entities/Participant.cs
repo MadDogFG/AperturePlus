@@ -9,10 +9,10 @@ namespace AperturePlus.ActivityService.Domain.Entities
 {
     public record class Participant
     {
-        public Guid UserId { get; private init; }
-        public RoleType Role { get; private init; }//参与者角色
+        public Guid UserId { get; private set; }
+        public RoleType Role { get; private set; }//参与者角色
         public ParticipantStatus Status { get; private set; } = ParticipantStatus.Pending;//申请状态，默认Pending
-        public DateTime ApliedAt { get; private init; } = DateTime.UtcNow;//申请时间
+        public DateTime ApliedAt { get; private set; } = DateTime.UtcNow;//申请时间
 
         public Participant(Guid userId, RoleType role)
         {

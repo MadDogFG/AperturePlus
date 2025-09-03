@@ -8,13 +8,18 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.IdentityService.Infrastructure.MessageBus
 {
-    public class RabbitMQMessageBus : IMessageBus
+    public class RabbitMQMessageBus : IMessageBus,IDisposable
     {
         private readonly IConnection connection;
 
         public RabbitMQMessageBus(IConnection connection)
         {
             this.connection = connection;
+        }
+
+        public void Dispose()
+        {
+            //让DI管理生命周期
         }
 
         public async Task Publish(string exchange, string routingKey, object data)

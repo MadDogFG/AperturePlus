@@ -42,9 +42,8 @@ namespace AperturePlus.IdentityService.Application.Handlers
                 { 
                     result = await userManager.AddToRoleAsync(user, "User");//默认添加到User角色
                     await publisher.Publish(new UserRegisteredEvent(user.Id));//发布用户注册事件
-                    var roles = await userManager.GetRolesAsync(user);
-                    var userRegisterIntegrationEvent = new UserRegisteredIntegrationEvent(user.Id, user.UserName, roles.ToList());
-                    await messageBus.Publish("user_event","user.register", userRegisterIntegrationEvent);//通过消息总线发布用户注册消息
+                    var userRegisterIntegrationEvent = new UserRegisteredIntegrationEvent(user.Id, user.UserName);
+                    await messageBus.Publish("user_events","user.register", userRegisterIntegrationEvent);//通过消息总线发布用户注册消息
                 }
                 return result;
             }

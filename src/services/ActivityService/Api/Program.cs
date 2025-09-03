@@ -1,15 +1,17 @@
+using AperturePlus.ActivityService.Api.BackgroundServices;
 using AperturePlus.ActivityService.Application.Handlers;
 using AperturePlus.ActivityService.Application.Interfaces;
 using AperturePlus.ActivityService.Infrastructure.Persistence;
 using AperturePlus.ActivityService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 
 namespace Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,7 @@ namespace Api
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<ActivityServiceDbContext>(opt =>
             {
-                opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
             });
             builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -71,6 +73,25 @@ namespace Api
                 requirement[scheme] = new List<string>();
                 c.AddSecurityRequirement(requirement);
             });
+
+            try
+            {
+                var factory = new ConnectionFactory()
+                {
+                    Uri = new Uri(builder.Configuration.GetConnectionString("RabbitMQConnection"))
+                };
+                Console.WriteLine(builder.Configuration.GetConnectionString("RabbitMQConnection"));
+                var connection = await factory.CreateConnectionAsync();
+                builder.Services.AddSingleton<IConnection>(connection);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("无法连接到RabbitMQ服务器: " + ex.Message);
+            }
+
+            builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
