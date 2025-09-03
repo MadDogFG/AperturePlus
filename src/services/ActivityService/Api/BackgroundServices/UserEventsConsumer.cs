@@ -35,7 +35,6 @@ namespace AperturePlus.ActivityService.Api.BackgroundServices
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine(message);
                 try
                 {
                     await ProcessEvent(ea.RoutingKey, message);
@@ -44,6 +43,7 @@ namespace AperturePlus.ActivityService.Api.BackgroundServices
                 }
                 catch (Exception ex) 
                 {
+                    Console.WriteLine(ex.ToString());
                     await channel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
                 }
             };
@@ -59,7 +59,7 @@ namespace AperturePlus.ActivityService.Api.BackgroundServices
 
             switch (routingKey)
             {
-                case "user.registered":
+                case "user.register":
                     var regEvent = JsonSerializer.Deserialize<UserRegisteredIntegrationEvent>(message);
                     if (regEvent != null && !await dbContext.UserSummaries.AnyAsync(u => u.UserId == regEvent.UserId))
                     {
