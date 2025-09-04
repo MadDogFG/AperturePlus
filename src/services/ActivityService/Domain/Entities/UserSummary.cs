@@ -11,9 +11,23 @@ namespace AperturePlus.ActivityService.Domain.Entities
         public Guid UserId { get; private set; }
         public string UserName { get; private set; }
 
-        public UserSummary(Guid userId, string userName)
+        private UserSummary() : base()
+        {
+        }
+
+        private UserSummary(Guid userId, string userName)
         {
             UserId = userId;
+            UserName = userName;
+        }
+
+        public static UserSummary CreateUserSummary(Guid userId, string userName)
+        {
+            return new UserSummary(userId, userName);
+        }
+
+        public void UpdateUserName(string userName)
+        {
             UserName = userName;
         }
     }

@@ -8,7 +8,15 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.ActivityService.Application.Queries
 {
-    public class GetAllActivityQuery:IRequest<IEnumerable<ActivityDto>>
+    public class GetAllActivityQuery: IRequest<ActivityListResult>
     {
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 20;
+
+        public GetAllActivityQuery(int page, int pageSize)
+        {
+            Page = page;
+            PageSize = pageSize;
+        }
     }
 }

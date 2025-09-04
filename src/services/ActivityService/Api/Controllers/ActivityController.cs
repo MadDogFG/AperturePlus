@@ -48,9 +48,9 @@ namespace AperturePlus.ActivityService.Api.Controllers
         }
 
         [HttpGet("GetAllActivity")]
-        public async Task<IActionResult> GetAllActivity()
+        public async Task<IActionResult> GetAllActivity(int page,int pagesize)
         {
-            var result = await mediator.Send(new GetAllActivityQuery());
+            var result = await mediator.Send(new GetAllActivityQuery(page,pagesize));
             return Ok(result);
         }
 

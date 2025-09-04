@@ -13,9 +13,11 @@ namespace AperturePlus.ActivityService.Application.Handlers
     public class GetActivityByIdQueryHandler : IRequestHandler<GetActivityByIdQuery, ActivityDto?>
     {
         private readonly IActivityRepository activityRepository;
-        public GetActivityByIdQueryHandler(IActivityRepository activityRepository)
+        private readonly IUserSummaryRepository userSummaryRepository;
+        public GetActivityByIdQueryHandler(IActivityRepository activityRepository, IUserSummaryRepository userSummaryRepository)
         {
             this.activityRepository = activityRepository;
+            this.userSummaryRepository = userSummaryRepository;
         }
         public async Task<ActivityDto?> Handle(GetActivityByIdQuery request, CancellationToken cancellationToken)
         {
@@ -24,6 +26,7 @@ namespace AperturePlus.ActivityService.Application.Handlers
             {
                 return null;
             }
+            var userSummary = await userSummaryRepository.GetByIdAsync(activity.PostedByUserId, cancellationToken);
             return new ActivityDto
             (
                 activity.ActivityId,
@@ -31,7 +34,7 @@ namespace AperturePlus.ActivityService.Application.Handlers
                 activity.ActivityDescription,
                 activity.ActivityLocation,
                 activity.ActivityStartTime,
-                new PostedByUserDto(activity.PostedByUserId, "占位"),//未来需要用集成事件来获取用户信息
+                new PostedByUserDto(userSummary.UserId, userSummary.UserName),//未来需要用集成事件来获取用户信息
                 activity.Status.ToString(),
                 activity.Fee,
                 activity.RoleRequirements,

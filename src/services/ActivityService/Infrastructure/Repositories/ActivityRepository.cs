@@ -43,5 +43,20 @@ namespace AperturePlus.ActivityService.Infrastructure.Repositories
         {
             dbContext.Update(activity);
         }
+        public async Task<(IEnumerable<Activity> Activities, bool HasMore)> GetPagedAsync(int page, int pageSize, CancellationToken cancellationToken)
+        {
+            var skip = (page - 1) * pageSize;
+            var items = await dbContext.Activities
+                .OrderByDescending(a => a.ActivityStartTime)
+                .Skip(skip)
+                .Take(pageSize + 1) //多取一条用于判断是否有更多数据
+                .ToListAsync(cancellationToken);
+            bool hasMore = items.Count > pageSize;
+            if (hasMore)
+            {
+                items.RemoveAt(items.Count - 1); //移除多取的那一条
+            }
+            return (items,hasMore);
+        }
     }
 }

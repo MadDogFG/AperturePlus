@@ -26,6 +26,7 @@ namespace Api
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
             });
             builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+            builder.Services.AddScoped<IUserSummaryRepository, UserSummaryRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAuthentication()
                 .AddJwtBearer(opt =>
