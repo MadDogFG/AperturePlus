@@ -43,5 +43,10 @@ namespace AperturePlus.ActivityService.Infrastructure.Repositories
         {
             dbContext.Update(userSummary);
         }
+
+        Task<List<UserSummary>> IUserSummaryRepository.GetByIdsAsync(IEnumerable<Guid> userSummaryIds, CancellationToken cancellationToken)
+        {
+            return dbContext.UserSummaries.Where(u => userSummaryIds.Contains(u.UserId)).ToListAsync(cancellationToken);
+        }
     }
 }

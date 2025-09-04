@@ -25,24 +25,25 @@ namespace AperturePlus.ActivityService.Application.Handlers
         {
             //获取分页数据
             var pagedActivities = await activityRepository.GetPagedAsync(request.Page,request.PageSize,cancellationToken);
-            var items = new List<ActivityDto>();
-            foreach (var activity in pagedActivities.Activities)
+            var userIds = pagedActivities.Activities.Select(a => a.PostedByUserId).Distinct();
+            var userSummaries = await userSummaryRepository.GetByIdsAsync(userIds, cancellationToken);
+            var userSummariesDict = userSummaries.ToDictionary(u => u.UserId);
+            var items = pagedActivities.Activities.Select(activity =>
             {
-                var userSummary = await userSummaryRepository.GetByIdAsync(activity.PostedByUserId, cancellationToken);
-
-                items.Add(new ActivityDto(
+                var userSummary = userSummariesDict.GetValueOrDefault(activity.PostedByUserId);
+                return new ActivityDto(
                     activity.ActivityId,
                     activity.ActivityTitle,
                     activity.ActivityDescription,
                     activity.ActivityLocation,
                     activity.ActivityStartTime,
-                    new PostedByUserDto(userSummary.UserId, userSummary.UserName),
+                    new PostedByUserDto(activity.PostedByUserId, userSummary.UserName),
                     activity.Status.ToString(),
                     activity.Fee,
                     activity.RoleRequirements,
                     activity.Participants
-                ));
-            }
+                );
+            }).ToList();
             return new ActivityListResult(items, pagedActivities.HasMore);
         }
     }

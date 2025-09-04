@@ -14,5 +14,7 @@ namespace AperturePlus.ActivityService.Application.Interfaces
         void DeleteUserSummaryAsync(UserSummary userSummary);
         Task<UserSummary?> GetByIdAsync(Guid userSummaryId, CancellationToken cancellationToken);
         Task<List<UserSummary>> GetAllAsync(CancellationToken cancellationToken);
+        Task<List<UserSummary>> GetByIdsAsync(IEnumerable<Guid> userSummaryIds, CancellationToken cancellationToken);
+
     }
 }
