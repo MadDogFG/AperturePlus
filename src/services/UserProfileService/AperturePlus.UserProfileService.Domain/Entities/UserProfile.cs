@@ -13,19 +13,17 @@ namespace AperturePlus.UserProfileService.Domain.Entities
         public string Bio { get; private set; }//个人简介
         public string AvatarUrl { get; private set; }//头像URL
 
-        public UserProfile() { }
+        private UserProfile() : base(){}
 
-        private UserProfile(Guid userId, string userName, string bio, string avatarUrl)
+        private UserProfile(Guid userId, string userName)
         {
             UserId = userId;
             UserName = userName;
-            Bio = bio;
-            AvatarUrl = avatarUrl;
         }
 
-        public static UserProfile CreateUserProfile(Guid userId, string userName, string bio, string avatarUrl)
+        public static UserProfile CreateUserProfile(Guid userId, string userName)
         {
-            return new UserProfile(userId, userName, bio,avatarUrl);
+            return new UserProfile(userId, userName);
         }
 
         public void UpdateUserProfile(string? bio, string? avatarUrl)

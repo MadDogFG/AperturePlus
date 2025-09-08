@@ -1,4 +1,5 @@
 
+using AperturePlus.UserProfileService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
@@ -17,10 +18,10 @@ namespace AperturePlus.UserProfileService.Api
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            //builder.Services.AddDbContext<ActivityServiceDbContext>(opt =>
-            //{
-            //    opt.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
-            //});
+            builder.Services.AddDbContext<UserProfileDbContext>(opt =>
+            {
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
+            });
 
             builder.Services.AddAuthentication()
                 .AddJwtBearer(opt =>
@@ -43,10 +44,11 @@ namespace AperturePlus.UserProfileService.Api
                         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
                     };
                 });
-            builder.Services.AddMediatR(cfg =>
-            {
-                //cfg.RegisterServicesFromAssembly(typeof(CreateActivityCommandHandler).Assembly);
-            });
+
+            //builder.Services.AddMediatR(cfg =>
+            //{
+            //    cfg.RegisterServicesFromAssembly(typeof(CreateActivityCommandHandler).Assembly);
+            //});
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -91,7 +93,8 @@ namespace AperturePlus.UserProfileService.Api
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();

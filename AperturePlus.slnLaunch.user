@@ -9,6 +9,10 @@
       {
         "Path": "src\\services\\ActivityService\\Api\\AperturePlus.ActivityService.Api.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "src\\services\\UserProfileService\\AperturePlus.UserProfileService.Api\\AperturePlus.UserProfileService.Api.csproj",
+        "Action": "Start"
       }
     ]
   }
