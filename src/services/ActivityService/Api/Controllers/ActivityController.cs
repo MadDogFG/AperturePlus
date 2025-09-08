@@ -66,7 +66,7 @@ namespace AperturePlus.ActivityService.Api.Controllers
         }
 
         [Authorize]
-        [HttpPut("UpdateActivity/{id}")]
+        [HttpPatch("UpdateActivity/{id}")]
         public async Task<IActionResult> UpdateActivity(Guid id,UpdateActivityRequest updateActivityRequest)
         {
             string? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -74,16 +74,17 @@ namespace AperturePlus.ActivityService.Api.Controllers
             {
                 return Unauthorized(new { Message = "无效的用户ID" });
             }
-            UpdateActivityCommand command = new UpdateActivityCommand(
-                id,
-                updateActivityRequest.ActivityTitle,
-                updateActivityRequest.ActivityDescription,
-                updateActivityRequest.ActivityLocation,
-                updateActivityRequest.ActivityStartTime,
-                userId,
-                updateActivityRequest.Fee,
-                updateActivityRequest.RoleRequirements
-            );
+            var command = new UpdateActivityCommand
+            {
+                ActivityId = id,
+                UserId = userId,
+                ActivityTitle = updateActivityRequest.ActivityTitle,
+                ActivityDescription = updateActivityRequest.ActivityDescription,
+                ActivityLocation = updateActivityRequest.ActivityLocation,
+                ActivityStartTime = updateActivityRequest.ActivityStartTime,
+                Fee = updateActivityRequest.Fee,
+                RoleRequirements = updateActivityRequest.RoleRequirements
+            };
             var result = await mediator.Send(command);
             if (result == false)
             {

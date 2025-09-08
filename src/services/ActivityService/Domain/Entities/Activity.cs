@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,14 +54,32 @@ namespace AperturePlus.ActivityService.Domain.Entities
             );
         }
 
-        public void UpdateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Decimal fee, List<RoleRequirement> roleRequirements)
+        public void UpdateActivity(string? activityTitle, string? activityDescription, Location? activityLocation, DateTime? activityStartTime, Decimal? fee, List<RoleRequirement>? roleRequirements)
         {
-            ActivityTitle = activityTitle;
-            ActivityDescription = activityDescription;
-            ActivityLocation = activityLocation;
-            ActivityStartTime = activityStartTime;
-            Fee = fee;
-            RoleRequirements = roleRequirements;
+            if (activityTitle != null) 
+            {
+                ActivityTitle = activityTitle;
+            }
+            if (activityDescription != null)
+            {
+                ActivityDescription = activityDescription;
+            }
+            if (activityLocation != null)
+            {
+                ActivityLocation = activityLocation;
+            }
+            if (activityStartTime != null)
+            {
+                ActivityStartTime = (DateTime)activityStartTime;
+            }
+            if (fee != null)
+            {
+                Fee = (Decimal)fee;
+            }
+            if (roleRequirements != null)
+            {
+                RoleRequirements = roleRequirements;
+            }
         }
 
         public void CancelActivity()
