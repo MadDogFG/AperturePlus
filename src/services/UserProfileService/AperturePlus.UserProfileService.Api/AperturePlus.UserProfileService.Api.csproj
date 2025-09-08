@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>beb05b3c-7299-4079-b918-8800d650c479</UserSecretsId>
+    <UserSecretsId>152bf894-61a7-45a2-9485-0892b6c54f77</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,9 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\EventBus\Contracts\Contracts.csproj" />
-    <ProjectReference Include="..\Application\AperturePlus.ActivityService.Application.csproj" />
-    <ProjectReference Include="..\Infrastructure\AperturePlus.ActivityService.Infrastructure.csproj" />
+    <ProjectReference Include="..\AperturePlus.UserProfileService.Application\AperturePlus.UserProfileService.Application.csproj" />
+    <ProjectReference Include="..\AperturePlus.UserProfileService.Infrastructure\AperturePlus.UserProfileService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

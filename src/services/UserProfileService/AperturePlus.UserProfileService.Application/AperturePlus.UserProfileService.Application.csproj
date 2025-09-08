@@ -7,15 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="DTOs\ActivityDto.cs" />
+    <ProjectReference Include="..\..\ActivityService\Domain\AperturePlus.ActivityService.Domain.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Domain\AperturePlus.ActivityService.Domain.csproj" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="MediatR" Version="13.0.0" />
   </ItemGroup>
-
 </Project>
