@@ -9,9 +9,15 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.UserProfileService.Application.Commands
 {
-    public class GetOrCreateUserProfileCommand:IRequest<UserProfileDto>
+    public class CreateUserProfileCommand:IRequest<bool>
     {
         public Guid UserId { get; set; }
         public string UserName { get; set; }
+
+        public CreateUserProfileCommand(Guid userId, string userName)
+        {
+            UserId = userId;
+            UserName = userName;
+        }
     }
 }

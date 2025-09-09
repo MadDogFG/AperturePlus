@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\EventBus\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\AperturePlus.UserProfileService.Application\AperturePlus.UserProfileService.Application.csproj" />
     <ProjectReference Include="..\AperturePlus.UserProfileService.Infrastructure\AperturePlus.UserProfileService.Infrastructure.csproj" />

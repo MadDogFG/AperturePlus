@@ -9,35 +9,18 @@ namespace AperturePlus.UserProfileService.Application.DTOs
 {
     public record class UserProfileDto
     {
-        public Guid? UserId { get; private set; }
-        public string? UserName { get; private set; }
-        public string? Bio { get; private set; }//个人简介
-        public string? AvatarUrl { get; private set; }//头像URL
-        public string? Error { get; private set; }
-        public bool Successed { get; private set; }
+        public Guid UserId { get; private set; }
+        public string UserName { get; private set; }
+        public string Bio { get; private set; }//个人简介
+        public string AvatarUrl { get; private set; }//头像URL
 
 
-        private UserProfileDto(Guid userId, string userName, string bio, string avatarUrl,string? error,bool successed)
+        public UserProfileDto(Guid userId, string userName, string bio, string avatarUrl)
         {
             UserId = userId;
             UserName = userName;
             Bio = bio;
             AvatarUrl = avatarUrl;
-            Error = error;
-            Successed = successed;
-        }
-        private UserProfileDto(string? error, bool successed) 
-        {
-            Error = error;
-            Successed = successed;
-        }
-        public static UserProfileDto Success(UserProfile userProfile)
-        {
-            return new UserProfileDto(userProfile.UserId, userProfile.UserName, userProfile.Bio,userProfile.AvatarUrl,null,true);
-        }
-        public static UserProfileDto Failure()
-        {
-            return new UserProfileDto("获取用户档案失败", false);
         }
     }
 }

@@ -1,5 +1,8 @@
 
+using AperturePlus.UserProfileService.Application.Commands;
+using AperturePlus.UserProfileService.Application.Interfaces;
 using AperturePlus.UserProfileService.Infrastructure.Persistence;
+using AperturePlus.UserProfileService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
@@ -45,10 +48,10 @@ namespace AperturePlus.UserProfileService.Api
                     };
                 });
 
-            //builder.Services.AddMediatR(cfg =>
-            //{
-            //    cfg.RegisterServicesFromAssembly(typeof(CreateActivityCommandHandler).Assembly);
-            //});
+            builder.Services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(CreateUserProfileCommand).Assembly);
+            });
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -86,6 +89,8 @@ namespace AperturePlus.UserProfileService.Api
                 Console.WriteLine("无法连接到RabbitMQ服务器: " + ex.Message);
             }
 
+            builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             //builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
 
             var app = builder.Build();
