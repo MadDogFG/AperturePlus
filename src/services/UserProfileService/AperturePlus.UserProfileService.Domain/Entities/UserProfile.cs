@@ -10,8 +10,8 @@ namespace AperturePlus.UserProfileService.Domain.Entities
     {
         public Guid UserId { get; private set; }
         public string UserName { get; private set; }
-        public string Bio { get; private set; }//个人简介
-        public string AvatarUrl { get; private set; }//头像URL
+        public string Bio { get; private set; } = "还没有任何个人简介哦";//个人简介
+        public string AvatarUrl { get; private set; } = "默认头像URL";//头像URL
 
         private UserProfile() : base(){}
 
