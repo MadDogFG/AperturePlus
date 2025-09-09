@@ -1,4 +1,5 @@
-﻿using AperturePlus.UserProfileService.Application.Commands;
+﻿using AperturePlus.UserProfileService.Api.DTOs;
+using AperturePlus.UserProfileService.Application.Commands;
 using AperturePlus.UserProfileService.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +45,28 @@ namespace AperturePlus.UserProfileService.Api.Controllers
             if (result == null)
             {
                 return NotFound(new { Message = "您的用户档案尚未创建，请稍后再试。" });
+            }
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPatch("UpdateMyProfile")]
+        public async Task<IActionResult> UpdateMyProfile(UpdateUserProfileRequest request)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            var updateUserProfileCommand = new UpdateUserProfileCommand(userId)
+            {
+                Bio = request.Bio,
+                AvatarUrl = request.AvatarUrl
+            };
+            var result = await mediator.Send(updateUserProfileCommand);
+            if (!result)
+            {
+                return NotFound(new { Message = "更新用户档案失败" });
             }
             return Ok(result);
         }

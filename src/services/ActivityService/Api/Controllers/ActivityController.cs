@@ -74,10 +74,8 @@ namespace AperturePlus.ActivityService.Api.Controllers
             {
                 return Unauthorized(new { Message = "无效的用户ID" });
             }
-            var command = new UpdateActivityCommand
+            var command = new UpdateActivityCommand(id,userId)
             {
-                ActivityId = id,
-                UserId = userId,
                 ActivityTitle = updateActivityRequest.ActivityTitle,
                 ActivityDescription = updateActivityRequest.ActivityDescription,
                 ActivityLocation = updateActivityRequest.ActivityLocation,
