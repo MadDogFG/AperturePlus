@@ -47,6 +47,7 @@ namespace AperturePlus.IdentityService.Api.Controllers
             string errorMsg = $"用户注册失败:\n{string.Join(";\n\n", result.Errors.Select(e => $"{e.Code}:{e.Description}"))}";
             return BadRequest(new { Message = errorMsg });
         }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login (LoginRequest loginRequest)
         {
@@ -64,6 +65,24 @@ namespace AperturePlus.IdentityService.Api.Controllers
                 return Ok(new { Token= result.Token,Message = "用户成功登录" });//返回201更规范一点
             }
             return Unauthorized(new { Errors = result.Errors });
+        }
+
+        [Authorize]
+        [HttpPut("UpdateRoles")]
+        public async Task<IActionResult> UpdateRoles(UpdateRolesRequest request) 
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            var command = new UpdateUserRolesCommand(userId, request.Roles);
+            var result = await mediator.Send(command);
+            if (result.Succeeded) 
+            {
+                return Ok(new { Message = "用户角色更新成功" });
+            }
+            return BadRequest(new { Message = $"用户角色更新失败:\n{string.Join(";\n\n", result.Errors.Select(e => $"{e.Code}:{e.Description}"))}" });
         }
     }
 }

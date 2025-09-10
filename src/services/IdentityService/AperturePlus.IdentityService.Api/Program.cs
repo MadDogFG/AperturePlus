@@ -123,6 +123,11 @@ namespace AperturePlus.IdentityService.Api
 
             builder.Services.AddSingleton<IMessageBus, RabbitMQMessageBus>();
 
+            builder.Services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(UpdateUserRolesCommand).Assembly);
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
