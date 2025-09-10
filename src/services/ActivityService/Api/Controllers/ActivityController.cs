@@ -65,6 +65,17 @@ namespace AperturePlus.ActivityService.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetActivitiesByUserId/{id}")]
+        public async Task<IActionResult> GetActivitiesByUserId(Guid id)
+        {
+            var result = await mediator.Send(new GetByUserIdQuery(id));
+            if (result == null)
+            {
+                return NotFound(new { Message = "活动未找到" });
+            }
+            return Ok(result);
+        }
+
         [Authorize]
         [HttpPatch("UpdateActivity/{id}")]
         public async Task<IActionResult> UpdateActivity(Guid id,UpdateActivityRequest updateActivityRequest)

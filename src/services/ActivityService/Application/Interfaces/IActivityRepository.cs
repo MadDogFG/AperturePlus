@@ -13,7 +13,8 @@ namespace AperturePlus.ActivityService.Application.Interfaces
         void UpdateActivity(Activity activity);
         void DeleteActivity(Activity activity);
         Task<Activity?> GetByIdAsync(Guid activityId, CancellationToken cancellationToken);
-        Task<List<Activity>> GetAllAsync(CancellationToken cancellationToken);
-        Task<(IEnumerable<Activity> Activities, bool HasMore)> GetPagedAsync(int page, int pageSize, CancellationToken cancellationToken);
+        //Task<List<Activity>> GetAllAsync(CancellationToken cancellationToken);
+        Task<(IEnumerable<Activity> Activities, bool HasMore)> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken);
+        Task<List<Activity>> GetByUserIdAsync(Guid userId,CancellationToken cancellationToken);
     }
 }

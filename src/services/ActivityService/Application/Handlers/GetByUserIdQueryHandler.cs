@@ -10,25 +10,24 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.ActivityService.Application.Handlers
 {
-    public class GetAllActivityQueryHandler : IRequestHandler<GetAllActivityQuery, ActivityListResult>
+    public class GetByUserIdQueryHandler : IRequestHandler<GetByUserIdQuery, List<ActivityDto>>
     {
         private readonly IActivityRepository activityRepository;
         private readonly IUserSummaryRepository userSummaryRepository;
 
-        public GetAllActivityQueryHandler(IActivityRepository activityRepository,IUserSummaryRepository userSummaryRepository)
+        public GetByUserIdQueryHandler(IActivityRepository activityRepository, IUserSummaryRepository userSummaryRepository)
         {
             this.activityRepository = activityRepository;
             this.userSummaryRepository = userSummaryRepository;
         }
 
-        public async Task<ActivityListResult> Handle(GetAllActivityQuery request, CancellationToken cancellationToken)
+        public async Task<List<ActivityDto>> Handle(GetByUserIdQuery request, CancellationToken cancellationToken)
         {
-            //获取分页数据
-            var pagedActivities = await activityRepository.GetAllAsync(request.Page,request.PageSize,cancellationToken);
-            var userIds = pagedActivities.Activities.Select(a => a.PostedByUserId).Distinct();
-            var userSummaries = await userSummaryRepository.GetByIdsAsync(userIds, cancellationToken);
+            var activityList = await activityRepository.GetByUserIdAsync(request.UserId, cancellationToken);
+            var postedByUserIds = activityList.Select(a => a.PostedByUserId).Distinct();
+            var userSummaries = await userSummaryRepository.GetByIdsAsync(postedByUserIds, cancellationToken);
             var userSummariesDict = userSummaries.ToDictionary(u => u.UserId);
-            var items = pagedActivities.Activities.Select(activity =>
+            var activityDtos = activityList.Select(activity =>
             {
                 var userSummary = userSummariesDict.GetValueOrDefault(activity.PostedByUserId);
                 return new ActivityDto(
@@ -44,7 +43,7 @@ namespace AperturePlus.ActivityService.Application.Handlers
                     activity.Participants
                 );
             }).ToList();
-            return new ActivityListResult(items, pagedActivities.HasMore);
+            return activityDtos;
         }
     }
 }

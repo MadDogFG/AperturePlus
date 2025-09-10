@@ -29,10 +29,10 @@ namespace AperturePlus.ActivityService.Infrastructure.Repositories
             dbContext.Remove(activity);
         }
 
-        public async Task<List<Activity>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await dbContext.Activities.ToListAsync(cancellationToken);
-        }
+        //public async Task<List<Activity>> GetAllAsync(CancellationToken cancellationToken)
+        //{
+        //    return await dbContext.Activities.ToListAsync(cancellationToken);
+        //}
 
         public async Task<Activity?> GetByIdAsync(Guid activityId, CancellationToken cancellationToken)
         {
@@ -43,7 +43,7 @@ namespace AperturePlus.ActivityService.Infrastructure.Repositories
         {
             dbContext.Update(activity);
         }
-        public async Task<(IEnumerable<Activity> Activities, bool HasMore)> GetPagedAsync(int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<(IEnumerable<Activity> Activities, bool HasMore)> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken)
         {
             var skip = (page - 1) * pageSize;
             var items = await dbContext.Activities
@@ -57,6 +57,11 @@ namespace AperturePlus.ActivityService.Infrastructure.Repositories
                 items.RemoveAt(items.Count - 1); //移除多取的那一条
             }
             return (items,hasMore);
+        }
+
+        public async Task<List<Activity>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            return await dbContext.Activities.Where(a => a.Participants.Any(p => p.UserId == userId)).ToListAsync(cancellationToken);
         }
     }
 }
