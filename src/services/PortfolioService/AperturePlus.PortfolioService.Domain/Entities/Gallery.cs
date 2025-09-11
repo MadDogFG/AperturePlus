@@ -1,11 +1,11 @@
-﻿using AperturePlus.UserProfileService.Domain.ValueObjects;
+﻿using AperturePlus.PortfolioService.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AperturePlus.UserProfileService.Domain.Entities
+namespace AperturePlus.PortfolioService.Domain.Entities
 {
     public class Gallery
     {

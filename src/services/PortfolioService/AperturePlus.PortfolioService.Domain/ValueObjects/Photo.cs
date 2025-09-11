@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AperturePlus.UserProfileService.Domain.ValueObjects
+namespace AperturePlus.PortfolioService.Domain.ValueObjects
 {
     public record class Photo
     {

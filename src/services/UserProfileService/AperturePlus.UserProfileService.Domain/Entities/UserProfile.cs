@@ -13,9 +13,6 @@ namespace AperturePlus.UserProfileService.Domain.Entities
         public string Bio { get; private set; } = "还没有任何个人简介哦";//个人简介
         public string AvatarUrl { get; private set; } = "默认头像URL";//头像URL
 
-        private readonly List<Gallery> _galleries = new();
-        public IReadOnlyCollection<Gallery> Galleries => _galleries.AsReadOnly();
-
         private UserProfile() : base(){}
 
         private UserProfile(Guid userId, string userName)
@@ -39,23 +36,6 @@ namespace AperturePlus.UserProfileService.Domain.Entities
             {
                 AvatarUrl = avatarUrl;
             }
-        }
-
-        public Guid CreateNewGallery(string galleryName)
-        {
-            var newGallery = Gallery.CreateGallery(galleryName);
-            _galleries.Add(newGallery);
-            return newGallery.GalleryId;
-        }
-
-        public void DeleteGallery(Guid galleryId)
-        {
-            var rmGallery = _galleries.FirstOrDefault(g => g.GalleryId == galleryId);
-            if(rmGallery == null)
-            {
-                throw new ArgumentException("相册不存在");
-            }
-            _galleries.Remove(rmGallery);
         }
     }
 }

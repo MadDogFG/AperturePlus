@@ -41,6 +41,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.UserProfileSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.UserProfileService.Infrastructure", "src\services\UserProfileService\AperturePlus.UserProfileService.Infrastructure\AperturePlus.UserProfileService.Infrastructure.csproj", "{2368A817-1C13-4C55-85EC-F8EDD07AEA93}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PortfolioService", "PortfolioService", "{EA873DC6-AAD3-4908-8345-BD781E9B0B25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.PortfolioService.Api", "src\services\PortfolioService\AperturePlus.PortfolioService.Api\AperturePlus.PortfolioService.Api.csproj", "{76098293-6435-4214-98BF-EF118829674C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.PortfolioService.Application", "src\services\PortfolioService\AperturePlus.PortfolioService.Application\AperturePlus.PortfolioService.Application.csproj", "{20A5A2BC-970D-4570-BC76-99B59E125248}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.PortfolioService.Domain", "src\services\PortfolioService\AperturePlus.PortfolioService.Domain\AperturePlus.PortfolioService.Domain.csproj", "{016EA3B3-4510-4876-98C2-98E31C2AF2A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.PortfolioService.Infrastructure", "src\services\PortfolioService\AperturePlus.PortfolioService.Infrastructure\AperturePlus.PortfolioService.Infrastructure.csproj", "{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +109,22 @@ Global
 		{2368A817-1C13-4C55-85EC-F8EDD07AEA93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2368A817-1C13-4C55-85EC-F8EDD07AEA93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2368A817-1C13-4C55-85EC-F8EDD07AEA93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76098293-6435-4214-98BF-EF118829674C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76098293-6435-4214-98BF-EF118829674C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76098293-6435-4214-98BF-EF118829674C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76098293-6435-4214-98BF-EF118829674C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20A5A2BC-970D-4570-BC76-99B59E125248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20A5A2BC-970D-4570-BC76-99B59E125248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20A5A2BC-970D-4570-BC76-99B59E125248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20A5A2BC-970D-4570-BC76-99B59E125248}.Release|Any CPU.Build.0 = Release|Any CPU
+		{016EA3B3-4510-4876-98C2-98E31C2AF2A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{016EA3B3-4510-4876-98C2-98E31C2AF2A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{016EA3B3-4510-4876-98C2-98E31C2AF2A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{016EA3B3-4510-4876-98C2-98E31C2AF2A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +148,11 @@ Global
 		{033C6CA0-B7E3-4FBF-88FD-3DDDEFF6FA95} = {B340597D-944F-4604-A682-2D373638A42E}
 		{B787C54C-C42F-4D25-B0DA-EA51C135D4FF} = {B340597D-944F-4604-A682-2D373638A42E}
 		{2368A817-1C13-4C55-85EC-F8EDD07AEA93} = {B340597D-944F-4604-A682-2D373638A42E}
+		{EA873DC6-AAD3-4908-8345-BD781E9B0B25} = {B33AE0A3-632F-492B-BCB8-E932696B9C75}
+		{76098293-6435-4214-98BF-EF118829674C} = {EA873DC6-AAD3-4908-8345-BD781E9B0B25}
+		{20A5A2BC-970D-4570-BC76-99B59E125248} = {EA873DC6-AAD3-4908-8345-BD781E9B0B25}
+		{016EA3B3-4510-4876-98C2-98E31C2AF2A0} = {EA873DC6-AAD3-4908-8345-BD781E9B0B25}
+		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819} = {EA873DC6-AAD3-4908-8345-BD781E9B0B25}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7680315-BDAD-415C-B570-D58AEDF48454}
