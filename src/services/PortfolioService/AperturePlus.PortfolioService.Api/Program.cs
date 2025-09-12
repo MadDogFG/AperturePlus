@@ -1,9 +1,20 @@
 
+using AperturePlus.PortfolioService.Application.Interfaces;
+using AperturePlus.PortfolioService.Domain.Entities;
+using AperturePlus.PortfolioService.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.OpenApi.Models;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
+using RabbitMQ.Client;
+
 namespace AperturePlus.PortfolioService.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -11,14 +22,94 @@ namespace AperturePlus.PortfolioService.Api
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddAuthentication()
+                .AddJwtBearer(opt =>
+                {
+                    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        // 验证Issuer是否合法
+                        ValidateIssuer = true,
+                        // 验证Audience是否合法
+                        ValidateAudience = true,
+                        // 验证令牌的生命周期
+                        ValidateLifetime = true,
+                        // 验证签名密钥是否有效
+                        ValidateIssuerSigningKey = true,
+                        // 设置合法的Issuer
+                        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                        // 设置合法的Audience
+                        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                        // 签名密钥）
+                        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+                    };
+                });
+
+            //builder.Services.AddMediatR(cfg =>
+            //{
+            //    cfg.RegisterServicesFromAssembly(typeof(CreateUserProfileCommand).Assembly);
+            //});
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                var scheme = new OpenApiSecurityScheme()
+                {
+                    Description = "Authorization 请求头. \r\n示例: 'Bearer XXXXXX'",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Authorization"
+                    },
+                    Scheme = "oauth2",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                };
+                c.AddSecurityDefinition("Authorization", scheme);
+                var requirement = new OpenApiSecurityRequirement();
+                requirement[scheme] = new List<string>();
+                c.AddSecurityRequirement(requirement);
+            });
+
+            try
+            {
+                var factory = new ConnectionFactory()
+                {
+                    Uri = new Uri(builder.Configuration.GetConnectionString("RabbitMQConnection"))
+                };
+                Console.WriteLine(builder.Configuration.GetConnectionString("RabbitMQConnection"));
+                var connection = await factory.CreateConnectionAsync();
+                builder.Services.AddSingleton<IConnection>(connection);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("无法连接到RabbitMQ服务器: " + ex.Message);
+            }
+
+            builder.Services.AddSingleton<IMongoClient>(sp =>//注册MongoDB的客户端
+            {
+                return new MongoClient(builder.Configuration.GetConnectionString("MongoDbConnection"));
+            });
+            builder.Services.AddScoped(sp =>//注册IMongoCollection<Portfolio>
+            {
+                var client = sp.GetRequiredService<IMongoClient>();
+                var database = builder.Configuration["MongoDbSettings:DatabaseName"];
+                var collection = builder.Configuration["MongoDbSettings:CollectionName"];
+                BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));//在序列化Guid类型时使用String格式来读写，而不是默认的Binary格式
+                return client.GetDatabase(database).GetCollection<Portfolio>(collection);
+            });
+
+            builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();

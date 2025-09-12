@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="3.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AperturePlus.PortfolioService.Application\AperturePlus.PortfolioService.Application.csproj" />
     <ProjectReference Include="..\AperturePlus.PortfolioService.Domain\AperturePlus.PortfolioService.Domain.csproj" />
   </ItemGroup>
