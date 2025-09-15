@@ -1,4 +1,5 @@
 
+using AperturePlus.PortfolioService.Application.Commands;
 using AperturePlus.PortfolioService.Application.Interfaces;
 using AperturePlus.PortfolioService.Domain.Entities;
 using AperturePlus.PortfolioService.Infrastructure.Repositories;
@@ -47,10 +48,10 @@ namespace AperturePlus.PortfolioService.Api
                     };
                 });
 
-            //builder.Services.AddMediatR(cfg =>
-            //{
-            //    cfg.RegisterServicesFromAssembly(typeof(CreateUserProfileCommand).Assembly);
-            //});
+            builder.Services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(CreatePortfolioForUserCommand).Assembly);
+            });
 
             builder.Services.AddSwaggerGen(c =>
             {
