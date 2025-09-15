@@ -21,13 +21,13 @@ namespace AperturePlus.PortfolioService.Application.Handlers
 
         public async Task<bool> Handle(CreatePortfolioForUserCommand request, CancellationToken cancellationToken)
         {
-            var profolio = await portfolioRepository.GetByUserIdAsync(request.UserId, cancellationToken);
-            if (profolio != null)
+            var portfolio = await portfolioRepository.GetByUserIdAsync(request.UserId, cancellationToken);
+            if (portfolio != null)
             {
                 return false;
             }
-            profolio = Portfolio.CreatePortfolio(request.UserId);
-            await portfolioRepository.AddAsync(profolio, cancellationToken);
+            portfolio = Portfolio.CreatePortfolio(request.UserId);
+            await portfolioRepository.AddAsync(portfolio, cancellationToken);
             return true;
         }
     }

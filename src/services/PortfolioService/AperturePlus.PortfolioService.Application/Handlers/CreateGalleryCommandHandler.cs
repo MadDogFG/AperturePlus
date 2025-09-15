@@ -19,13 +19,13 @@ namespace AperturePlus.PortfolioService.Application.Handlers
         }
         public async Task<Guid> Handle(CreateGalleryCommand request, CancellationToken cancellationToken)
         {
-            var profolio = await portfolioRepository.GetByUserIdAsync(request.UserId, cancellationToken);
-            if(profolio == null)
+            var portfolio = await portfolioRepository.GetByUserIdAsync(request.UserId, cancellationToken);
+            if(portfolio == null)
             {
                 throw new Exception("该用户未创建作品集空间");
             }
-            var galleryId = profolio.CreateNewGallery(request.GalleryName);
-            await portfolioRepository.UpdateAsync(profolio, cancellationToken);
+            var galleryId = portfolio.CreateNewGallery(request.GalleryName);
+            await portfolioRepository.UpdateAsync(portfolio, cancellationToken);
             return galleryId;
         }
     }

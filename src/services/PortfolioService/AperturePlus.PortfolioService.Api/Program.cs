@@ -3,8 +3,10 @@ using AperturePlus.PortfolioService.Application.Commands;
 using AperturePlus.PortfolioService.Application.Interfaces;
 using AperturePlus.PortfolioService.Domain.Entities;
 using AperturePlus.PortfolioService.Infrastructure.Repositories;
+using AperturePlus.PortfolioService.Infrastructure.Services;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.OpenApi.Models;
+using Minio;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -93,6 +95,7 @@ namespace AperturePlus.PortfolioService.Api
             {
                 return new MongoClient(builder.Configuration.GetConnectionString("MongoDbConnection"));
             });
+
             builder.Services.AddScoped(sp =>//注册IMongoCollection<Portfolio>
             {
                 var client = sp.GetRequiredService<IMongoClient>();
@@ -102,8 +105,17 @@ namespace AperturePlus.PortfolioService.Api
                 return client.GetDatabase(database).GetCollection<Portfolio>(collection);
             });
 
+            // 注册 MinioClient (需要从 appsettings.json 读取 endpoint, accessKey, secretKey)
+            builder.Services.AddMinio(options =>
+            {
+                options.WithEndpoint(builder.Configuration["MinioSettings:Endpoint"]);
+                options.WithCredentials(builder.Configuration["MinioSettings:AccessKey"], builder.Configuration["MinioSettings:SecretKey"]);
+                options.Build();
+            });
+
             builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
             builder.Services.AddHostedService<BackgroundServices.UserEventsConsumer>();//注册后台服务
+            builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
             var app = builder.Build();
 
