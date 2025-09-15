@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\EventBus\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\AperturePlus.PortfolioService.Application\AperturePlus.PortfolioService.Application.csproj" />
     <ProjectReference Include="..\AperturePlus.PortfolioService.Infrastructure\AperturePlus.PortfolioService.Infrastructure.csproj" />
   </ItemGroup>

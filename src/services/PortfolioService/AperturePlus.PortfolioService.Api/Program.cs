@@ -102,6 +102,7 @@ namespace AperturePlus.PortfolioService.Api
             });
 
             builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+            builder.Services.AddHostedService<BackgroundServices.UserEventsConsumer>();//注册后台服务
 
             var app = builder.Build();
 
