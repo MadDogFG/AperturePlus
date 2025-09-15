@@ -28,6 +28,7 @@ namespace AperturePlus.PortfolioService.Application.Handlers
             }
             profolio = Portfolio.CreatePortfolio(request.UserId);
             await portfolioRepository.AddAsync(profolio, cancellationToken);
+            return true;
         }
     }
 }

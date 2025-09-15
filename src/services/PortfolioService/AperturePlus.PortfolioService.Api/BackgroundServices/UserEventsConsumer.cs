@@ -1,4 +1,5 @@
 ﻿
+using AperturePlus.PortfolioService.Application.Commands;
 using Contracts;
 using MediatR;
 using RabbitMQ.Client;
@@ -57,7 +58,7 @@ namespace AperturePlus.PortfolioService.Api.BackgroundServices
             if (routingKey == "user.register")
             {
                 var regEvent = JsonSerializer.Deserialize<UserRegisteredIntegrationEvent>(message);
-                await mediator.Send(new CreateUserProfileCommand(regEvent.UserId, regEvent.UserName));
+                await mediator.Send(new CreatePortfolioForUserCommand(regEvent.UserId));
             }
         }
 
