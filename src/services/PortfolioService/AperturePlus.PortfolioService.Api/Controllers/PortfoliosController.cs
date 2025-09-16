@@ -1,6 +1,7 @@
 ﻿using AperturePlus.PortfolioService.Api.DTOs;
 using AperturePlus.PortfolioService.Application.Commands;
 using AperturePlus.PortfolioService.Application.DTOs;
+using AperturePlus.PortfolioService.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +21,28 @@ namespace AperturePlus.PortfolioService.Api.Controllers
         }
 
         [Authorize]
+        [HttpPost("CreateGallery/{galleryName}")]
+        public async Task<IActionResult> CreateGallery(string galleryName)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            var command = new CreateGalleryCommand(userId, galleryName);
+            try
+            {
+                var result = await mediator.Send(command);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest("未能创建相册");
+            }
+        }
+
+        [Authorize]
         [HttpPost("UploadPhotos/{galleryId}")]
         public async Task<IActionResult> UploadPhotos(Guid galleryId, [FromForm] UploadPhotosRequest request)
         {
@@ -32,16 +55,50 @@ namespace AperturePlus.PortfolioService.Api.Controllers
             {
                 return Unauthorized(new { Message = "无效的用户ID" });
             }
-            //将IFormFile列表转换为FileToUpload列表
-            var filesToUpload = request.Files.Select(file => new FileToUpload
-            (
-                file.OpenReadStream(),
-                file.FileName,
-                file.ContentType
-            )).ToList();
-            var command = new AddPhotoToGalleryCommand(userId, galleryId, filesToUpload);
-            var photoIds = await mediator.Send(command);
-            return Ok(new { PhotoIds = photoIds });
+            try
+            {
+                //将IFormFile列表转换为FileToUpload列表
+                var filesToUpload = request.Files.Select(file => new FileToUpload
+                (
+                    file.OpenReadStream(),
+                    file.FileName,
+                    file.ContentType
+                )).ToList();
+                var command = new AddPhotoToGalleryCommand(userId, galleryId, filesToUpload);
+                var photoIds = await mediator.Send(command);
+                return Ok(new { PhotoIds = photoIds });
+            }
+            catch (Exception)
+            {
+
+                return BadRequest("上传照片失败");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetPortfolioByUserId")]
+        public async Task<IActionResult> GetPortfolioByUserId()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            try
+            {
+                var query = new GetPortfolioByUserIdQuery(userId);
+                var result = await mediator.Send(query);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest("查询失败");
+            }
         }
     }
 }
