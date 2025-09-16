@@ -8,6 +8,8 @@ AperturePlus 是一个基于 .NET 构建的现代化微服务后端解决方案�
 目前，系统包含以下核心微服务：
 - **IdentityService**: 负责用户身份认证、授权和管理。
 - **ActivityService**: 负责管理用户创建和参与的活动。
+- **UserProfileService**: 负责管理用户的个人资料、简介和头像。
+- **PortfolioService**: 负责管理用户的作品集、相册和照片。
 
 ## ✨ 系统架构
 
@@ -40,6 +42,20 @@ graph TD
                 Domain2["Domain Layer"]
                 Infra2["Infrastructure Layer"]
             end
+
+            subgraph "UserProfileService"
+                Api3["Api Layer"]
+                App3["Application Layer"]
+                Domain3["Domain Layer"]
+                Infra3["Infrastructure Layer"]
+            end
+
+            subgraph "PortfolioService"
+                Api4["Api Layer"]
+                App4["Application Layer"]
+                Domain4["Domain Layer"]
+                Infra4["Infrastructure Layer"]
+            end
         end
 
         subgraph "共享基础设施 (Shared Infrastructure)"
@@ -61,18 +77,35 @@ graph TD
         App2 -- "依赖 (Depends on)" --> Domain2
         Infra2 -- "实现 (Implements)" --> App2
         Infra2 -- "引用 (References)" --> Domain2
+
+        Api3 -- "依赖 (Depends on)" --> App3
+        App3 -- "依赖 (Depends on)" --> Domain3
+        Infra3 -- "实现 (Implements)" --> App3
+        Infra3 -- "引用 (References)" --> Domain3
+
+        Api4 -- "依赖 (Depends on)" --> App4
+        App4 -- "依赖 (Depends on)" --> Domain4
+        Infra4 -- "实现 (Implements)" --> App4
+        Infra4 -- "引用 (References)" --> Domain4
         
         Infra1 --> SQLServer
         Infra2 --> SQLServer
+        Infra3 --> SQLServer
+        Infra4 --> SQLServer
         
         Api1 --> RabbitMQ
         Api2 --> RabbitMQ
+        Infra4 --> MinIO
     end
 
     WebApp --> Api1
     WebApp --> Api2
+    WebApp --> Api3
+    WebApp --> Api4
     MobileApp --> Api1
     MobileApp --> Api2
+    MobileApp --> Api3
+    MobileApp --> Api4
 ```
 
 ## 🛠️ 技术栈
@@ -88,14 +121,12 @@ graph TD
 
 ## 🚀 如何开始
 
-推荐使用 Docker 来启动和管理项目所需的所有服务。
-
 ### 1. 先决条件
 
 -   [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 -   [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-### 2. 配置 (使用 Docker)
+### 2. 配置
 
 1.  **克隆仓库**
     ```bash
@@ -119,10 +150,12 @@ graph TD
     ```
 
 3.  **更新连接字符串**
-    `docker-compose.yml` 会启动一个名为 `aperture-sqlserver` 的 SQL Server 容器。请确保两个服务的 `appsettings.Development.json` 文件中的连接字符串指向这个容器。
+    `docker-compose.yml` 会启动一个名为 `aperture-sqlserver` 的 SQL Server 容器。请确保所有服务的 `appsettings.Development.json` 文件中的连接字符串都指向这个容器。
 
     -   `src/services/IdentityService/AperturePlus.IdentityService.Api/appsettings.Development.json`
     -   `src/services/ActivityService/Api/appsettings.Development.json`
+    -   `src/services/UserProfileService/AperturePlus.UserProfileService.Api/appsettings.Development.json`
+    -   `src/services/PortfolioService/AperturePlus.PortfolioService.Api/appsettings.Development.json`
 
     将 `ConnectionStrings.DefaultConnection` 修改为：
     ```json
@@ -132,42 +165,89 @@ graph TD
 
 ### 3. 运行项目
 
-1.  **使用 Docker Compose 启动所有服务**
-    在项目根目录下运行以下命令，它将构建并启动所有微服务和基础设施容器。
+1.  **使用 Docker Compose 启动基础设施**
+    在项目根目录下运行以下命令，它将启动所有数据库和消息队列等基础设施容器。
     ```bash
     docker-compose up --build -d
     ```
     `-d` 参数表示在后台运行。
 
-2.  **应用数据库迁移**
-    当容器启动后，我们需要应用数据库迁移来创建表结构。
+2.  **启动 .NET 微服务**
+    在 Visual Studio 中打开 `AperturePlus.sln` 并设置为启动多个项目，或者在终端中为每个服务单独执行 `dotnet run`。
+    ```bash
+    # 启动 IdentityService
+    dotnet run --project src/services/IdentityService/AperturePlus.IdentityService.Api
+
+    # 启动 ActivityService
+    dotnet run --project src/services/ActivityService/Api
+
+    # 启动 UserProfileService
+    dotnet run --project src/services/UserProfileService/AperturePlus.UserProfileService.Api
+
+    # 启动 PortfolioService
+    dotnet run --project src/services/PortfolioService/AperturePlus.PortfolioService.Api
+    ```
+
+3.  **应用数据库迁移**
+    当服务首次运行时，需要应用数据库迁移来创建表结构。
     ```bash
     # 为 IdentityService 应用迁移
     dotnet ef database update --project src/services/IdentityService/AperturePlus.IdentityService.Infrastructure --startup-project src/services/IdentityService/AperturePlus.IdentityService.Api
     
     # 为 ActivityService 应用迁移
     dotnet ef database update --project src/services/ActivityService/Infrastructure --startup-project src/services/ActivityService/Api
+
+    # 为 UserProfileService 应用迁移
+    dotnet ef database update --project src/services/UserProfileService/AperturePlus.UserProfileService.Infrastructure --startup-project src/services/UserProfileService/AperturePlus.UserProfileService.Api
+
+    # 为 PortfolioService 应用迁移
+    dotnet ef database update --project src/services/PortfolioService/AperturePlus.PortfolioService.Infrastructure --startup-project src/services/PortfolioService/AperturePlus.PortfolioService.Api
     ```
 
-现在，所有服务都已运行。
-- **IdentityService** 运行在 `http://localhost:5001`
-- **ActivityService** 运行在 `http://localhost:5002`
-- **RabbitMQ Management** UI 在 `http://localhost:15672`
-- **MinIO Console** 在 `http://localhost:9001`
+### 4. 服务运行地址
+
+- **IdentityService**: `http://localhost:5001`
+- **ActivityService**: `http://localhost:5002`
+- **UserProfileService**: `http://localhost:5034`
+- **PortfolioService**: `http://localhost:5106`
+- **RabbitMQ Management** UI: `http://localhost:15672`
+- **MinIO Console**: `http://localhost:9001`
 
 ## 📖 API 端点
 
 ### IdentityService
 
--   **注册新用户**: `POST /api/accounts/register`
--   **用户登录**: `POST /api/accounts/login`
+-   `POST /api/accounts/register`: 注册新用户
+-   `POST /api/accounts/login`: 用户登录
+-   `PUT /api/accounts/UpdateRoles`: 更新用户角色 (需要认证)
+-   `GET /api/admin/test`: 测试管理员权限 (需要Admin角色认证)
 
 ### ActivityService
 
--   **创建活动**: `POST /api/activity/CreateActivity` (需要认证)
--   **获取所有活动**: `GET /api/activity/GetAllActivity`
--   **根据ID获取活动**: `GET /api/activity/GetActivityById/{id}`
--   **更新活动**: `PUT /api/activity/UpdateActivity/{id}` (需要认证)
+-   `POST /api/activity/CreateActivity`: 创建活动 (需要认证)
+-   `GET /api/activity/GetAllActivity`: 获取所有活动（分页）
+-   `GET /api/activity/GetActivityById/{id}`: 根据ID获取活动
+-   `GET /api/activity/GetActivitiesByUserId/{id}`: 根据用户ID获取活动
+-   `PATCH /api/activity/UpdateActivity/{id}`: 更新活动 (需要认证)
+-   `POST /api/activity/CancelActivity/{activityId}`: 取消活动 (需要认证)
+-   `POST /api/activity/CompletedActivity/{activityId}`: 完成活动 (需要认证)
+-   `POST /api/activity/RequestJoinActivity/{activityId}`: 申请加入活动 (需要认证)
+-   `POST /api/activity/ApproveParticipant/{activityId}/{applicantId}`: 批准参与者 (需要认证)
+-   `POST /api/activity/RejectParticipant/{activityId}/{applicantId}`: 拒绝参与者 (需要认证)
+
+### UserProfileService
+
+-   `GET /api/userprofile/GetUserProfileById/{id}`: 根据 ID 获取用户资料
+-   `GET /api/userprofile/GetMyProfile`: 获取当前登录用户的资料 (需要认证)
+-   `PATCH /api/userprofile/UpdateMyProfile`: 更新当前用户的资料 (需要认证)
+
+### PortfolioService
+
+-   `POST /api/portfolios/CreateGallery/{galleryName}`: 创建相册 (需要认证)
+-   `POST /api/portfolios/UploadPhotos/{galleryId}`: 上传照片到相册 (需要认证)
+-   `GET /api/portfolios/GetPortfolioByUserId`: 获取用户的作品集 (需要认证)
+-   `DELETE /api/portfolios/DeleteGallery/{galleryId}`: 删除相册 (需要认证)
+-   `DELETE /api/portfolios/DeletePhoto/{galleryId}`: 删除照片 (需要认证)
 
 ## 📄 许可证
 
