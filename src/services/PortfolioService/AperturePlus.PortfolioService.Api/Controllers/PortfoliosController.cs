@@ -100,5 +100,41 @@ namespace AperturePlus.PortfolioService.Api.Controllers
                 return BadRequest("查询失败");
             }
         }
+
+        [Authorize]
+        [HttpDelete("DeleteGallery/{galleryId}")]
+        public async Task<IActionResult> DeleteGallery(Guid galleryId)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            var command = new DeleteGalleryCommand(userId, galleryId);
+            var result = await mediator.Send(command);
+            if (result == false)
+            {
+                return BadRequest("删除失败");
+            }
+            return NoContent();//204 No Content是DELETE成功的标准响应
+        }
+
+        [Authorize]
+        [HttpDelete("DeletePhoto/{galleryId}")]
+        public async Task<IActionResult> DeletePhoto(Guid galleryId, List<Guid> photoIds)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            var command = new DeletePhotoCommand(userId, galleryId, photoIds);
+            var result = await mediator.Send(command);
+            if (result == false)
+            {
+                return BadRequest("删除失败");
+            }
+            return NoContent();
+        }
     }
 }

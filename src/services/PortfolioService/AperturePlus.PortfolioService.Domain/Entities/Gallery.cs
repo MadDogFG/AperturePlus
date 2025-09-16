@@ -49,11 +49,10 @@ namespace AperturePlus.PortfolioService.Domain.Entities
         public void RemovePhoto(Guid photoId)
         {
             var photo = _photos.FirstOrDefault(p=>p.PhotoId == photoId);
-            if (photo == null) 
+            if (photo != null) 
             {
-                throw new ArgumentException("图片不存在");
+                _photos.Remove(photo);
             }
-            _photos.Remove(photo);
         }
 
         public void SetCoverPhoto(Guid photoId)
