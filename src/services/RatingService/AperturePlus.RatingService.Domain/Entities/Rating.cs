@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AperturePlus.RatingService.Domain.ValueObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,12 +13,12 @@ namespace AperturePlus.RatingService.Domain.Entities
         public Guid ActivityId { get; private set; }
         public Guid RateByUserId { get; private set; }
         public Guid RateToUserId { get; private set; }
-        public string RatedUserRole { get; private set; }
+        public RoleType RatedUserRole { get; private set; }
         public int Score { get; private set; }
         public string? Comments { get; private set; }
         public DateTime CreatedAt { get; private set; } 
 
-        private Rating(Guid ratingId, Guid activityId, Guid rateByUserId, Guid rateToUserId, string ratedUserRole, int score, string? comments)
+        private Rating(Guid ratingId, Guid activityId, Guid rateByUserId, Guid rateToUserId, RoleType ratedUserRole, int score, string? comments)
         {
             RatingId = ratingId;
             ActivityId = activityId;
@@ -29,7 +30,7 @@ namespace AperturePlus.RatingService.Domain.Entities
             CreatedAt = DateTime.UtcNow;
         }
 
-        public Rating CreateRating(Guid activityId, Guid rateByUserId, Guid rateToUserId, string ratedUserRole, int score, string? comments)
+        public Rating CreateRating(Guid activityId, Guid rateByUserId, Guid rateToUserId, RoleType ratedUserRole, int score, string? comments)
         {
             if (score < 1 || score > 5)
             {
