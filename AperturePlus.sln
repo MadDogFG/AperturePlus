@@ -51,6 +51,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.PortfolioServi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.PortfolioService.Infrastructure", "src\services\PortfolioService\AperturePlus.PortfolioService.Infrastructure\AperturePlus.PortfolioService.Infrastructure.csproj", "{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RatingService", "RatingService", "{90C39323-5E62-486C-9343-DFB68B7631DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.RatingService.Api", "src\services\RatingService\AperturePlus.RatingService.Api\AperturePlus.RatingService.Api.csproj", "{06D8A2A2-180D-4574-B07C-A91187CBC7E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.RatingService.Application", "src\services\RatingService\AperturePlus.RatingService.Application\AperturePlus.RatingService.Application.csproj", "{9D345E5E-3EC7-45A3-BFA4-FC1843C53FAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.RatingService.Domain", "src\services\RatingService\AperturePlus.RatingService.Domain\AperturePlus.RatingService.Domain.csproj", "{694ACF1C-36CB-4BF5-A8EB-BD5CF1F20BA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.RatingService.Infrastructure", "AperturePlus.RatingService.Infrastructure\AperturePlus.RatingService.Infrastructure.csproj", "{ABFCB18C-C2D6-4FEB-891E-4A997B8547D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +135,22 @@ Global
 		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06D8A2A2-180D-4574-B07C-A91187CBC7E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06D8A2A2-180D-4574-B07C-A91187CBC7E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06D8A2A2-180D-4574-B07C-A91187CBC7E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06D8A2A2-180D-4574-B07C-A91187CBC7E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D345E5E-3EC7-45A3-BFA4-FC1843C53FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D345E5E-3EC7-45A3-BFA4-FC1843C53FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D345E5E-3EC7-45A3-BFA4-FC1843C53FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D345E5E-3EC7-45A3-BFA4-FC1843C53FAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{694ACF1C-36CB-4BF5-A8EB-BD5CF1F20BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{694ACF1C-36CB-4BF5-A8EB-BD5CF1F20BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{694ACF1C-36CB-4BF5-A8EB-BD5CF1F20BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{694ACF1C-36CB-4BF5-A8EB-BD5CF1F20BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABFCB18C-C2D6-4FEB-891E-4A997B8547D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABFCB18C-C2D6-4FEB-891E-4A997B8547D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABFCB18C-C2D6-4FEB-891E-4A997B8547D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABFCB18C-C2D6-4FEB-891E-4A997B8547D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +179,11 @@ Global
 		{20A5A2BC-970D-4570-BC76-99B59E125248} = {EA873DC6-AAD3-4908-8345-BD781E9B0B25}
 		{016EA3B3-4510-4876-98C2-98E31C2AF2A0} = {EA873DC6-AAD3-4908-8345-BD781E9B0B25}
 		{CD63AFBE-7CA7-4188-AC5F-E2B0F562E819} = {EA873DC6-AAD3-4908-8345-BD781E9B0B25}
+		{90C39323-5E62-486C-9343-DFB68B7631DF} = {B33AE0A3-632F-492B-BCB8-E932696B9C75}
+		{06D8A2A2-180D-4574-B07C-A91187CBC7E5} = {90C39323-5E62-486C-9343-DFB68B7631DF}
+		{9D345E5E-3EC7-45A3-BFA4-FC1843C53FAD} = {90C39323-5E62-486C-9343-DFB68B7631DF}
+		{694ACF1C-36CB-4BF5-A8EB-BD5CF1F20BA5} = {90C39323-5E62-486C-9343-DFB68B7631DF}
+		{ABFCB18C-C2D6-4FEB-891E-4A997B8547D7} = {90C39323-5E62-486C-9343-DFB68B7631DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7680315-BDAD-415C-B570-D58AEDF48454}
