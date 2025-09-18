@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\..\AperturePlus.RatingService.Infrastructure\AperturePlus.RatingService.Infrastructure.csproj" />
     <ProjectReference Include="..\..\EventBus\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\AperturePlus.RatingService.Application\AperturePlus.RatingService.Application.csproj" />

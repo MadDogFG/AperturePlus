@@ -30,7 +30,7 @@ namespace AperturePlus.RatingService.Domain.Entities
             CreatedAt = DateTime.UtcNow;
         }
 
-        public Rating CreateRating(Guid activityId, Guid rateByUserId, Guid rateToUserId, RoleType ratedUserRole, int score, string? comments)
+        public static Rating CreateRating(Guid activityId, Guid rateByUserId, Guid rateToUserId, RoleType ratedUserRole, int score, string? comments)
         {
             if (score < 1 || score > 5)
             {
