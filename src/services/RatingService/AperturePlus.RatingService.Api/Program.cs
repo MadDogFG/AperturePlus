@@ -1,4 +1,5 @@
 
+using AperturePlus.RatingService.Api.BackgroundServices;
 using AperturePlus.RatingService.Application.Handlers;
 using AperturePlus.RatingService.Application.Interfaces;
 using AperturePlus.RatingService.Infrastructure.Persistence;
@@ -89,8 +90,9 @@ namespace AperturePlus.RatingService.Api
                 Console.WriteLine("无法连接到RabbitMQ服务器: " + ex.Message);
             }
 
-            //builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
+            builder.Services.AddHostedService<ActivityEventsConsumer>();//注册后台消费者服务
             builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+            builder.Services.AddScoped<IPendingRatingRepository, PendingRatingRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
@@ -111,6 +113,5 @@ namespace AperturePlus.RatingService.Api
 
             app.Run();
         }
-    }
     }
 }

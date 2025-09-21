@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\services\RatingService\AperturePlus.RatingService.Application\AperturePlus.RatingService.Application.csproj" />
-    <ProjectReference Include="..\src\services\RatingService\AperturePlus.RatingService.Domain\AperturePlus.RatingService.Domain.csproj" />
+    <ProjectReference Include="..\AperturePlus.RatingService.Application\AperturePlus.RatingService.Application.csproj" />
+    <ProjectReference Include="..\AperturePlus.RatingService.Domain\AperturePlus.RatingService.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

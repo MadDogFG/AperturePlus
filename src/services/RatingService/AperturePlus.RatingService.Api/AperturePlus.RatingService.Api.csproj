@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>74d2fe17-75d9-4118-a475-07566badaf77</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\AperturePlus.RatingService.Infrastructure\AperturePlus.RatingService.Infrastructure.csproj" />
     <ProjectReference Include="..\..\EventBus\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\AperturePlus.RatingService.Application\AperturePlus.RatingService.Application.csproj" />
+    <ProjectReference Include="..\AperturePlus.RatingService.Infrastructure\AperturePlus.RatingService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

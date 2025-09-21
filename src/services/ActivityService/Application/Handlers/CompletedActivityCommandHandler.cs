@@ -1,12 +1,15 @@
 ﻿using AperturePlus.ActivityService.Application.Commands;
 using AperturePlus.ActivityService.Application.Interfaces;
+using AperturePlus.ActivityService.Application.Interfaces;
 using AperturePlus.ActivityService.Domain.Entities;
+using Contracts;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Contracts.ActivityCompletedIntegrationEvent;
 
 namespace AperturePlus.ActivityService.Application.Handlers
 {
@@ -14,10 +17,12 @@ namespace AperturePlus.ActivityService.Application.Handlers
     {
         private readonly IActivityRepository activityRepository;
         private readonly IUnitOfWork unitOfWork;
-        public CompletedActivityCommandHandler(IActivityRepository activityRepository, IUnitOfWork unitOfWork)
+        private readonly IMessageBus messageBus;
+        public CompletedActivityCommandHandler(IActivityRepository activityRepository, IUnitOfWork unitOfWork,IMessageBus messageBus)
         {
             this.activityRepository = activityRepository;
             this.unitOfWork = unitOfWork;
+            this.messageBus = messageBus;
         }
         public async Task<bool> Handle(CompletedActivityCommand request, CancellationToken cancellationToken)
         {
@@ -39,6 +44,13 @@ namespace AperturePlus.ActivityService.Application.Handlers
                 return false;
             }
             int result = await unitOfWork.SaveChangesAsync(cancellationToken);
+            var activityParticipants = new List<ParticipantDto>();
+            foreach (var item in activity.Participants)
+            {
+                activityParticipants.Add(new ParticipantDto(item.UserId,item.Role.ToString()));
+            }
+            var activityCompletedIntegrationEvent = new ActivityCompletedIntegrationEvent(activity.ActivityId,activityParticipants);
+            await messageBus.Publish("activity_events", "activity.completed", activityCompletedIntegrationEvent);
             return result > 0;
         }
     }

@@ -21,6 +21,10 @@ namespace AperturePlus.RatingService.Infrastructure.Repositories
 
         public async Task AddAsync(Rating rating, CancellationToken cancellationToken)
         {
+            if (rating == null)
+            {
+                return;
+            }
             await dbContext.AddAsync(rating, cancellationToken);
         }
 
