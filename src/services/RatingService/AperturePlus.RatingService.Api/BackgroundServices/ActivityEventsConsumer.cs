@@ -56,7 +56,7 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
         {
             //BackgroundService是单例的，而DbContext是Scoped的，所以我们必须创建一个新的作用域来安全地解析DbContext。
             using var scope = scopeFactory.CreateScope();
-            //var dbContext = scope.ServiceProvider.GetRequiredService<RatingServiceDbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<RatingServiceDbContext>();
             var pendingRatingRepository = scope.ServiceProvider.GetRequiredService<IPendingRatingRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
