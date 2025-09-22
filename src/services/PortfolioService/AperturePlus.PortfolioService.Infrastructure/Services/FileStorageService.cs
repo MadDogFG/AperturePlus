@@ -11,9 +11,9 @@ namespace AperturePlus.PortfolioService.Infrastructure.Services
 {
     public class FileStorageService : IFileStorageService
     {
-        private readonly MinioClient minioClient;
+        private readonly IMinioClient minioClient;
 
-        public FileStorageService(MinioClient minioClient)
+        public FileStorageService(IMinioClient minioClient)
         {
             this.minioClient = minioClient;
         }

@@ -17,6 +17,10 @@
       {
         "Path": "src\\services\\PortfolioService\\AperturePlus.PortfolioService.Api\\AperturePlus.PortfolioService.Api.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "src\\services\\RatingService\\AperturePlus.RatingService.Api\\AperturePlus.RatingService.Api.csproj",
+        "Action": "Start"
       }
     ]
   }

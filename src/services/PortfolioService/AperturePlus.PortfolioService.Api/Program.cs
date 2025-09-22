@@ -104,15 +104,13 @@ namespace AperturePlus.PortfolioService.Api
                 BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));//在序列化Guid类型时使用String格式来读写，而不是默认的Binary格式
                 return client.GetDatabase(database).GetCollection<Portfolio>(collection);
             });
-
+            Console.WriteLine($"{builder.Configuration["MinioSettings:Endpoint"]},{builder.Configuration["MinioSettings:AccessKey"]},{builder.Configuration["MinioSettings:SecretKey"]}");
             // 注册 MinioClient (需要从 appsettings.json 读取 endpoint, accessKey, secretKey)
-            builder.Services.AddMinio(options =>
-            {
-                options.WithEndpoint(builder.Configuration["MinioSettings:Endpoint"]);
-                options.WithCredentials(builder.Configuration["MinioSettings:AccessKey"], builder.Configuration["MinioSettings:SecretKey"]);
-                options.Build();
-            });
-
+            builder.Services.AddMinio(options => options
+                .WithEndpoint(builder.Configuration["MinioSettings:Endpoint"])
+                .WithCredentials(builder.Configuration["MinioSettings:AccessKey"], builder.Configuration["MinioSettings:SecretKey"])
+                .Build());
+            
             builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
             builder.Services.AddHostedService<BackgroundServices.UserEventsConsumer>();//注册后台服务
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();

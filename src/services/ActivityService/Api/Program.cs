@@ -1,6 +1,8 @@
+using AperturePlus.ActivityService.Infrastructure.MessageBus;
 using AperturePlus.ActivityService.Api.BackgroundServices;
 using AperturePlus.ActivityService.Application.Handlers;
 using AperturePlus.ActivityService.Application.Interfaces;
+using AperturePlus.ActivityService.Infrastructure.MessageBus;
 using AperturePlus.ActivityService.Infrastructure.Persistence;
 using AperturePlus.ActivityService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +93,7 @@ namespace Api
             }
 
             builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
+            builder.Services.AddSingleton<IMessageBus, RabbitMQMessageBus>();
 
 
             var app = builder.Build();

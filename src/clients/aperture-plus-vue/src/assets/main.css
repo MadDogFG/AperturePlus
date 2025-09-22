@@ -1,0 +1,14 @@
+/* src/assets/main.css */
+
+/* 我们唯一的全局规则：
+  清除所有根容器的默认边距，让它们占满屏幕。
+*/
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif; /* 可以设置一个你喜欢的全局字体 */
+}
