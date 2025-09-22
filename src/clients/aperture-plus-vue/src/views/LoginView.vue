@@ -13,15 +13,39 @@
 </template>
 
 <script setup lang="ts">
+// src/views/LoginView.vue
+
 import { ref } from 'vue'
+import axios from 'axios' // 1. 导入我们刚刚安装的 axios
 
 const username = ref('')
 const password = ref('')
 
-const handleLogin = () => {
-  // 登录逻辑暂时不变
-  console.log('用户名:', username.value)
-  console.log('密码:', password.value)
+// 2. 将 handleLogin 函数改造为异步函数 (async)
+const handleLogin = async () => {
+  console.log('正在尝试登录...')
+
+  // 3. 使用 try...catch 来处理可能发生的网络错误
+  try {
+    // 4. 使用 axios 发送一个 POST 请求
+    const response = await axios.post(
+      // 我们的 IdentityService API 地址
+      'https://localhost:7289/api/Accounts/login',
+      {
+        // 请求体 (payload)，字段名要和后端的 LoginRequest DTO 一致
+        loginIdentifier: username.value,
+        password: password.value,
+      },
+    )
+
+    // 5. 如果请求成功，后端会返回数据，我们把它打印出来
+    console.log('登录成功!', response.data)
+    alert('登录成功！收到的 Token: ' + response.data.token)
+  } catch (error) {
+    // 6. 如果请求失败 (比如密码错误)，后端会返回错误信息
+    console.error('登录失败:', error)
+    alert('登录失败，请检查用户名和密码。')
+  }
 }
 </script>
 

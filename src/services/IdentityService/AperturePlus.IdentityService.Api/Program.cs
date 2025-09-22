@@ -128,6 +128,16 @@ namespace AperturePlus.IdentityService.Api
                 cfg.RegisterServicesFromAssembly(typeof(UpdateUserRolesCommand).Assembly);
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowVueApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173") //允许Vue的源
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -157,7 +167,7 @@ namespace AperturePlus.IdentityService.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-
+            app.UseCors("AllowVueApp"); // 启用CORS策略
             app.MapControllers();
 
             app.Run();
