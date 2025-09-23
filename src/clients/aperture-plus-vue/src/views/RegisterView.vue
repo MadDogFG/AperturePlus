@@ -1,10 +1,13 @@
 <template>
-  <div class="login-page">
-    <div class="login-container">
-      <h1>光圈+ 登录</h1>
-      <input v-model="username" type="text" placeholder="用户名或邮箱" />
+  <div class="register-page">
+    <div class="register-container">
+      <h1>光圈+ 注册</h1>
+
+      <input v-model="username" type="text" placeholder="用户名" />
+      <input v-model="email" type="text" placeholder="邮箱" />
       <input v-model="password" type="password" placeholder="密码" />
-      <button @click="handleLogin">登录</button>
+
+      <button @click="handleRegister">注册</button>
       <p>还没有账号？ <RouterLink to="/register">立即注册</RouterLink></p>
       <p>已有账号？ <RouterLink to="/login">立即登录</RouterLink></p>
     </div>
@@ -16,37 +19,35 @@
 
 import { ref } from 'vue'
 import axios from 'axios'
-import { useAuthStore } from '@/stores/auth' // 1. 导入我们的 auth store
+import { useRouter } from 'vue-router' // 1. 从 vue-router 导入 useRouter
 
 const username = ref('')
+const email = ref('')
 const password = ref('')
-const authStore = useAuthStore() // 2. 获取 store 的实例
 
-const handleLogin = async () => {
+const router = useRouter() // 2. 获取 router 实例
+
+const handleRegister = async () => {
   try {
-    const response = await axios.post('https://localhost:7289/api/accounts/login', {
-      loginIdentifier: username.value,
+    const response = await axios.post('https://localhost:7289/api/accounts/register', {
+      username: username.value,
       password: password.value,
+      email: email.value,
     })
 
-    // 3. 登录成功后，调用 store 的 action 来保存 token
-    authStore.setToken(response.data.token)
-
-    console.log('登录成功! Token 已保存。')
-    alert('登录成功!')
-
-    // 未来：登录成功后跳转到首页
-    // router.push('/')
+    console.log('注册成功:', response)
+    alert('注册成功! 现在将跳转到登录页面。')
+    router.push({ name: 'login' })
   } catch (error) {
-    console.error('登录失败:', error)
-    alert('登录失败，请检查用户名和密码。')
+    console.error('注册失败:', error)
+    alert('注册失败:' + error)
   }
 }
 </script>
 
 <style scoped>
 /* 整个页面的容器，让登录框可以在垂直和水平方向上都居中 */
-.login-page {
+.register-page {
   width: 100%;
   display: flex;
   justify-content: center; /* 水平居中 */
@@ -56,7 +57,7 @@ const handleLogin = async () => {
 }
 
 /* 登录表单的容器 */
-.login-container {
+.register-container {
   display: flex;
   flex-direction: column; /* 让内部元素垂直排列 */
   align-items: center; /* 内部元素水平居中 */
