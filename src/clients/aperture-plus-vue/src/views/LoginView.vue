@@ -17,10 +17,12 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth' // 1. 导入我们的 auth store
+import { useRouter } from 'vue-router'
 
 const username = ref('')
 const password = ref('')
 const authStore = useAuthStore() // 2. 获取 store 的实例
+const router = useRouter()
 
 const handleLogin = async () => {
   try {
@@ -34,9 +36,7 @@ const handleLogin = async () => {
 
     console.log('登录成功! Token 已保存。')
     alert('登录成功!')
-
-    // 未来：登录成功后跳转到首页
-    // router.push('/')
+    router.push({ name: 'home' })
   } catch (error) {
     console.error('登录失败:', error)
     alert('登录失败，请检查用户名和密码。')
@@ -51,7 +51,8 @@ const handleLogin = async () => {
   display: flex;
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
-  min-height: 100vh; /* 高度至少占满整个视口 */
+  width: 100%;
+  height: 100%; /* 高度占满父容器（main-content）的 100% */
   background-color: #f0f2f5; /* 一个柔和的背景色 */
 }
 
