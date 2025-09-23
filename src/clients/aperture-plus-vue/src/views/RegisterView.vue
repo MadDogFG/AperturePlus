@@ -29,7 +29,9 @@ const router = useRouter() // 2. 获取 router 实例
 
 const handleRegister = async () => {
   try {
-    const response = await axios.post('https://localhost:7289/api/accounts/register', {
+    const baseUrl = import.meta.env.VITE_API_IDENTITY_BASE_URL
+    const url = `${baseUrl}/accounts/register`
+    const response = await axios.post(url, {
       username: username.value,
       password: password.value,
       email: email.value,

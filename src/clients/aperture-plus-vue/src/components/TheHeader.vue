@@ -8,6 +8,7 @@
       </template>
       <template v-else>
         <RouterLink to="/home">首页</RouterLink>
+        <RouterLink to="/profile">个人主页</RouterLink>
         <button @click="handleLogout" class="logout-btn">退出登录</button>
       </template>
     </nav>

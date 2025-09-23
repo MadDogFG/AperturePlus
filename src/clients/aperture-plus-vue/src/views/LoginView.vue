@@ -26,7 +26,9 @@ const router = useRouter()
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post('https://localhost:7289/api/accounts/login', {
+    const baseUrl = import.meta.env.VITE_API_IDENTITY_BASE_URL
+    const url = `${baseUrl}/accounts/login`
+    const response = await axios.post(url, {
       loginIdentifier: username.value,
       password: password.value,
     })

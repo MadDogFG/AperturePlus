@@ -1,4 +1,5 @@
 
+using AperturePlus.UserProfileService.Api.BackgroundServices;
 using AperturePlus.UserProfileService.Application.Commands;
 using AperturePlus.UserProfileService.Application.Interfaces;
 using AperturePlus.UserProfileService.Infrastructure.Persistence;
@@ -89,9 +90,20 @@ namespace AperturePlus.UserProfileService.Api
                 Console.WriteLine("无法连接到RabbitMQ服务器: " + ex.Message);
             }
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowVueApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173") //允许Vue的源
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+            
+
             builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            //builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
+            builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
 
             var app = builder.Build();
 
@@ -106,7 +118,7 @@ namespace AperturePlus.UserProfileService.Api
 
             app.UseAuthorization();
 
-
+            app.UseCors("AllowVueApp"); // 启用CORS策略
             app.MapControllers();
 
             app.Run();

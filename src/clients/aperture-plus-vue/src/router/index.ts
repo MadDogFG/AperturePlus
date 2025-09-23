@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import HomeView from '../views/HomeView.vue'
+import ProfileView from '../views/ProfileView.vue'
+import ProfilePortfolio from '@/components/profile/ProfilePortfolio.vue'
+import ProfileRatings from '@/components/profile/ProfileRatings.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +28,30 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView,
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView,
+      meta: { requiresAuth: true }, // 同样需要登录保护
+      // ↓↓↓ 这就是嵌套路由 ↓↓↓
+      children: [
+        {
+          // 默认子路由: 当访问 /profile 时，重定向到作品集
+          path: '',
+          redirect: { name: 'profile-portfolio' },
+        },
+        {
+          path: 'portfolio', // 匹配 /profile/portfolio
+          name: 'profile-portfolio',
+          component: ProfilePortfolio,
+        },
+        {
+          path: 'ratings', // 匹配 /profile/ratings
+          name: 'profile-ratings',
+          component: ProfileRatings,
+        },
+      ],
     },
   ],
 })

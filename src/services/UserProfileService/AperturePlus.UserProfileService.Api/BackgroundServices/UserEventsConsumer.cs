@@ -62,7 +62,15 @@ namespace AperturePlus.UserProfileService.Api.BackgroundServices
             if (routingKey == "user.register")
             {
                 var regEvent = JsonSerializer.Deserialize<UserRegisteredIntegrationEvent>(message);
-                await mediator.Send(new CreateUserProfileCommand(regEvent.UserId, regEvent.UserName));
+                var result = await mediator.Send(new CreateUserProfileCommand(regEvent.UserId, regEvent.UserName));
+                if (result == true)
+                {
+                    Console.WriteLine($"用户 {regEvent.UserName} 的用户资料已创建。");
+                }
+                else
+                {
+                    Console.WriteLine($"用户 {regEvent.UserName} 的用户资料创建失败。");
+                }
             }
         }
 

@@ -110,6 +110,16 @@ namespace AperturePlus.PortfolioService.Api
                 .WithEndpoint(builder.Configuration["MinioSettings:Endpoint"])
                 .WithCredentials(builder.Configuration["MinioSettings:AccessKey"], builder.Configuration["MinioSettings:SecretKey"])
                 .Build());
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowVueApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173") //允许Vue的源
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
             
             builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
             builder.Services.AddHostedService<BackgroundServices.UserEventsConsumer>();//注册后台服务
@@ -128,7 +138,7 @@ namespace AperturePlus.PortfolioService.Api
 
             app.UseAuthorization();
 
-
+            app.UseCors("AllowVueApp"); // 启用CORS策略
             app.MapControllers();
 
             app.Run();
