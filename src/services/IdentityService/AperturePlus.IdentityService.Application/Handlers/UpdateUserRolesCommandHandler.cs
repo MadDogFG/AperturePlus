@@ -1,5 +1,7 @@
 ﻿using AperturePlus.IdentityService.Application.Commands;
+using AperturePlus.IdentityService.Application.Interfaces;
 using AperturePlus.IdentityService.Domain.Entities;
+using Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -13,10 +15,12 @@ namespace AperturePlus.IdentityService.Application.Handlers
     public class UpdateUserRolesCommandHandler : IRequestHandler<UpdateUserRolesCommand, IdentityResult>
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IMessageBus messageBus;
 
-        public UpdateUserRolesCommandHandler(UserManager<ApplicationUser> userManager)
+        public UpdateUserRolesCommandHandler(UserManager<ApplicationUser> userManager, IMessageBus messageBus)
         {
             this.userManager = userManager;
+            this.messageBus = messageBus;
         }
 
         public async Task<IdentityResult> Handle(UpdateUserRolesCommand request, CancellationToken cancellationToken)
@@ -40,6 +44,15 @@ namespace AperturePlus.IdentityService.Application.Handlers
             }
             var rolestoRemove = currentRoles.Except(newRoles).ToList();
             result = await userManager.RemoveFromRolesAsync(user, rolestoRemove);
+            
+            if (result.Succeeded)
+            {
+                // 获取更新后的用户角色
+                var updatedRoles = await userManager.GetRolesAsync(user);
+                var userRolesUpdatedEvent = new UserRolesUpdatedIntegrationEvent(user.Id, user.UserName, updatedRoles.ToList());
+                await messageBus.Publish("user_events", "user.roles.updated", userRolesUpdatedEvent);
+            }
+            
             return result;
         }
     }

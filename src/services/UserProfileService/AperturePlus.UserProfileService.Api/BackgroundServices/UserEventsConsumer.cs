@@ -1,5 +1,4 @@
-﻿
-using AperturePlus.UserProfileService.Application.Commands;
+﻿using AperturePlus.UserProfileService.Application.Commands;
 using AperturePlus.UserProfileService.Domain.Entities;
 using AperturePlus.UserProfileService.Infrastructure.Persistence;
 using Contracts;
@@ -31,6 +30,7 @@ namespace AperturePlus.UserProfileService.Api.BackgroundServices
             await channel.ExchangeDeclareAsync("user_events", ExchangeType.Topic, true);//声明交换机
             var queueName = (await channel.QueueDeclareAsync()).QueueName;//声明一个临时队列
             await channel.QueueBindAsync(queueName, "user_events","user.register",cancellationToken:cancellationToken);//绑定队列到交换机，监听注册事件
+            await channel.QueueBindAsync(queueName, "user_events","user.roles.updated",cancellationToken:cancellationToken);//绑定队列到交换机，监听角色更新事件
 
             var consumer = new AsyncEventingBasicConsumer(channel);//异步消费者
             consumer.ReceivedAsync += async (model, ea) =>//收到消息时触发
@@ -59,18 +59,34 @@ namespace AperturePlus.UserProfileService.Api.BackgroundServices
             using var scope = scopeFactory.CreateScope();
             // 从这个临时的作用域中获取 IMediator
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-            if (routingKey == "user.register")
+            
+            switch (routingKey)
             {
-                var regEvent = JsonSerializer.Deserialize<UserRegisteredIntegrationEvent>(message);
-                var result = await mediator.Send(new CreateUserProfileCommand(regEvent.UserId, regEvent.UserName));
-                if (result == true)
-                {
-                    Console.WriteLine($"用户 {regEvent.UserName} 的用户资料已创建。");
-                }
-                else
-                {
-                    Console.WriteLine($"用户 {regEvent.UserName} 的用户资料创建失败。");
-                }
+                case "user.register":
+                    var regEvent = JsonSerializer.Deserialize<UserRegisteredIntegrationEvent>(message);
+                    var result = await mediator.Send(new CreateUserProfileCommand(regEvent.UserId, regEvent.UserName, regEvent.Roles));
+                    if (result == true)
+                    {
+                        Console.WriteLine($"用户 {regEvent.UserName} 的用户资料已创建，角色：{string.Join(", ", regEvent.Roles)}。");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"用户 {regEvent.UserName} 的用户资料创建失败。");
+                    }
+                    break;
+                    
+                case "user.roles.updated":
+                    var rolesUpdatedEvent = JsonSerializer.Deserialize<UserRolesUpdatedIntegrationEvent>(message);
+                    var updateResult = await mediator.Send(new UpdateUserRolesCommand(rolesUpdatedEvent.UserId, rolesUpdatedEvent.Roles));
+                    if (updateResult == true)
+                    {
+                        Console.WriteLine($"用户 {rolesUpdatedEvent.UserName} 的角色已更新为：{string.Join(", ", rolesUpdatedEvent.Roles)}。");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"用户 {rolesUpdatedEvent.UserName} 的角色更新失败。");
+                    }
+                    break;
             }
         }
 

@@ -1,19 +1,23 @@
 // src/stores/user.ts
+
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import apiClient from '@/api/axios' // 导入配置好的 axios 实例
+import apiClient from '@/api/axios'
 
-// 定义 UserProfile 的数据结构，要和后端的 UserProfileDto.cs 一致
+// 1. 更新 UserProfile 接口，明确包含 roles 字段
 export interface UserProfile {
   userId: string
   userName: string
   bio: string
   avatarUrl: string
+  roles: string[] // 角色列表由 API 提供
 }
 
 export const useUserStore = defineStore('user', () => {
+  // --- State ---
   const profile = ref<UserProfile | null>(null)
 
+  // --- Actions ---
   function setProfile(userProfile: UserProfile) {
     profile.value = userProfile
   }
@@ -23,40 +27,46 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function fetchProfile() {
-    // 如果已经有用户信息，就不重复获取
-    if (profile.value) {
-      return
-    }
+    if (profile.value) return // 如果已有数据，则不重复获取
     try {
       const baseUrl = import.meta.env.VITE_API_USERPROFILE_BASE_URL
-      const url = `${baseUrl}/userprofile/GetMyProfile`
-      const response = await apiClient.get<UserProfile>(url)
+      const response = await apiClient.get<UserProfile>(`${baseUrl}/userprofile/GetMyProfile`)
       setProfile(response.data)
     } catch (error) {
       console.error('获取用户信息失败:', error)
-      // 这里可以触发登出逻辑，因为token可能已失效
     }
   }
 
-  async function updateProfile(payload: { bio?: string; avatarUrl?: string }) {
+  async function updateProfile(payload: Partial<Omit<UserProfile, 'userId' | 'userName'>>) {
     try {
-      const baseUrl = import.meta.env.VITE_API_IDENTITY_BASE_URL
-      const url = `${baseUrl}/userprofile/UpdateMyProfile`
+      const baseUrl = import.meta.env.VITE_API_USERPROFILE_BASE_URL
+      await apiClient.patch(`${baseUrl}/userprofile/UpdateMyProfile`, payload)
 
-      await apiClient.patch(url, payload)
-
-      // 更新成功后，直接在前端修改 profile 的值，避免重新请求
-      if (profile.value && payload.bio) {
-        profile.value.bio = payload.bio
+      // 更新成功后，直接在前端修改 state，UI 会自动响应，无需重新 fetch
+      if (profile.value) {
+        // 使用 Object.assign 优雅地合并更新
+        Object.assign(profile.value, payload)
       }
-      if (profile.value && payload.avatarUrl) {
-        profile.value.avatarUrl = payload.avatarUrl
-      }
-
-      return true // 返回成功状态
+      return true
     } catch (error) {
       console.error('更新用户信息失败:', error)
-      return false // 返回失败状态
+      return false
+    }
+  }
+
+  async function updateRoles(roles: string[]) {
+    try {
+      const baseUrl = import.meta.env.VITE_API_IDENTITY_BASE_URL
+      await apiClient.put(`${baseUrl}/accounts/UpdateRoles`, { roles })
+
+      // 更新成功后，同样直接修改本地 state
+      if (profile.value) {
+        profile.value.roles = roles
+      }
+      return true
+    } catch (error) {
+      console.error('更新角色失败:', error)
+      return false
     }
   }
 
@@ -66,5 +76,6 @@ export const useUserStore = defineStore('user', () => {
     clearProfile,
     fetchProfile,
     updateProfile,
+    updateRoles,
   }
 })

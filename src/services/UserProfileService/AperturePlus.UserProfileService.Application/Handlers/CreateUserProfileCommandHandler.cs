@@ -1,5 +1,4 @@
 ﻿using AperturePlus.UserProfileService.Application.Commands;
-using AperturePlus.UserProfileService.Application.DTOs;
 using AperturePlus.UserProfileService.Application.Interfaces;
 using AperturePlus.UserProfileService.Domain.Entities;
 using MediatR;
@@ -29,7 +28,7 @@ namespace AperturePlus.UserProfileService.Application.Handlers
             {
                 return true;
             }
-            var userProfile = UserProfile.CreateUserProfile(request.UserId, request.UserName);
+            var userProfile = UserProfile.CreateUserProfile(request.UserId, request.UserName, request.Roles);
             await userProfileRepository.AddUserProfileAsync(userProfile, cancellationToken);
             int result = await unitOfWork.SaveChangesAsync(cancellationToken);
             return result > 0;

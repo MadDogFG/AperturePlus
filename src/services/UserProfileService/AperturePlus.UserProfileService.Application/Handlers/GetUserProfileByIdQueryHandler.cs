@@ -26,7 +26,7 @@ namespace AperturePlus.UserProfileService.Application.Handlers
             var userProfile = await userProfileRepository.GetByIdAsync(request.UserId, cancellationToken);
             if (userProfile != null)
             {
-                return new UserProfileDto(userProfile.UserId, userProfile.UserName, userProfile.Bio, userProfile.AvatarUrl);
+                return new UserProfileDto(userProfile.UserId, userProfile.UserName, userProfile.Bio, userProfile.AvatarUrl, userProfile.Roles);
             }
             return null;
         }

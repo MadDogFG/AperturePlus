@@ -1,21 +1,20 @@
-﻿using System;
+using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contracts
+namespace AperturePlus.UserProfileService.Application.Commands
 {
-    public record class UserRegisteredIntegrationEvent
+    public class UpdateUserRolesCommand : IRequest<bool>
     {
         public Guid UserId { get; set; }
-        public string UserName { get; set; }
         public List<string> Roles { get; set; }
-        
-        public UserRegisteredIntegrationEvent(Guid userId, string userName, List<string> roles)
+
+        public UpdateUserRolesCommand(Guid userId, List<string> roles)
         {
             UserId = userId;
-            UserName = userName;
             Roles = roles ?? new List<string>();
         }
     }
