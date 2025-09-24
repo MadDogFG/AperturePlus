@@ -38,10 +38,33 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  async function updateProfile(payload: { bio?: string; avatarUrl?: string }) {
+    try {
+      const baseUrl = import.meta.env.VITE_API_IDENTITY_BASE_URL
+      const url = `${baseUrl}/userprofile/UpdateMyProfile`
+
+      await apiClient.patch(url, payload)
+
+      // 更新成功后，直接在前端修改 profile 的值，避免重新请求
+      if (profile.value && payload.bio) {
+        profile.value.bio = payload.bio
+      }
+      if (profile.value && payload.avatarUrl) {
+        profile.value.avatarUrl = payload.avatarUrl
+      }
+
+      return true // 返回成功状态
+    } catch (error) {
+      console.error('更新用户信息失败:', error)
+      return false // 返回失败状态
+    }
+  }
+
   return {
     profile,
     setProfile,
     clearProfile,
-    fetchProfile, // 暴露新 action
+    fetchProfile,
+    updateProfile,
   }
 })

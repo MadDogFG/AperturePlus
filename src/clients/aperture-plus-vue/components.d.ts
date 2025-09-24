@@ -8,10 +8,18 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActivityCard: typeof import('./src/components/activity/ActivityCard.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
+    ElButton: typeof import('element-plus/es')['ElButton']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElInput: typeof import('element-plus/es')['ElInput']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
+    ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
+    IEpCalendar: typeof import('~icons/ep/calendar')['default']
+    IEpEdit: typeof import('~icons/ep/edit')['default']
+    IEpLocation: typeof import('~icons/ep/location')['default']
     IEpPictureRounded: typeof import('~icons/ep/picture-rounded')['default']
     IEpStarFilled: typeof import('~icons/ep/star-filled')['default']
     ProfilePortfolio: typeof import('./src/components/profile/ProfilePortfolio.vue')['default']

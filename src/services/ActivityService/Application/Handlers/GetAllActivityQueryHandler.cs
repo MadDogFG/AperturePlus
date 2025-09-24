@@ -31,6 +31,10 @@ namespace AperturePlus.ActivityService.Application.Handlers
             var items = pagedActivities.Activities.Select(activity =>
             {
                 var userSummary = userSummariesDict.GetValueOrDefault(activity.PostedByUserId);
+                if(userSummary == null)
+                {
+                    throw new Exception($"无法找到用户ID为 {activity.PostedByUserId} 的用户信息");
+                }
                 return new ActivityDto(
                     activity.ActivityId,
                     activity.ActivityTitle,
