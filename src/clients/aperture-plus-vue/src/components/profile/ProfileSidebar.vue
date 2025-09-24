@@ -23,7 +23,15 @@
       </div>
 
       <div class="roles-container">
-        <el-tag v-for="role in userStore.profile.roles" :key="role" type="success" effect="light">
+        <el-tag
+          v-for="role in userStore.profile.roles"
+          :key="role"
+          class="role-tag"
+          type="success"
+          effect="light"
+          :closable="role !== 'User'"
+          @close="handleRemoveRole(role)"
+        >
           {{ role }}
         </el-tag>
         <el-button @click="isAddRoleDialogVisible = true" class="add-role-btn" circle>
@@ -71,7 +79,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useUserStore } from '@/stores/user'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const userStore = useUserStore()
 
@@ -134,6 +142,35 @@ const handleSaveRoles = async () => {
     ElMessage.success('角色更新成功！部分更改可能需要重新登录生效。')
   } else {
     ElMessage.error('更新失败，请稍后再试。')
+  }
+}
+
+//删除角色的函数
+const handleRemoveRole = async (roleToRemove: string) => {
+  try {
+    // 弹出确认框
+    await ElMessageBox.confirm(`确定要移除 "${roleToRemove}" 这个角色吗？`, '确认操作', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+
+    // 如果用户点击了“确定”，代码会继续往下执行
+    // 计算出新的角色列表
+    const newRoleList = userStore.profile?.roles.filter((role) => role !== roleToRemove) || []
+
+    // 调用 store 中已有的 action
+    const success = await userStore.updateRoles(newRoleList)
+
+    if (success) {
+      ElMessage.success('角色移除成功！部分更改可能需要重新登录生效。')
+    } else {
+      ElMessage.error('移除失败，请稍后再试。')
+    }
+  } catch (error) {
+    // 如果用户点击了“取消”或者关闭了弹窗，会进入 catch 块
+    ElMessage.info('操作已取消')
+    console.log('取消移除角色:', error)
   }
 }
 </script>
