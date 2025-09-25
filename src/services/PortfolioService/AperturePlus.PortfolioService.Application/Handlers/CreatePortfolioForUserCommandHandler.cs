@@ -28,6 +28,7 @@ namespace AperturePlus.PortfolioService.Application.Handlers
             }
             portfolio = Portfolio.CreatePortfolio(request.UserId);
             await portfolioRepository.AddAsync(portfolio, cancellationToken);
+            Console.WriteLine($"为用户 {request.UserId} 创建档案 {portfolio.PortfolioId}");
             return true;
         }
     }

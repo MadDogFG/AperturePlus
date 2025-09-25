@@ -25,6 +25,7 @@ onMounted(() => {
 .profile-layout {
   display: flex;
   height: 100%; /* 占满 main-content 的高度 */
+  width: 100%;
 }
 
 .content {

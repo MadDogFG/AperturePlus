@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,8 @@ namespace AperturePlus.PortfolioService.Domain.ValueObjects
 {
     public record class Photo
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.String)]
         public Guid PhotoId { get; init; }
         public string PhotoUrl { get; init; }
         public List<string> Tags { get; private set; } = new List<string>();//留着未来调用模型进行智能分类

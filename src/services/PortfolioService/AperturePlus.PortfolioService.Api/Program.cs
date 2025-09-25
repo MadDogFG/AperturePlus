@@ -96,14 +96,15 @@ namespace AperturePlus.PortfolioService.Api
                 return new MongoClient(builder.Configuration.GetConnectionString("MongoDbConnection"));
             });
 
+            BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));//在序列化Guid类型时使用String格式来读写，而不是默认的Binary格式
             builder.Services.AddScoped(sp =>//注册IMongoCollection<Portfolio>
             {
                 var client = sp.GetRequiredService<IMongoClient>();
                 var database = builder.Configuration["MongoDbSettings:DatabaseName"];
                 var collection = builder.Configuration["MongoDbSettings:CollectionName"];
-                BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));//在序列化Guid类型时使用String格式来读写，而不是默认的Binary格式
                 return client.GetDatabase(database).GetCollection<Portfolio>(collection);
             });
+
             Console.WriteLine($"{builder.Configuration["MinioSettings:Endpoint"]},{builder.Configuration["MinioSettings:AccessKey"]},{builder.Configuration["MinioSettings:SecretKey"]}");
             // 注册 MinioClient (需要从 appsettings.json 读取 endpoint, accessKey, secretKey)
             builder.Services.AddMinio(options => options

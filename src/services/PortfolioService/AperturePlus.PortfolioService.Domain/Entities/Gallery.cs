@@ -1,4 +1,6 @@
 ﻿using AperturePlus.PortfolioService.Domain.ValueObjects;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +11,23 @@ namespace AperturePlus.PortfolioService.Domain.Entities
 {
     public class Gallery
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.String)]
         public Guid GalleryId { get; private set; }
         public string GalleryName { get; private set; }
         public string? CoverPhotoUrl { get; private set; }//封面图
-        private readonly List<Photo> _photos = new();
+        [BsonElement("Photos")]
+        [BsonIgnoreIfNull]
+        private List<Photo> _photos;
         public IReadOnlyCollection<Photo> Photos => _photos.AsReadOnly();//只读集合，防止外部能直接通过属性添加或者删除图片
         public DateTime CreatedAt { get; private set; }
 
-        private Gallery(string galleryName)
+        private Gallery()
+        {
+            _photos = new List<Photo>();
+        }
+
+        private Gallery(string galleryName) : this()
         {
             GalleryId = Guid.NewGuid();
             GalleryName = galleryName;
