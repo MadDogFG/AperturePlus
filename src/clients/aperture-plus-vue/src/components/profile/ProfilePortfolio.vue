@@ -20,16 +20,25 @@
           :key="gallery.galleryId"
           class="gallery-card"
         >
-          <div class="gallery-cover">
-            <img v-if="gallery.coverPhotoUrl" :src="gallery.coverPhotoUrl" alt="相册封面" />
-            <div v-else class="empty-cover">
-              <el-icon><i-ep-picture-rounded /></el-icon>
+          <router-link :to="`/profile/portfolio/${gallery.galleryId}`" class="gallery-link">
+            <div class="gallery-cover">
+              <img v-if="gallery.coverPhotoUrl" :src="gallery.coverPhotoUrl" alt="相册封面" />
+              <div v-else class="empty-cover">
+                <el-icon><i-ep-picture-rounded /></el-icon>
+              </div>
             </div>
-          </div>
-          <div class="gallery-info">
-            <span class="gallery-name">{{ gallery.galleryName }}</span>
-            <span class="photo-count">{{ gallery.photos.length }} 张</span>
-          </div>
+            <div class="gallery-info">
+              <span class="gallery-name">{{ gallery.galleryName }}</span>
+              <span class="photo-count">{{ gallery.photos.length }} 张</span>
+            </div>
+          </router-link>
+          <el-button
+            class="delete-btn"
+            type="danger"
+            :icon="Delete"
+            circle
+            @click.stop="portfolioStore.deleteGallery(gallery.galleryId)"
+          />
         </div>
       </div>
     </div>
@@ -51,6 +60,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { usePortfolioStore } from '@/stores/portfolio'
+import { Delete } from '@element-plus/icons-vue'
 
 const portfolioStore = usePortfolioStore()
 
@@ -97,10 +107,10 @@ const handleCreateGallery = async () => {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
   transition:
     transform 0.2s,
     box-shadow 0.2s;
+  position: relative; /* 为删除按钮的绝对定位提供基准 */
 }
 
 .gallery-card:hover {
@@ -113,6 +123,26 @@ const handleCreateGallery = async () => {
   padding-top: 100%; /* 1:1 Aspect Ratio */
   position: relative;
   background-color: #f5f7fa;
+}
+
+/* 新增：让链接充满整个卡片 */
+.gallery-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 新增：删除按钮样式 */
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0; /* 默认隐藏 */
+  transition: opacity 0.2s;
+}
+
+.gallery-card:hover .delete-btn {
+  opacity: 1; /* 悬停时显示 */
 }
 
 .gallery-cover img {

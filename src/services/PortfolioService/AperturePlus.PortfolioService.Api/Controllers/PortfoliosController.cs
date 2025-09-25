@@ -1,5 +1,4 @@
-﻿using AperturePlus.PortfolioService.Api.DTOs;
-using AperturePlus.PortfolioService.Application.Commands;
+﻿using AperturePlus.PortfolioService.Application.Commands;
 using AperturePlus.PortfolioService.Application.DTOs;
 using AperturePlus.PortfolioService.Application.Queries;
 using MediatR;
@@ -48,9 +47,9 @@ namespace AperturePlus.PortfolioService.Api.Controllers
 
         [Authorize]
         [HttpPost("UploadPhotos/{galleryId}")]
-        public async Task<IActionResult> UploadPhotos(Guid galleryId, [FromForm] UploadPhotosRequest request)
+        public async Task<IActionResult> UploadPhotos(Guid galleryId, [FromForm] List<IFormFile> files)
         {
-            if (request.Files == null || !request.Files.Any())
+            if (files == null || !files.Any())
             {
                 return BadRequest("上传至少一个文件");
             }
@@ -62,7 +61,7 @@ namespace AperturePlus.PortfolioService.Api.Controllers
             try
             {
                 //将IFormFile列表转换为FileToUpload列表
-                var filesToUpload = request.Files.Select(file => new FileToUpload
+                var filesToUpload = files.Select(file => new FileToUpload
                 (
                     file.OpenReadStream(),
                     file.FileName,
@@ -114,7 +113,7 @@ namespace AperturePlus.PortfolioService.Api.Controllers
             {
                 return Unauthorized(new { Message = "无效的用户ID" });
             }
-            var command = new DeleteGalleryCommand(userId, galleryId);
+            var command = new DeleteGalleryCommand(galleryId,userId);
             var result = await mediator.Send(command);
             if (result == false)
             {
@@ -125,7 +124,7 @@ namespace AperturePlus.PortfolioService.Api.Controllers
 
         [Authorize]
         [HttpDelete("DeletePhoto/{galleryId}")]
-        public async Task<IActionResult> DeletePhoto(Guid galleryId, List<Guid> photoIds)
+        public async Task<IActionResult> DeletePhoto(Guid galleryId, [FromQuery] List<Guid> photoIds)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))

@@ -110,6 +110,7 @@ namespace AperturePlus.PortfolioService.Api
             builder.Services.AddMinio(options => options
                 .WithEndpoint(builder.Configuration["MinioSettings:Endpoint"])
                 .WithCredentials(builder.Configuration["MinioSettings:AccessKey"], builder.Configuration["MinioSettings:SecretKey"])
+                .WithSSL(false)
                 .Build());
 
             builder.Services.AddCors(options =>

@@ -18,13 +18,12 @@ namespace AperturePlus.PortfolioService.Domain.Entities
         public string? CoverPhotoUrl { get; private set; }//封面图
         [BsonElement("Photos")]
         [BsonIgnoreIfNull]
-        private List<Photo> _photos;
-        public IReadOnlyCollection<Photo> Photos => _photos.AsReadOnly();//只读集合，防止外部能直接通过属性添加或者删除图片
+        public List<Photo> Photos { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
         private Gallery()
         {
-            _photos = new List<Photo>();
+            Photos = new List<Photo>();
         }
 
         private Gallery(string galleryName) : this()
@@ -49,9 +48,9 @@ namespace AperturePlus.PortfolioService.Domain.Entities
             {
                 throw new ArgumentNullException("图片不能为空");
             }
-            _photos.Add(photo);
+            Photos.Add(photo);
             //如果是第一张图，设置为封面图
-            if (_photos.Count == 1)
+            if (Photos.Count == 1)
             {
                 CoverPhotoUrl = photo.PhotoUrl;
             }
@@ -59,16 +58,25 @@ namespace AperturePlus.PortfolioService.Domain.Entities
 
         public void RemovePhoto(Guid photoId)
         {
-            var photo = _photos.FirstOrDefault(p=>p.PhotoId == photoId);
-            if (photo != null) 
+            var photoToRemove = Photos.FirstOrDefault(p => p.PhotoId == photoId);
+            if (photoToRemove != null)
             {
-                _photos.Remove(photo);
+                bool wasCover = CoverPhotoUrl == photoToRemove.PhotoUrl;
+
+                Photos.Remove(photoToRemove);
+
+                // 如果被删除的是封面图，我们需要更新它
+                if (wasCover)
+                {
+                    // 将新的封面设置为当前照片列表的第一张，或者如果没有照片了就设为null
+                    CoverPhotoUrl = Photos.FirstOrDefault()?.PhotoUrl;
+                }
             }
         }
 
         public void SetCoverPhoto(Guid photoId)
         {
-            var photoUrl = _photos.Where(p=>p.PhotoId==photoId).Select(p => p.PhotoUrl).FirstOrDefault();
+            var photoUrl = Photos.Where(p=>p.PhotoId==photoId).Select(p => p.PhotoUrl).FirstOrDefault();
             if (string.IsNullOrEmpty(photoUrl))
             {
                 throw new ArgumentException("图片不存在");

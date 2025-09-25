@@ -5,6 +5,7 @@ import HomeView from '../views/HomeView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import ProfilePortfolio from '@/components/profile/ProfilePortfolio.vue'
 import ProfileRatings from '@/components/profile/ProfileRatings.vue'
+import GalleryDetailView from '../views/GalleryDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,11 @@ const router = createRouter({
           path: 'portfolio', // 匹配 /profile/portfolio
           name: 'profile-portfolio',
           component: ProfilePortfolio,
+        },
+        {
+          path: 'portfolio/:galleryId',
+          name: 'gallery-detail',
+          component: GalleryDetailView,
         },
         {
           path: 'ratings', // 匹配 /profile/ratings

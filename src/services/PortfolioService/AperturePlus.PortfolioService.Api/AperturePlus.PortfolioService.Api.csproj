@@ -26,4 +26,8 @@
     <ProjectReference Include="..\AperturePlus.PortfolioService.Infrastructure\AperturePlus.PortfolioService.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
 </Project>
