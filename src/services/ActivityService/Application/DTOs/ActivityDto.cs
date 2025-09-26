@@ -14,9 +14,11 @@ namespace AperturePlus.ActivityService.Application.DTOs
         public string Status { get; init; } //活动状态
         public Decimal Fee { get; private set; } = 0; //活动费用，默认0
         public List<RoleRequirement> RoleRequirements { get; private set; } = new List<RoleRequirement>(); //角色需求列表
-        public List<Participant> Participants { get; private set; } = new List<Participant>(); //参与者列表
-
-        public ActivityDto(Guid activityId, string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, PostedByUserDto postedByUser, string status, decimal fee, List<RoleRequirement> roleRequirements, List<Participant> participants)
+        public List<Participant> Participants { get; private set; } = new List<Participant>(); //参与者列表                                                                            
+        public int TotalRequiredCount { get; private set; }   // 总需求人数
+        public int ApprovedParticipantsCount { get; private set; }  // 已批准人数
+        public int PendingParticipantsCount { get; private set; }    // 待审核人数
+        public ActivityDto(Guid activityId, string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, PostedByUserDto postedByUser, string status, decimal fee, List<RoleRequirement> roleRequirements, List<Participant> participants, int totalRequiredCount,int approvedParticipantsCount,int pendingParticipantsCount)
         {
             ActivityId = activityId;
             ActivityTitle = activityTitle;
@@ -28,6 +30,9 @@ namespace AperturePlus.ActivityService.Application.DTOs
             Fee = fee;
             RoleRequirements = roleRequirements;
             Participants = participants;
+            TotalRequiredCount = totalRequiredCount;
+            ApprovedParticipantsCount = approvedParticipantsCount;
+            PendingParticipantsCount = pendingParticipantsCount;
         }
     }
 }

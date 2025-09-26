@@ -14,5 +14,14 @@ export interface Activity {
   }
   status: string
   fee: number
-  // roleRequirements 和 participants 暂时先不加，等需要时再细化
+
+  roleRequirements: RoleRequirement[]
+  totalRequiredCount: number
+  approvedParticipantsCount: number
+  pendingParticipantsCount: number
+}
+
+export interface RoleRequirement {
+  role: 'Photographer' | 'Model'
+  quantity: number
 }

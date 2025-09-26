@@ -1,6 +1,7 @@
 ﻿using AperturePlus.ActivityService.Application.DTOs;
 using AperturePlus.ActivityService.Application.Interfaces;
 using AperturePlus.ActivityService.Application.Queries;
+using AperturePlus.ActivityService.Domain.ValueObjects;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,11 @@ namespace AperturePlus.ActivityService.Application.Handlers
             var userSummariesDict = userSummaries.ToDictionary(u => u.UserId);
             var activityDtos = activityList.Select(activity =>
             {
+                //计算人数
+                var totalRequired = activity.RoleRequirements.Sum(r => r.Quantity);
+                var approvedCount = activity.Participants.Count(p => p.Status == ParticipantStatus.Approved);
+                var pendingCount = activity.Participants.Count(p => p.Status == ParticipantStatus.Pending);
+
                 var userSummary = userSummariesDict.GetValueOrDefault(activity.PostedByUserId);
                 return new ActivityDto(
                     activity.ActivityId,
@@ -40,7 +46,10 @@ namespace AperturePlus.ActivityService.Application.Handlers
                     activity.Status.ToString(),
                     activity.Fee,
                     activity.RoleRequirements,
-                    activity.Participants
+                    activity.Participants,
+                    totalRequired,
+                    approvedCount,
+                    pendingCount
                 );
             }).ToList();
             return activityDtos;

@@ -1,6 +1,7 @@
 ﻿using AperturePlus.ActivityService.Application.DTOs;
 using AperturePlus.ActivityService.Application.Interfaces;
 using AperturePlus.ActivityService.Application.Queries;
+using AperturePlus.ActivityService.Domain.ValueObjects;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,11 @@ namespace AperturePlus.ActivityService.Application.Handlers
             {
                 return null;
             }
+            //计算人数
+            var totalRequired = activity.RoleRequirements.Sum(r => r.Quantity);
+            var approvedCount = activity.Participants.Count(p => p.Status == ParticipantStatus.Approved);
+            var pendingCount = activity.Participants.Count(p => p.Status == ParticipantStatus.Pending);
+
             var userSummary = await userSummaryRepository.GetByIdAsync(activity.PostedByUserId, cancellationToken);
             return new ActivityDto
             (
@@ -38,7 +44,11 @@ namespace AperturePlus.ActivityService.Application.Handlers
                 activity.Status.ToString(),
                 activity.Fee,
                 activity.RoleRequirements,
-                activity.Participants
+                activity.Participants,
+                totalRequired,
+                approvedCount,
+                pendingCount
+
             );
         }
     }
