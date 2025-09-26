@@ -6,6 +6,7 @@ import ProfileView from '../views/ProfileView.vue'
 import ProfilePortfolio from '@/components/profile/ProfilePortfolio.vue'
 import ProfileRatings from '@/components/profile/ProfileRatings.vue'
 import GalleryDetailView from '../views/GalleryDetailView.vue'
+import ActivityDetailView from '../views/ActivityDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -58,6 +59,12 @@ const router = createRouter({
           component: ProfileRatings,
         },
       ],
+    },
+    {
+      path: '/activity/:id', // 使用动态路由匹配活动ID
+      name: 'activity-detail',
+      component: ActivityDetailView,
+      meta: { requiresAuth: true },
     },
   ],
 })
