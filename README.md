@@ -10,6 +10,7 @@ AperturePlus 是一个基于 .NET 构建的现代化微服务后端解决方案�
 - **ActivityService**: 负责管理用户创建和参与的活动。
 - **UserProfileService**: 负责管理用户的个人资料、简介和头像。
 - **PortfolioService**: 负责管理用户的作品集、相册和照片。
+- **RatingService**: 负责管理已完成活动中，参与者之间的互相评价。
 
 ## ✨ 系统架构
 
@@ -172,22 +173,33 @@ graph TD
     ```
     `-d` 参数表示在后台运行。
 
-2.  **启动 .NET 微服务**
-    在 Visual Studio 中打开 `AperturePlus.sln` 并设置为启动多个项目，或者在终端中为每个服务单独执行 `dotnet run`。
-    ```bash
-    # 启动 IdentityService
-    dotnet run --project src/services/IdentityService/AperturePlus.IdentityService.Api
+    2.  **启动 .NET 微服务**
+        在 Visual Studio 中打开 `AperturePlus.sln` 并设置为启动多个项目，或者在终端中为每个服务单独执行 `dotnet run`。
+        ```bash
+        # 启动 IdentityService
+        dotnet run --project src/services/IdentityService/AperturePlus.IdentityService.Api
 
-    # 启动 ActivityService
-    dotnet run --project src/services/ActivityService/Api
+        # 启动 ActivityService
+        dotnet run --project src/services/ActivityService/Api
 
-    # 启动 UserProfileService
-    dotnet run --project src/services/UserProfileService/AperturePlus.UserProfileService.Api
+        # 启动 UserProfileService
+        dotnet run --project src/services/UserProfileService/AperturePlus.UserProfileService.Api
 
-    # 启动 PortfolioService
-    dotnet run --project src/services/PortfolioService/AperturePlus.PortfolioService.Api
-    ```
+        # 启动 PortfolioService
+        dotnet run --project src/services/PortfolioService/AperturePlus.PortfolioService.Api
 
+        # 启动 RatingService
+        dotnet run --project src/services/RatingService/AperturePlus.RatingService.Api
+        ```
+
+    3.  **启动 Vue.js 前端**
+        打开一个新的终端，进入前端项目目录，安装依赖并启动开发服务器。
+        ```bash
+        cd src/clients/aperture-plus-vue
+        npm install
+        npm run dev
+        ```
+        > 前端服务启动后，通常可以在 `http://localhost:5173` 访问。
 3.  **应用数据库迁移**
     当服务首次运行时，需要应用数据库迁移来创建表结构。
     ```bash
@@ -202,6 +214,9 @@ graph TD
 
     # 为 PortfolioService 应用迁移
     dotnet ef database update --project src/services/PortfolioService/AperturePlus.PortfolioService.Infrastructure --startup-project src/services/PortfolioService/AperturePlus.PortfolioService.Api
+
+    # 为 RatingService 应用迁移
+    dotnet ef database update --project src/services/RatingService/AperturePlus.RatingService.Infrastructure --startup-project src/services/RatingService/AperturePlus.RatingService.Api
     ```
 
 ### 4. 服务运行地址
@@ -210,6 +225,7 @@ graph TD
 - **ActivityService**: `http://localhost:5002`
 - **UserProfileService**: `http://localhost:5034`
 - **PortfolioService**: `http://localhost:5106`
+- **RatingService**: `http://localhost:5239`
 - **RabbitMQ Management** UI: `http://localhost:15672`
 - **MinIO Console**: `http://localhost:9001`
 
@@ -247,8 +263,11 @@ graph TD
 -   `POST /api/portfolios/UploadPhotos/{galleryId}`: 上传照片到相册 (需要认证)
 -   `GET /api/portfolios/GetPortfolioByUserId`: 获取用户的作品集 (需要认证)
 -   `DELETE /api/portfolios/DeleteGallery/{galleryId}`: 删除相册 (需要认证)
--   `DELETE /api/portfolios/DeletePhoto/{galleryId}`: 删除照片 (需要认证)
+    -   `DELETE /api/portfolios/DeletePhoto/{galleryId}`: 删除照片 (需要认证)
 
+### RatingService
+
+-   `POST /api/ratings/SubmitRating`: 提交评分 (需要认证)
 ## 📄 许可证
 
 该项目使用 AGPL-3.0 许可证。有关详细信息，请参阅 `LICENSE` 文件。
