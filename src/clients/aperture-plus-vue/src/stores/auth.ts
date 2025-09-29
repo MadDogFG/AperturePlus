@@ -30,10 +30,20 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('token')
   }
 
+  async function init() {
+    if (isAuthenticated.value) {
+      const userStore = useUserStore()
+      // 如果页面刷新了，userStore是空的，就去重新获取
+      if (!userStore.profile) {
+        await userStore.fetchProfile()
+      }
+    }
+  }
   return {
     token,
     isAuthenticated,
     setToken,
     logout,
+    init,
   }
 })

@@ -47,7 +47,7 @@
           </el-table-column>
           <el-table-column label="申请角色" width="120">
             <template #default="{ row }">
-              {{ row.role === 'Photographer' ? '摄影师' : '模特' }}
+              {{ getRoleString(row.role) === 'Photographer' ? '摄影师' : '模特' }}
             </template>
           </el-table-column>
           <el-table-column label="状态" width="120">
@@ -96,24 +96,73 @@
           }}</el-tag>
         </div>
         <el-empty v-else description="暂无成员加入" />
+
+        <div class="visitor-actions">
+          <el-divider v-if="canApply || currentUserStatus" />
+          <el-button v-if="canApply" type="primary" @click="openApplyDialog" size="large">
+            申请加入
+          </el-button>
+          <el-tag
+            v-if="!canApply && currentUserStatus"
+            :type="statusTagType(currentUserStatus)"
+            size="large"
+            effect="light"
+          >
+            您已申请: {{ statusText(currentUserStatus) }}
+          </el-tag>
+        </div>
       </el-card>
     </div>
     <el-empty v-else-if="!store.isLoading" description="活动不存在或加载失败" />
+
+    <el-dialog v-model="isApplyDialogVisible" title="申请加入活动" width="500px">
+      <div v-if="availableRolesForApplication.length > 0">
+        <p>请选择您要申请的角色：</p>
+        <el-radio-group v-model="selectedRole">
+          <el-radio
+            v-for="role in availableRolesForApplication"
+            :key="role.role"
+            :label="getRoleString(role.role)"
+            border
+            size="large"
+          >
+            {{ getRoleString(role.role) === 'Photographer' ? '摄影师' : '模特' }} (空缺
+            {{ role.quantity - getApprovedCountForRole(role.role) }} 人)
+          </el-radio>
+        </el-radio-group>
+      </div>
+      <div v-else>
+        <el-empty description="抱歉，所有角色都已满员啦" />
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="isApplyDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleConfirmApply" :disabled="!selectedRole">
+            <!-- <el-button type="primary" @click="handleConfirmApply"> -->
+            确认申请
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useActivityDetailStore } from '@/stores/activityDetail'
 import { useUserStore } from '@/stores/user'
 import type { RoleType, ParticipantStatus } from '@/types/activity'
+import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 const store = useActivityDetailStore()
 const userStore = useUserStore()
-
 const activityId = route.params.id as string
+
+// --- 申请对话框的状态 ---
+const isApplyDialogVisible = ref(false)
+const selectedRole = ref<RoleType | null>(null)
 
 // --- 计算属性 ---
 const isOwner = computed(() => userStore.profile?.userId === store.activity?.postedByUser.userId)
@@ -121,15 +170,36 @@ const approvedParticipants = computed(
   () => store.activity?.participants.filter((p) => p.status === 'Approved') || [],
 )
 
+const currentUserStatus = computed(() => {
+  if (!userStore.profile || !store.activity) return null
+  const participant = store.activity.participants.find(
+    (p) => p.userId === userStore.profile!.userId,
+  )
+  return participant ? participant.status : null
+})
+
+const availableRolesForApplication = computed(() => {
+  return store.activity?.roleRequirements.filter((role) => !isRoleFull(role.role)) || []
+})
+
+const canApply = computed(() => {
+  // 必须不是活动所有者，且自己还未申请过，并且至少有一个角色还没满员
+  return !isOwner.value && !currentUserStatus.value && availableRolesForApplication.value.length > 0
+})
+
 // --- 方法 ---
 onMounted(() => {
   store.fetchActivity(activityId)
 })
 
-const getApprovedCountForRole = (role: RoleType) => {
+const getApprovedCountForRole = (role: RoleType | number) => {
+  // 允许接收数字或字符串
+  // 将传入的参数统一转换为字符串形式
+  const targetRoleString = getRoleString(role)
   return (
-    store.activity?.participants.filter((p) => p.role === role && p.status === 'Approved').length ||
-    0
+    store.activity?.participants.filter(
+      (p) => getRoleString(p.role) === targetRoleString && p.status === 'Approved',
+    ).length || 0
   )
 }
 
@@ -143,15 +213,16 @@ const getRoleProgress = (role: RoleType) => {
   return required > 0 ? (approved / required) * 100 : 0
 }
 
-const isRoleFull = (role: RoleType) => {
+const isRoleFull = (role: RoleType | number) => {
   const approved = getApprovedCountForRole(role)
-  const required = getRoleRequirement(role)
-  return approved >= required
+  const requirement = store.activity?.roleRequirements.find((r) => r.role === role)?.quantity || 0
+  return approved >= requirement
 }
 
-const handleApprove = (applicantId: string, role: RoleType) => {
+// --- 所有者操作 ---
+const handleApprove = (applicantId: string, role: RoleType | number) => {
   if (!store.activity) return
-  store.approveParticipant(store.activity.activityId, applicantId, role)
+  store.approveParticipant(store.activity.activityId, applicantId, getRoleString(role))
 }
 
 const handleReject = (applicantId: string) => {
@@ -159,6 +230,27 @@ const handleReject = (applicantId: string) => {
   store.rejectParticipant(store.activity.activityId, applicantId)
 }
 
+// --- 访客操作 ---
+const openApplyDialog = () => {
+  selectedRole.value = null // 重置选项
+  isApplyDialogVisible.value = true
+}
+
+const handleConfirmApply = async () => {
+  console.log(selectedRole.value)
+  console.log(store.activity)
+  console.log(userStore.profile)
+  if (!selectedRole.value || !store.activity || !userStore.profile) {
+    ElMessage.warning('请选择一个角色')
+    return
+  }
+  const success = await store.requestJoinActivity(store.activity.activityId, selectedRole.value)
+  if (success) {
+    isApplyDialogVisible.value = false
+  }
+}
+
+// --- UI 辅助方法 ---
 const statusTagType = (status: ParticipantStatus) => {
   if (status === 'Approved') return 'success'
   if (status === 'Pending') return 'warning'
@@ -168,6 +260,13 @@ const statusText = (status: ParticipantStatus) => {
   if (status === 'Approved') return '已通过'
   if (status === 'Pending') return '待审核'
   return '已拒绝'
+}
+
+// 角色转换辅助函数 ---
+const getRoleString = (roleValue: number | RoleType): RoleType => {
+  if (roleValue === 0 || roleValue === 'Photographer') return 'Photographer'
+  if (roleValue === 1 || roleValue === 'Model') return 'Model'
+  return 'Model' // 默认或备用值
 }
 </script>
 
@@ -198,6 +297,11 @@ const statusText = (status: ParticipantStatus) => {
   margin: 0;
   font-size: 1.8rem;
 }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .description {
   color: #606266;
   line-height: 1.6;
@@ -227,5 +331,15 @@ const statusText = (status: ParticipantStatus) => {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+.visitor-actions {
+  text-align: center;
+  margin-top: 20px;
+}
+.el-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
 }
 </style>

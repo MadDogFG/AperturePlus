@@ -55,11 +55,20 @@ export const useActivityStore = defineStore('activity', () => {
     isLoading.value = false
   }
 
+  function updateActivityInList(updatedActivity: Activity) {
+    const index = activities.value.findIndex((a) => a.activityId === updatedActivity.activityId)
+    if (index !== -1) {
+      // 找到了就直接用新的对象替换旧的，Vue 的响应式系统会更新UI
+      activities.value[index] = updatedActivity
+    }
+  }
+
   return {
     activities,
     hasMore,
     isLoading,
     fetchActivities,
     reset,
+    updateActivityInList,
   }
 })

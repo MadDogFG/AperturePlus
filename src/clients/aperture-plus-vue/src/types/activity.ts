@@ -5,17 +5,18 @@ export type ParticipantStatus = 'Pending' | 'Approved' | 'Rejected'
 
 // 角色需求
 export interface RoleRequirement {
-  role: RoleType
+  role: number // 0 for Photographer, 1 for Model
   quantity: number
 }
 
 // 参与者（详细信息）
 export interface Participant {
   userId: string
-  userName: string
-  avatarUrl?: string // 用户头像，可选
-  role: RoleType
+  userName: string // 我们将通过API调用来填充这个字段
+  avatarUrl?: string // 这个也是
+  role: number | RoleType // 允许是数字或字符串
   status: ParticipantStatus
+  apliedAt?: string // apliedAt 是拼写错误，但我们遵循后端
 }
 
 // 活动列表项（我们之前定义好的）
