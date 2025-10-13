@@ -14,7 +14,7 @@
         <el-divider />
         <div class="info-grid">
           <div><strong>发布者:</strong> {{ store.activity.postedByUser.userName }}</div>
-          <div><strong>状态:</strong> {{ store.activity.status }}</div>
+          <div><strong>状态:</strong> {{ activitystatusText(store.activity.status) }}</div>
           <div>
             <strong>时间:</strong> {{ new Date(store.activity.activityStartTime).toLocaleString() }}
           </div>
@@ -34,6 +34,24 @@
               :format="() => `${getApprovedCountForRole(role.role)}/${role.quantity}`"
             />
           </div>
+        </div>
+      </el-card>
+
+      <el-card v-if="isOwner" class="box-card management-card">
+        <template #header><strong>活动管理</strong></template>
+        <div class="management-actions">
+          <template
+            v-if="
+              store.activity &&
+              (store.activity.status === 'Open' || store.activity.status === 'Progress')
+            "
+          >
+            <el-button type="success" @click="handleCompleteActivity">完成活动</el-button>
+            <el-button type="danger" @click="handleCancelActivity">取消活动</el-button>
+          </template>
+          <el-text v-else-if="store.activity" class="status-tip">
+            活动已 {{ activitystatusText(store.activity.status) }}，无需其他操作。
+          </el-text>
         </div>
       </el-card>
 
@@ -153,7 +171,7 @@ import { useRoute } from 'vue-router'
 import { useActivityDetailStore } from '@/stores/activityDetail'
 import { useUserStore } from '@/stores/user'
 import type { RoleType, ParticipantStatus } from '@/types/activity'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const route = useRoute()
 const store = useActivityDetailStore()
@@ -186,6 +204,35 @@ const canApply = computed(() => {
   // 必须不是活动所有者，且自己还未申请过，并且至少有一个角色还没满员
   return !isOwner.value && !currentUserStatus.value && availableRolesForApplication.value.length > 0
 })
+
+// 添加按钮点击处理函数
+const handleCompleteActivity = () => {
+  ElMessageBox.confirm('确定要将此活动标记为完成吗？完成后将无法再管理参与者。', '确认完成', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+      store.completeActivity(activityId)
+    })
+    .catch(() => {
+      ElMessage.info('操作已取消')
+    })
+}
+
+const handleCancelActivity = () => {
+  ElMessageBox.confirm('确定要取消此活动吗？此操作不可撤销。', '确认取消', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'danger',
+  })
+    .then(() => {
+      store.cancelActivity(activityId)
+    })
+    .catch(() => {
+      ElMessage.info('操作已取消')
+    })
+}
 
 // --- 方法 ---
 onMounted(() => {
@@ -261,6 +308,12 @@ const statusText = (status: ParticipantStatus) => {
   if (status === 'Pending') return '待审核'
   return '已拒绝'
 }
+const activitystatusText = (status: string) => {
+  if (status === 'Cancelled') return '已取消'
+  if (status === 'Completed') return '已完成'
+  if (status === 'Progress') return '执行中'
+  return '已开放'
+}
 </script>
 
 <style scoped>
@@ -334,5 +387,13 @@ const statusText = (status: ParticipantStatus) => {
   flex-direction: column;
   gap: 15px;
   align-items: flex-start;
+}
+.management-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.status-tip {
+  color: #909399;
 }
 </style>

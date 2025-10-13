@@ -83,6 +83,11 @@ export const useActivityDetailStore = defineStore('activityDetail', () => {
       }
     }
   }
+  function _updateActivityStatus(newStatus: 'Completed' | 'Cancelled') {
+    if (activity.value) {
+      activity.value.status = newStatus
+    }
+  }
 
   async function approveParticipant(activityId: string, applicantId: string, role: RoleType) {
     try {
@@ -112,6 +117,31 @@ export const useActivityDetailStore = defineStore('activityDetail', () => {
       ElMessage.info('已拒绝/移除该用户')
     } catch (error) {
       console.error('拒绝失败:', error)
+      ElMessage.error('操作失败，请重试')
+    }
+  }
+
+  // 代码块 1.2: 添加新的 actions
+  async function cancelActivity(activityId: string) {
+    try {
+      const baseUrl = import.meta.env.VITE_API_ACTIVITY_BASE_URL
+      await apiClient.post(`${baseUrl}/activity/CancelActivity/${activityId}`)
+      _updateActivityStatus('Cancelled') // 调用辅助函数更新本地状态
+      ElMessage.success('活动已取消')
+    } catch (error) {
+      console.error('取消活动失败:', error)
+      ElMessage.error('操作失败，请重试')
+    }
+  }
+
+  async function completeActivity(activityId: string) {
+    try {
+      const baseUrl = import.meta.env.VITE_API_ACTIVITY_BASE_URL
+      await apiClient.post(`${baseUrl}/activity/CompletedActivity/${activityId}`)
+      _updateActivityStatus('Completed') // 调用辅助函数更新本地状态
+      ElMessage.success('活动已标记为完成')
+    } catch (error) {
+      console.error('完成活动失败:', error)
       ElMessage.error('操作失败，请重试')
     }
   }
@@ -188,6 +218,8 @@ export const useActivityDetailStore = defineStore('activityDetail', () => {
     fetchActivity,
     approveParticipant,
     rejectParticipant,
-    requestJoinActivity, // 导出新 action
+    cancelActivity,
+    completeActivity,
+    requestJoinActivity,
   }
 })
