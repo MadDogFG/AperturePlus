@@ -40,4 +40,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    hmr: {
+      // 强制对所有文件变化进行完全重载
+      overlay: false,
+    },
+  },
+  // 明确配置要监听的文件类型
+  optimizeDeps: {
+    include: ['**/*.ts', '**/*.vue'],
+  },
 })
