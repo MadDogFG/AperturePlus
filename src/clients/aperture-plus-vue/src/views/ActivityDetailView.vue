@@ -47,7 +47,7 @@
           </el-table-column>
           <el-table-column label="申请角色" width="120">
             <template #default="{ row }">
-              {{ getRoleString(row.role) === 'Photographer' ? '摄影师' : '模特' }}
+              {{ row.role === 'Photographer' ? '摄影师' : '模特' }}
             </template>
           </el-table-column>
           <el-table-column label="状态" width="120">
@@ -122,11 +122,11 @@
           <el-radio
             v-for="role in availableRolesForApplication"
             :key="role.role"
-            :label="getRoleString(role.role)"
+            :label="role.role"
             border
             size="large"
           >
-            {{ getRoleString(role.role) === 'Photographer' ? '摄影师' : '模特' }} (空缺
+            {{ role.role === 'Photographer' ? '摄影师' : '模特' }} (空缺
             {{ role.quantity - getApprovedCountForRole(role.role) }} 人)
           </el-radio>
         </el-radio-group>
@@ -195,10 +195,10 @@ onMounted(() => {
 const getApprovedCountForRole = (role: RoleType | number) => {
   // 允许接收数字或字符串
   // 将传入的参数统一转换为字符串形式
-  const targetRoleString = getRoleString(role)
+  const targetRoleString = role
   return (
     store.activity?.participants.filter(
-      (p) => getRoleString(p.role) === targetRoleString && p.status === 'Approved',
+      (p) => p.role === targetRoleString && p.status === 'Approved',
     ).length || 0
   )
 }
@@ -220,9 +220,9 @@ const isRoleFull = (role: RoleType | number) => {
 }
 
 // --- 所有者操作 ---
-const handleApprove = (applicantId: string, role: RoleType | number) => {
+const handleApprove = (applicantId: string, role: RoleType) => {
   if (!store.activity) return
-  store.approveParticipant(store.activity.activityId, applicantId, getRoleString(role))
+  store.approveParticipant(store.activity.activityId, applicantId, role)
 }
 
 const handleReject = (applicantId: string) => {
@@ -260,13 +260,6 @@ const statusText = (status: ParticipantStatus) => {
   if (status === 'Approved') return '已通过'
   if (status === 'Pending') return '待审核'
   return '已拒绝'
-}
-
-// 角色转换辅助函数 ---
-const getRoleString = (roleValue: number | RoleType): RoleType => {
-  if (roleValue === 0 || roleValue === 'Photographer') return 'Photographer'
-  if (roleValue === 1 || roleValue === 'Model') return 'Model'
-  return 'Model' // 默认或备用值
 }
 </script>
 

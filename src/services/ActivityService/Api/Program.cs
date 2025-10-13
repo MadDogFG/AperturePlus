@@ -8,6 +8,7 @@ using AperturePlus.ActivityService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using System.Text.Json.Serialization;
 
 namespace Api
 {
@@ -19,7 +20,11 @@ namespace Api
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                // 让序列化器将所有的 Enum 类型都转换成字符串形式
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

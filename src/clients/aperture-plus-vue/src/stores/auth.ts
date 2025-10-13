@@ -3,6 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useUserStore } from './user'
+import { useRatingStore } from './rating'
 
 export const useAuthStore = defineStore('auth', () => {
   // --- State ---
@@ -24,7 +25,9 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     // 退出时，不仅要清空自己的 token，也要清空 userStore 的数据
     const userStore = useUserStore()
+    const ratingStore = useRatingStore()
     userStore.clearProfile()
+    ratingStore.clearRatings()
 
     token.value = null
     localStorage.removeItem('token')

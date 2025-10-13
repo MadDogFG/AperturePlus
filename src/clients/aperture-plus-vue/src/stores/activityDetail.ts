@@ -88,8 +88,13 @@ export const useActivityDetailStore = defineStore('activityDetail', () => {
     try {
       const baseUrl = import.meta.env.VITE_API_ACTIVITY_BASE_URL
       await apiClient.post(
-        `${baseUrl}/activity/${activityId}/participants/${applicantId}/approve`,
-        { role: role.toString() },
+        `${baseUrl}/activity/ApproveParticipant/${activityId}/${applicantId}`,
+        null,
+        {
+          params: {
+            roleString: role,
+          },
+        },
       )
       _updateParticipantStatus(applicantId, 'Approved')
       ElMessage.success('已批准该用户')
@@ -102,7 +107,7 @@ export const useActivityDetailStore = defineStore('activityDetail', () => {
   async function rejectParticipant(activityId: string, applicantId: string) {
     try {
       const baseUrl = import.meta.env.VITE_API_ACTIVITY_BASE_URL
-      await apiClient.post(`${baseUrl}/activity/${activityId}/participants/${applicantId}/reject`)
+      await apiClient.post(`${baseUrl}/activity/RejectParticipant/${activityId}/${applicantId}`)
       _updateParticipantStatus(applicantId, 'Rejected')
       ElMessage.info('已拒绝/移除该用户')
     } catch (error) {
