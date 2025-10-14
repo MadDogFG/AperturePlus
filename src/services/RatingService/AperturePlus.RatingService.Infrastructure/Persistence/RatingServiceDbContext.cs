@@ -13,6 +13,8 @@ namespace AperturePlus.RatingService.Infrastructure.Persistence
     {
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<PendingRating> PendingRatings { get; set; }
+        public DbSet<UserSummary> UserSummaries { get; set; }
+        public DbSet<ActivitySummary> ActivitySummaries { get; set; }
 
         public RatingServiceDbContext(DbContextOptions options) : base(options)
         {

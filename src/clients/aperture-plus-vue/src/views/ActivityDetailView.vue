@@ -239,14 +239,10 @@ onMounted(() => {
   store.fetchActivity(activityId)
 })
 
-const getApprovedCountForRole = (role: RoleType | number) => {
-  // 允许接收数字或字符串
-  // 将传入的参数统一转换为字符串形式
-  const targetRoleString = role
+const getApprovedCountForRole = (role: RoleType): number => {
   return (
-    store.activity?.participants.filter(
-      (p) => p.role === targetRoleString && p.status === 'Approved',
-    ).length || 0
+    store.activity?.participants.filter((p) => p.role === role && p.status === 'Approved').length ||
+    0
   )
 }
 
@@ -257,6 +253,7 @@ const getRoleRequirement = (role: RoleType) => {
 const getRoleProgress = (role: RoleType) => {
   const approved = getApprovedCountForRole(role)
   const required = getRoleRequirement(role)
+  console.log(`角色: ${role}, 已批准: ${approved}, 总需求: ${required}`)
   return required > 0 ? (approved / required) * 100 : 0
 }
 
@@ -361,17 +358,24 @@ const activitystatusText = (status: string) => {
 .role-requirements {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem; /* 让每个角色需求之间有一点垂直间距 */
 }
+
 .role-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  display: flex; /* 关键！让标签和进度条在同一行 */
+  align-items: center; /* 垂直居中对齐 */
+  gap: 0.5rem; /* 在标签和进度条之间增加一点空隙 */
 }
+
 .role-item span {
-  width: 80px;
+  /* 给标签一个固定的最小宽度，防止因文字长短不一导致进度条对不齐 */
   flex-shrink: 0;
-  font-weight: 500;
+  width: 80px;
+}
+
+.role-item .el-progress {
+  flex-grow: 1; /* 关键！让进度条占据所有剩余的水平空间 */
+  width: 100%; /* 配合flex-grow，确保在某些情况下也能撑满 */
 }
 .participant-list {
   display: flex;
