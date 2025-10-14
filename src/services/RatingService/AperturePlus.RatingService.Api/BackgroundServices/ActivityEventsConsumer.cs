@@ -58,6 +58,7 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
             using var scope = scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<RatingServiceDbContext>();
             var pendingRatingRepository = scope.ServiceProvider.GetRequiredService<IPendingRatingRepository>();
+            var activitySummaryRepository = scope.ServiceProvider.GetRequiredService<IActivitySummaryRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
             switch (routingKey)
@@ -87,6 +88,12 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
                         {
                             await pendingRatingRepository.AddRangeAsync(pendingRatingsToAdd, cancellationToken);
                         }
+                    }
+                    
+                    if(cpEvent != null && !await dbContext.ActivitySummaries.AnyAsync(a => a.ActivityId == cpEvent.ActivityId))
+                    {
+                        var activitySummary = ActivitySummary.Create(cpEvent.ActivityId, cpEvent.ActivityTitle);
+                        await activitySummaryRepository.AddAsync(activitySummary, cancellationToken);
                     }
                     break;
 

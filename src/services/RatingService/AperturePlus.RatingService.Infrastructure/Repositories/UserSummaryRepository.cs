@@ -1,4 +1,5 @@
-﻿using AperturePlus.RatingService.Domain.Entities;
+﻿using AperturePlus.RatingService.Application.Interfaces;
+using AperturePlus.RatingService.Domain.Entities;
 using AperturePlus.RatingService.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.RatingService.Infrastructure.Repositories
 {
-    public class UserSummaryRepository
+    public class UserSummaryRepository:IUserSummaryRepository
     {
         private readonly RatingServiceDbContext dbContext;
         public UserSummaryRepository(RatingServiceDbContext dbContext)
