@@ -1,5 +1,6 @@
 ﻿using AperturePlus.RatingService.Api.DTOs;
 using AperturePlus.RatingService.Application.Commands;
+using AperturePlus.RatingService.Application.Queries;
 using AperturePlus.RatingService.Domain.Entities;
 using AperturePlus.RatingService.Domain.ValueObjects;
 using MediatR;
@@ -45,6 +46,54 @@ namespace AperturePlus.RatingService.Api.Controllers
             {
                 return BadRequest(new { Message = "评价失败" });
             }
+        }
+
+        [Authorize]
+        [HttpGet("my-received-ratings")]
+        public async Task<IActionResult> GetMyReceivedRatings()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            var query = new GetReceivedRatingsQuery(userId);
+            var result = await mediator.Send(query);
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("sent")]
+        public async Task<IActionResult> GetSentRatings()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
+            var query = new GetSentRatingsQuery(userId);
+            var result = await mediator.Send(query);
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var query = new GetRatingStatsQuery(userId);
+            var result = await mediator.Send(query);
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPendingRatings()
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var query = new GetPendingRatingsQuery(userId);
+            var result = await mediator.Send(query);
+            return Ok(result);
         }
     }
 }

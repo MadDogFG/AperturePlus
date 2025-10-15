@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace AperturePlus.RatingService.Application.Queries
 {
-    public record GetPendingRatingsQuery(Guid UserId) : IRequest<IEnumerable<PendingRatingDto>>;
+    public record GetSentRatingsQuery(Guid UserId) : IRequest<IEnumerable<SentRatingDto>>;
 
 }
