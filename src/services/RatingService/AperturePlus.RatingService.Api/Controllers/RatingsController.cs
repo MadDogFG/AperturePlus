@@ -1,12 +1,15 @@
 ﻿using AperturePlus.RatingService.Api.DTOs;
 using AperturePlus.RatingService.Application.Commands;
+using AperturePlus.RatingService.Application.Interfaces;
 using AperturePlus.RatingService.Application.Queries;
 using AperturePlus.RatingService.Domain.Entities;
 using AperturePlus.RatingService.Domain.ValueObjects;
+using AperturePlus.RatingService.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace AperturePlus.RatingService.Api.Controllers
@@ -80,7 +83,11 @@ namespace AperturePlus.RatingService.Api.Controllers
         [HttpGet("statistics")]
         public async Task<IActionResult> GetStatistics()
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
             var query = new GetRatingStatsQuery(userId);
             var result = await mediator.Send(query);
             return Ok(result);
@@ -90,7 +97,11 @@ namespace AperturePlus.RatingService.Api.Controllers
         [HttpGet("pending")]
         public async Task<IActionResult> GetPendingRatings()
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { Message = "无效的用户ID" });
+            }
             var query = new GetPendingRatingsQuery(userId);
             var result = await mediator.Send(query);
             return Ok(result);
