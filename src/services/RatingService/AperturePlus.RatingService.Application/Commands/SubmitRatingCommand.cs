@@ -10,19 +10,19 @@ namespace AperturePlus.RatingService.Application.Commands
 {
     public record class SubmitRatingCommand:IRequest<bool>
     {
-        public Guid ActivityId { get; private set; }
-        public Guid RateByUserId { get; private set; }
-        public Guid RateToUserId { get; private set; }
-        public RoleType RatedUserRole { get; private set; }
-        public int Score { get; private set; }
-        public string? Comments { get; private set; }
+        //评价记录的唯一ID，由前端从“待评价列表”中获取
+        public Guid RatingId { get; init; }
 
-        public SubmitRatingCommand(Guid activityId, Guid rateByUserId, Guid rateToUserId, RoleType ratedUserRole, int score, string? comments)
+        //评价者的ID，从Token中获取，用于安全校验
+        public Guid RateByUserId { get; init; }
+
+        public int Score { get; init; }
+        public string? Comments { get; init; }
+
+        public SubmitRatingCommand(Guid ratingId, Guid rateByUserId, int score, string? comments)
         {
-            ActivityId = activityId;
+            RatingId = ratingId;
             RateByUserId = rateByUserId;
-            RateToUserId = rateToUserId;
-            RatedUserRole = ratedUserRole;
             Score = score;
             Comments = comments;
         }

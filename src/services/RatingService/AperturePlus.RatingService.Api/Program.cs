@@ -101,8 +101,8 @@ namespace AperturePlus.RatingService.Api
             });
             
             builder.Services.AddHostedService<ActivityEventsConsumer>();//注册后台消费者服务
+            builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
             builder.Services.AddScoped<IRatingRepository, RatingRepository>();
-            builder.Services.AddScoped<IPendingRatingRepository, PendingRatingRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();

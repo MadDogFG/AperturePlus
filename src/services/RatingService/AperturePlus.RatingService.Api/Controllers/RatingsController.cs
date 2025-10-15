@@ -1,5 +1,6 @@
 ﻿using AperturePlus.RatingService.Api.DTOs;
 using AperturePlus.RatingService.Application.Commands;
+using AperturePlus.RatingService.Domain.Entities;
 using AperturePlus.RatingService.Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,23 +21,18 @@ namespace AperturePlus.RatingService.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("SubmitRating")]
-        public async Task<IActionResult> SubmitRating(SubmitRatingRequest request)
+        [HttpPost("submit/{ratingId}")]
+        public async Task<IActionResult> SubmitRating(Guid ratingId, [FromBody] SubmitRatingRequest request)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
             {
                 return Unauthorized(new { Message = "无效的用户ID" });
             }
-            if (!Enum.TryParse<RoleType>(request.RatedUserRoleString, out RoleType roleType))
-            {
-                return BadRequest(new { Message = $"无效角色名:{request.RatedUserRoleString}" });
-            }
+
             var command = new SubmitRatingCommand(
-                request.ActivityId,
+                ratingId,
                 userId,
-                request.RateToUserId,
-                roleType,
                 request.Score,
                 request.Comments
             );

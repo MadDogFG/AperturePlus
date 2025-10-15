@@ -14,29 +14,42 @@ namespace AperturePlus.RatingService.Domain.Entities
         public Guid RateByUserId { get; private set; }//评价者
         public Guid RateToUserId { get; private set; }//被评价者
         public RoleType RatedUserRole { get; private set; }//被评价者的角色
-        public int Score { get; private set; }
+        public RatingStatus Status { get; private set; }
+        public int? Score { get; private set; }
         public string? Comments { get; private set; }
-        public DateTime CreatedAt { get; private set; } 
+        public DateTime CreatedAt { get; private set; }
+        public DateTime? SubmittedAt { get; private set; }//提交时间
 
-        private Rating(Guid ratingId, Guid activityId, Guid rateByUserId, Guid rateToUserId, RoleType ratedUserRole, int score, string? comments)
+        private Rating() { }
+        public static Rating CreatePending(Guid activityId, Guid rateByUserId, Guid rateToUserId, RoleType ratedUserRole)
         {
-            RatingId = ratingId;
-            ActivityId = activityId;
-            RateByUserId = rateByUserId;
-            RateToUserId = rateToUserId;
-            RatedUserRole = ratedUserRole;
-            Score = score;
-            Comments = comments;
-            CreatedAt = DateTime.UtcNow;
+            return new Rating
+            {
+                RatingId = Guid.NewGuid(),
+                ActivityId = activityId,
+                RateByUserId = rateByUserId,
+                RateToUserId = rateToUserId,
+                RatedUserRole = ratedUserRole,
+                Status = RatingStatus.Pending, // 状态为 Pending
+                CreatedAt = DateTime.UtcNow
+            };
         }
 
-        public static Rating CreateRating(Guid activityId, Guid rateByUserId, Guid rateToUserId, RoleType ratedUserRole, int score, string? comments)
+        public void Submit(int score, string? comments)
         {
+            if (Status != RatingStatus.Pending)
+            {
+                throw new InvalidOperationException("已评价过，请勿重复评价");
+            }
             if (score <= 1 || score >= 10)
             {
-                throw new ArgumentOutOfRangeException(nameof(score), "评分必须在1到10之间");
+                throw new ArgumentOutOfRangeException(nameof(score), "评分要在1到10之间");
             }
-            return new Rating(Guid.NewGuid(), activityId, rateByUserId, rateToUserId, ratedUserRole, score, comments);
+
+            Score = score;
+            Comments = comments;
+            Status = RatingStatus.Completed; // 状态变为 Completed
+            SubmittedAt = DateTime.UtcNow;
         }
     }
 }

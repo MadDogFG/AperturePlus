@@ -3,6 +3,7 @@ using AperturePlus.RatingService.Application.Interfaces;
 using AperturePlus.RatingService.Domain.Entities;
 using AperturePlus.RatingService.Domain.ValueObjects;
 using AperturePlus.RatingService.Infrastructure.Persistence;
+using AperturePlus.RatingService.Infrastructure.Repositories;
 using Contracts;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
@@ -57,7 +58,7 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
             //BackgroundService是单例的，而DbContext是Scoped的，所以我们必须创建一个新的作用域来安全地解析DbContext。
             using var scope = scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<RatingServiceDbContext>();
-            var pendingRatingRepository = scope.ServiceProvider.GetRequiredService<IPendingRatingRepository>();
+            var ratingRepository = scope.ServiceProvider.GetRequiredService<IRatingRepository>();
             var activitySummaryRepository = scope.ServiceProvider.GetRequiredService<IActivitySummaryRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -65,16 +66,16 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
             {
                 case "activity.completed":
                     var cpEvent = JsonSerializer.Deserialize<ActivityCompletedIntegrationEvent>(message);
-                    if (cpEvent != null && !await dbContext.PendingRatings.AnyAsync(p=>p.ActivityId== cpEvent.ActivityId))
+                    if (cpEvent != null && !await dbContext.Ratings.AnyAsync(p=>p.ActivityId== cpEvent.ActivityId))
                     {
-                        var pendingRatingsToAdd = new List<PendingRating>();
+                        var pendingRatingsToAdd = new List<Rating>();
                         foreach (var rateByUserId in cpEvent.Participants)
                         {
                             foreach(var rateToUserId in cpEvent.Participants)
                             {
                                 if(rateByUserId.UserId != rateToUserId.UserId)
                                 {
-                                    var pendingRating = PendingRating.Create(
+                                    var pendingRating = Rating.CreatePending(
                                         cpEvent.ActivityId,
                                         rateByUserId.UserId,
                                         rateToUserId.UserId,
@@ -84,10 +85,8 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
                                 }
                             }
                         }
-                        if (pendingRatingsToAdd.Any())
-                        {
-                            await pendingRatingRepository.AddRangeAsync(pendingRatingsToAdd, cancellationToken);
-                        }
+                        await ratingRepository.AddRangeAsync(pendingRatingsToAdd, cancellationToken);
+                        await unitOfWork.SaveChangesAsync(cancellationToken);
                     }
                     
                     if(cpEvent != null && !await dbContext.ActivitySummaries.AnyAsync(a => a.ActivityId == cpEvent.ActivityId))
