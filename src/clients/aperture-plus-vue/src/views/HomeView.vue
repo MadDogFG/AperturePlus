@@ -70,7 +70,12 @@
       </el-row>
 
       <el-divider>角色需求</el-divider>
-
+      <el-form-item label="请选择您在此活动中的角色（必选）">
+        <el-radio-group v-model="activityForm.creatorRole">
+          <el-radio-button label="Photographer">我是摄影师</el-radio-button>
+          <el-radio-button label="Model">我是模特</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="需要几位摄影师？">
@@ -96,18 +101,36 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="isDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleCreateActivity"> 确认创建 </el-button>
+        <el-button type="primary" @click="handleCreateActivity" :loading="isEnrolling">
+          确认创建
+        </el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+// 文件: src/views/HomeView.vue -> <script>
+
+import { ref, onMounted } from 'vue'
 import { useActivityStore } from '@/stores/activity'
+import { useActivityDetailStore } from '@/stores/activityDetail' // [!code ++]
+import { useUserStore } from '@/stores/user' // [!code ++]
 import ActivityCard from '@/components/activity/ActivityCard.vue'
-// 代码块 1.3: 添加弹窗控制和表单数据的 ref
+import { ElMessage } from 'element-plus'
+
+const activityStore = useActivityStore()
+onMounted(() => {
+  // 如果列表是空的，就去获取第一页数据
+  if (activityStore.activities.length === 0) {
+    activityStore.fetchActivities()
+  }
+})
+const activityDetailStore = useActivityDetailStore() // [!code ++]
+const userStore = useUserStore() // [!code ++]
+
 const isDialogVisible = ref(false)
+const isEnrolling = ref(false) // [!code ++] 新增加载状态
 
 const activityForm = ref({
   activityTitle: '',
@@ -116,60 +139,45 @@ const activityForm = ref({
   fee: 0,
   photographerCount: 1,
   modelCount: 1,
-  location: '', // 暂时简化地点
+  location: '',
+  creatorRole: '',
 })
-const activityStore = useActivityStore()
 
-// --- 下拉加载逻辑 ---
-const observer = ref<IntersectionObserver | null>(null)
-
+// [!code focus start]
 const handleCreateActivity = async () => {
-  // 调用 store里的 action，并把表单数据传过去
-  const success = await activityStore.createActivity(activityForm.value)
+  isEnrolling.value = true
 
-  // 如果 store action 返回 true (表示成功)
-  if (success) {
-    isDialogVisible.value = false // 关闭弹窗
-    // 重置表单，方便下次填写
-    activityForm.value = {
-      activityTitle: '',
-      activityDescription: '',
-      activityStartTime: '',
-      fee: 0,
-      photographerCount: 1,
-      modelCount: 1,
-      location: '',
-    }
+  // --- 第1步: 创建活动 ---
+  const creationResult = await activityStore.createActivity(activityForm.value)
+
+  if (!creationResult || !creationResult.successed) {
+    ElMessage.error('活动创建失败，请稍后再试。')
+    isEnrolling.value = false
+    return
+  }
+
+  const activityId = creationResult.activityId
+  const creatorRole = activityForm.value.creatorRole as 'Photographer' | 'Model'
+  const creatorId = userStore.profile!.userId
+
+  try {
+    // --- 第2步: 申请加入 ---
+    await activityDetailStore.requestJoinActivity(activityId, creatorRole)
+
+    // --- 第3步: 批准自己 ---
+    // 注意: approveParticipant 需要 activityId, applicantId, role
+    await activityDetailStore.approveParticipant(activityId, creatorId, creatorRole)
+
+    ElMessage.success('您已成功作为发起人加入活动！')
+    isDialogVisible.value = false // 全部成功后关闭弹窗
+  } catch (error) {
+    console.error('自动报名或批准失败:', error)
+    ElMessage.error('自动报名失败，请稍后在活动详情页手动加入。')
+  } finally {
+    isEnrolling.value = false
   }
 }
-
-onMounted(() => {
-  // 如果是首次加载，获取数据
-  if (activityStore.activities.length === 0) {
-    activityStore.fetchActivities()
-  }
-
-  // 设置 IntersectionObserver 来实现无限滚动加载
-  const sentinelEl = document.querySelector('.load-more-sentinel')
-  if (sentinelEl) {
-    observer.value = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && activityStore.hasMore && !activityStore.isLoading) {
-          activityStore.fetchActivities()
-        }
-      },
-      { threshold: 1.0 },
-    )
-    observer.value.observe(sentinelEl)
-  }
-})
-
-onUnmounted(() => {
-  // 组件卸载时停止监听
-  if (observer.value) {
-    observer.value.disconnect()
-  }
-})
+// [!code focus end]
 </script>
 
 <style scoped>

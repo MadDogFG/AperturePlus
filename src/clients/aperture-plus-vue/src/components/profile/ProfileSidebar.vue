@@ -48,6 +48,12 @@
           <span>作品集</span>
         </el-menu-item>
       </RouterLink>
+      <RouterLink to="/profile/history" v-slot="{ navigate, isActive }">
+        <el-menu-item :class="{ 'is-active': isActive }" @click="navigate">
+          <el-icon><i-ep-clock /></el-icon>
+          <span>活动历史</span>
+        </el-menu-item>
+      </RouterLink>
       <RouterLink to="/profile/ratings" v-slot="{ navigate, isActive }">
         <el-menu-item :class="{ 'is-active': isActive }" @click="navigate">
           <el-icon><i-ep-star-filled /></el-icon>

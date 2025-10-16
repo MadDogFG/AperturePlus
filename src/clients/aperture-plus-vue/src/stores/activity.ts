@@ -5,6 +5,7 @@ import { ref } from 'vue'
 import type { Activity } from '@/types/activity'
 import { ElMessage } from 'element-plus' // 引入 ElMessage 用于提示
 import apiClient from '@/api/axios' // 复用我们配置好的axios实例
+import { useUserStore } from './user'
 
 export const useActivityStore = defineStore('activity', () => {
   // --- State ---
@@ -12,6 +13,8 @@ export const useActivityStore = defineStore('activity', () => {
   const page = ref(1)
   const hasMore = ref(true) // 是否还有更多数据可以加载
   const isLoading = ref(false) // 是否正在加载中，防止重复请求
+  const activityHistory = ref<Activity[]>([])
+  const isHistoryLoading = ref(false)
 
   // --- Actions ---
   async function fetchActivities() {
@@ -50,19 +53,29 @@ export const useActivityStore = defineStore('activity', () => {
   }
 
   async function createActivity(activityData: any) {
-    // 1. 从表单数据中构建后端需要的 RoleRequirements 数组
-    const roleRequirements = []
-    if (activityData.photographerCount > 0) {
-      roleRequirements.push({ role: 0, quantity: activityData.photographerCount })
-    }
-    if (activityData.modelCount > 0) {
-      roleRequirements.push({ role: 1, quantity: activityData.modelCount })
+    // [!code focus start]
+    // 1. 前端验证：创建者必须选择一个角色
+    if (!activityData.creatorRole) {
+      ElMessage.error('您必须选择自己在活动中的角色')
+      return false
     }
 
-    // 2. 检查至少需要一个角色
-    if (roleRequirements.length === 0) {
-      ElMessage.error('至少需要设置一个角色（摄影师或模特）的数量')
-      return false
+    // 2. 根据创建者的角色，计算最终需要的角色数量
+    let requiredPhotographers = activityData.photographerCount
+    let requiredModels = activityData.modelCount
+    if (activityData.creatorRole === 'Photographer') {
+      requiredPhotographers += 1 // 加上创建者本人
+    } else {
+      requiredModels += 1 // 加上创建者本人
+    }
+
+    // 3. 构建 RoleRequirements 数组
+    const roleRequirements = []
+    if (requiredPhotographers > 0) {
+      roleRequirements.push({ role: 'Photographer', quantity: requiredPhotographers })
+    }
+    if (requiredModels > 0) {
+      roleRequirements.push({ role: 'Model', quantity: requiredModels })
     }
 
     // 3. 构建将要发送给后端的最终数据
@@ -81,20 +94,19 @@ export const useActivityStore = defineStore('activity', () => {
     try {
       const baseUrl = import.meta.env.VITE_API_ACTIVITY_BASE_URL
       // 4. 发送 POST 请求到后端API
-      await apiClient.post(`${baseUrl}/activity/CreateActivity`, payload)
-
-      ElMessage.success('活动创建成功！')
+      const response = await apiClient.post(`${baseUrl}/activity/CreateActivity`, payload)
+      ElMessage.success('活动创建成功！正在为您报名...')
 
       // 5. 成功后重置活动列表并重新加载第一页
       reset()
       await fetchActivities()
 
-      return true // 返回 true 表示成功
+      return response.data // 返回 true 表示成功
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || '创建活动失败，请检查填写的内容。'
       ElMessage.error(errorMsg)
       console.error('创建活动失败:', error)
-      return false // 返回 false 表示失败
+      return null
     }
   }
 
@@ -114,7 +126,37 @@ export const useActivityStore = defineStore('activity', () => {
     }
   }
 
+  async function fetchActivityHistory() {
+    const userStore = useUserStore()
+    if (!userStore.profile) {
+      ElMessage.error('无法获取用户信息，请重新登录。')
+      return
+    }
+
+    isHistoryLoading.value = true
+    try {
+      const baseUrl = import.meta.env.VITE_API_ACTIVITY_BASE_URL
+
+      // 第一步：发起API请求并等待它完成。注意括号在这里结束。
+      const response = await apiClient.get<Activity[]>(
+        `${baseUrl}/activity/GetActivitiesByUserId/${userStore.profile.userId}`,
+      ) // [!code focus] <-- API 调用在这里结束
+
+      // 第二步：在API调用成功后，使用返回的 response 来处理数据。
+      activityHistory.value = response.data.filter(
+        // [!code focus]
+        (act) => act.status === 'Completed' || act.status === 'Cancelled',
+      )
+    } catch (error) {
+      console.error('获取活动历史失败:', error)
+      ElMessage.error('加载活动历史失败')
+    } finally {
+      isHistoryLoading.value = false
+    }
+  }
+
   return {
+    // 已有的
     activities,
     hasMore,
     isLoading,
@@ -122,5 +164,10 @@ export const useActivityStore = defineStore('activity', () => {
     reset,
     updateActivityInList,
     createActivity,
+
+    // 新增的
+    activityHistory,
+    isHistoryLoading,
+    fetchActivityHistory,
   }
 })

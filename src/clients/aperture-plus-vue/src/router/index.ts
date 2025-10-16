@@ -7,6 +7,7 @@ import ProfilePortfolio from '@/components/profile/ProfilePortfolio.vue'
 import ProfileRatings from '@/components/profile/ProfileRatings.vue'
 import GalleryDetailView from '../views/GalleryDetailView.vue'
 import ActivityDetailView from '../views/ActivityDetailView.vue'
+import ActivityHistory from '@/components/profile/ActivityHistory.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,11 @@ const router = createRouter({
           path: 'ratings', // 匹配 /profile/ratings
           name: 'profile-ratings',
           component: ProfileRatings,
+        },
+        {
+          path: 'history', // 匹配 /profile/history
+          name: 'profile-history',
+          component: ActivityHistory,
         },
       ],
     },

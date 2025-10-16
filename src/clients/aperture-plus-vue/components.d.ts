@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ActivityCard: typeof import('./src/components/activity/ActivityCard.vue')['default']
+    ActivityHistory: typeof import('./src/components/profile/ActivityHistory.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
@@ -28,7 +29,9 @@ declare module 'vue' {
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElProgress: typeof import('element-plus/es')['ElProgress']
     ElRadio: typeof import('element-plus/es')['ElRadio']
+    ElRadioButton: typeof import('element-plus/es')['ElRadioButton']
     ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
+    ElRate: typeof import('element-plus/es')['ElRate']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
     ElTable: typeof import('element-plus/es')['ElTable']
@@ -37,6 +40,7 @@ declare module 'vue' {
     ElText: typeof import('element-plus/es')['ElText']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     IEpCalendar: typeof import('~icons/ep/calendar')['default']
+    IEpClock: typeof import('~icons/ep/clock')['default']
     IEpLocation: typeof import('~icons/ep/location')['default']
     IEpPictureRounded: typeof import('~icons/ep/picture-rounded')['default']
     IEpPlus: typeof import('~icons/ep/plus')['default']

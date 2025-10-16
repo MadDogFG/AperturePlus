@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ReceivedRating } from '@/types/rating'
+import type { ReceivedRating, PendingRatingDto } from '@/types/rating'
 import apiClient from '@/api/axios'
 import { ElMessage } from 'element-plus'
 
@@ -8,6 +8,9 @@ export const useRatingStore = defineStore('rating', () => {
   // --- State ---
   const receivedRatings = ref<ReceivedRating[]>([])
   const isLoading = ref(false)
+  const pendingRatings = ref<PendingRatingDto[]>([])
+  const isPendingLoading = ref(false)
+  const isSubmitting = ref(false)
 
   // --- Actions ---
   async function fetchReceivedRatings() {
@@ -35,10 +38,61 @@ export const useRatingStore = defineStore('rating', () => {
     receivedRatings.value = []
   }
 
+  async function fetchPendingRatings() {
+    isPendingLoading.value = true
+    try {
+      const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL
+      const response = await apiClient.get<Omit<PendingRatingDto, 'score' | 'comments'>[]>(
+        `${baseUrl}/ratings/pending`,
+      )
+      // [!code focus start]
+      // 关键修复：为每个从后端获取的任务，手动补充前端v-model需要的字段
+      pendingRatings.value = response.data.map((p) => ({
+        ...p,
+        score: 0,
+        comments: '',
+      }))
+      // [!code focus end]
+    } catch (error) {
+      console.error('获取待评价列表失败:', error)
+      ElMessage.error('加载待评价任务失败')
+    } finally {
+      isPendingLoading.value = false
+    }
+  }
+
+  async function submitRating(payload: { ratingId: string; score: number; comments?: string }) {
+    isSubmitting.value = true
+    try {
+      const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL
+      await apiClient.post(`${baseUrl}/ratings/submit/${payload.ratingId}`, {
+        score: payload.score,
+        comments: payload.comments,
+      })
+
+      // [!code focus start]
+      // 关键修复：不再重新请求API，而是直接从本地数组中移除已完成的项
+      pendingRatings.value = pendingRatings.value.filter((p) => p.ratingId !== payload.ratingId)
+      // [!code focus end]
+      return true // 返回成功状态
+    } catch (error) {
+      console.error('提交评价失败:', error)
+      ElMessage.error('提交评价失败')
+      return false // 返回失败状态
+    } finally {
+      isSubmitting.value = false
+    }
+  }
+
   return {
     receivedRatings,
     isLoading,
     fetchReceivedRatings,
     clearRatings,
+    pendingRatings,
+    isPendingLoading,
+    isSubmitting,
+    fetchPendingRatings,
+    submitRating,
   }
 })
