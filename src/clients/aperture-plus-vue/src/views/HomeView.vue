@@ -27,7 +27,7 @@
         <ActivityCard :activity="activity" />
       </RouterLink>
 
-      <div class="load-more-sentinel">
+      <div ref="loadMoreSentinel" class="load-more-sentinel">
         <p v-if="activityStore.isLoading">正在加载更多...</p>
         <p v-if="!activityStore.hasMore && !activityStore.isLoading">没有更多活动了</p>
       </div>
@@ -110,27 +110,17 @@
 </template>
 
 <script setup lang="ts">
-// 文件: src/views/HomeView.vue -> <script>
+// 文件: HomeView.vue -> <script setup lang="ts">
 
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue' // <-- 导入 onUnmounted
 import { useActivityStore } from '@/stores/activity'
-import { useActivityDetailStore } from '@/stores/activityDetail' // [!code ++]
-import { useUserStore } from '@/stores/user' // [!code ++]
 import ActivityCard from '@/components/activity/ActivityCard.vue'
 import { ElMessage } from 'element-plus'
 
 const activityStore = useActivityStore()
-onMounted(() => {
-  // 如果列表是空的，就去获取第一页数据
-  if (activityStore.activities.length === 0) {
-    activityStore.fetchActivities()
-  }
-})
-const activityDetailStore = useActivityDetailStore() // [!code ++]
-const userStore = useUserStore() // [!code ++]
 
 const isDialogVisible = ref(false)
-const isEnrolling = ref(false) // [!code ++] 新增加载状态
+const isEnrolling = ref(false)
 
 const activityForm = ref({
   activityTitle: '',
@@ -143,41 +133,52 @@ const activityForm = ref({
   creatorRole: '',
 })
 
-// [!code focus start]
 const handleCreateActivity = async () => {
   isEnrolling.value = true
-
-  // --- 第1步: 创建活动 ---
   const creationResult = await activityStore.createActivity(activityForm.value)
 
-  if (!creationResult || !creationResult.successed) {
+  if (!creationResult || !creationResult.succeeded) {
     ElMessage.error('活动创建失败，请稍后再试。')
     isEnrolling.value = false
     return
   }
-
-  const activityId = creationResult.activityId
-  const creatorRole = activityForm.value.creatorRole as 'Photographer' | 'Model'
-  const creatorId = userStore.profile!.userId
-
-  try {
-    // --- 第2步: 申请加入 ---
-    await activityDetailStore.requestJoinActivity(activityId, creatorRole)
-
-    // --- 第3步: 批准自己 ---
-    // 注意: approveParticipant 需要 activityId, applicantId, role
-    await activityDetailStore.approveParticipant(activityId, creatorId, creatorRole)
-
-    ElMessage.success('您已成功作为发起人加入活动！')
-    isDialogVisible.value = false // 全部成功后关闭弹窗
-  } catch (error) {
-    console.error('自动报名或批准失败:', error)
-    ElMessage.error('自动报名失败，请稍后在活动详情页手动加入。')
-  } finally {
-    isEnrolling.value = false
-  }
+  // ... 如果成功，你可能还想关闭弹窗等
+  isDialogVisible.value = false
+  isEnrolling.value = false
 }
-// [!code focus end]
+
+// --- 分页逻辑开始 ---
+
+const loadMoreSentinel = ref<HTMLDivElement | null>(null)
+let observer: IntersectionObserver | null = null
+
+onMounted(() => {
+  if (activityStore.activities.length === 0) {
+    activityStore.fetchActivities()
+  }
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      const firstEntry = entries[0]
+      if (firstEntry.isIntersecting && !activityStore.isLoading && activityStore.hasMore) {
+        activityStore.fetchActivities()
+      }
+    },
+    { threshold: 0.1 },
+  )
+
+  if (loadMoreSentinel.value) {
+    observer.observe(loadMoreSentinel.value)
+  }
+})
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect()
+  }
+})
+
+// --- 分页逻辑结束 ---
 </script>
 
 <style scoped>

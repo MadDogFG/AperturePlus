@@ -55,12 +55,10 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
 
         private async Task ProcessEvent(string routingKey, string message, CancellationToken cancellationToken)
         {
+            Console.WriteLine($"-----{routingKey},{message}-----");
             //BackgroundService是单例的，而DbContext是Scoped的，所以我们必须创建一个新的作用域来安全地解析DbContext。
             using var scope = scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<RatingServiceDbContext>();
-            var ratingRepository = scope.ServiceProvider.GetRequiredService<IRatingRepository>();
-            var activitySummaryRepository = scope.ServiceProvider.GetRequiredService<IActivitySummaryRepository>();
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
             switch (routingKey)
             {
@@ -85,14 +83,13 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
                                 }
                             }
                         }
-                        await ratingRepository.AddRangeAsync(pendingRatingsToAdd, cancellationToken);
-                        await unitOfWork.SaveChangesAsync(cancellationToken);
+                        await dbContext.Ratings.AddRangeAsync(pendingRatingsToAdd, cancellationToken);
                     }
                     
                     if(cpEvent != null && !await dbContext.ActivitySummaries.AnyAsync(a => a.ActivityId == cpEvent.ActivityId))
                     {
                         var activitySummary = ActivitySummary.Create(cpEvent.ActivityId, cpEvent.ActivityTitle);
-                        await activitySummaryRepository.AddAsync(activitySummary, cancellationToken);
+                        await dbContext.ActivitySummaries.AddAsync(activitySummary, cancellationToken);
                     }
                     break;
 
@@ -100,7 +97,7 @@ namespace AperturePlus.RatingService.Api.BackgroundServices
                     //未来其他事件
                     break;
             }
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)

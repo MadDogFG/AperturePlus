@@ -31,7 +31,8 @@ namespace AperturePlus.ActivityService.Application.Handlers
                     request.ActivityStartTime,
                     request.PostedByUserId,
                     request.Fee,
-                    request.RoleRequirements
+                    request.RoleRequirements,
+                    request.CreatorRole
             );
             await activityRepository.AddActivityAsync(activity,cancellationToken);
             int result = await unitOfWork.SaveChangesAsync(cancellationToken);

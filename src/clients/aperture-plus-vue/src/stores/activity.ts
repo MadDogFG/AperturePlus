@@ -28,7 +28,7 @@ export const useActivityStore = defineStore('activity', () => {
       const response = await apiClient.get(`${baseUrl}/activity/GetAllActivity`, {
         params: {
           page: page.value,
-          pagesize: 10, // 每次加载10条
+          pagesize: 50, // 每次加载10条
         },
       })
       console.log(response)
@@ -89,18 +89,17 @@ export const useActivityStore = defineStore('activity', () => {
       activityStartTime: activityData.activityStartTime,
       fee: activityData.fee,
       roleRequirements: roleRequirements,
+      creatorRole: activityData.creatorRole,
     }
 
     try {
       const baseUrl = import.meta.env.VITE_API_ACTIVITY_BASE_URL
       // 4. 发送 POST 请求到后端API
       const response = await apiClient.post(`${baseUrl}/activity/CreateActivity`, payload)
-      ElMessage.success('活动创建成功！正在为您报名...')
-
+      ElMessage.success('活动创建成功')
       // 5. 成功后重置活动列表并重新加载第一页
       reset()
       await fetchActivities()
-
       return response.data // 返回 true 表示成功
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || '创建活动失败，请检查填写的内容。'

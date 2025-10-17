@@ -39,9 +39,9 @@ namespace AperturePlus.ActivityService.Domain.Entities
             RoleRequirements = roleRequirements;
         }
 
-        public static Activity CreateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, Decimal fee, List<RoleRequirement> roleRequirements)
+        public static Activity CreateActivity(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, Decimal fee, List<RoleRequirement> roleRequirements, RoleType creatorRole)
         {
-            return new Activity(
+            var activity = new Activity(
                 activityId: Guid.NewGuid(),
                 activityTitle: activityTitle,
                 activityDescription: activityDescription,
@@ -52,6 +52,10 @@ namespace AperturePlus.ActivityService.Domain.Entities
                 fee: fee,
                 roleRequirements: roleRequirements
             );
+            var creatorAsParticipant = new Participant(postedByUserId, creatorRole);
+            activity.Participants.Add(creatorAsParticipant);
+            activity.ApproveParticipant(postedByUserId, creatorRole);
+            return activity;
         }
 
         public void UpdateActivity(string? activityTitle, string? activityDescription, Location? activityLocation, DateTime? activityStartTime, Decimal? fee, List<RoleRequirement>? roleRequirements)

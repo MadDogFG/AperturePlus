@@ -26,6 +26,10 @@ namespace AperturePlus.ActivityService.Api.Controllers
         [HttpPost("CreateActivity")]
         public async Task<IActionResult> CreateActivity([FromBody] CreateActivityRequest request)
         {
+            if (!Enum.TryParse<RoleType>(request.CreatorRole, true, out var creatorRole))
+            {
+                return BadRequest(new { Message = "无效的创建者角色" });
+            }
             CreateActivityCommand command = new CreateActivityCommand(
                 request.ActivityTitle,
                 request.ActivityDescription,
@@ -33,7 +37,8 @@ namespace AperturePlus.ActivityService.Api.Controllers
                 request.ActivityStartTime,
                 Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),//从User.Claims中获取用户ID（ControllerBase提供的）
                 request.Fee,
-                request.RoleRequirements
+                request.RoleRequirements,
+                creatorRole
             );
             var result = await mediator.Send(command);
             if (result.Successed)

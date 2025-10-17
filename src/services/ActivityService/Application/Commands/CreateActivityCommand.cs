@@ -18,8 +18,9 @@ namespace AperturePlus.ActivityService.Application.Commands
         public Guid PostedByUserId { get; private set; } //发布活动的用户ID
         public Decimal Fee { get; set; } //活动费用
         public List<RoleRequirement> RoleRequirements { get; set; } = new List<RoleRequirement>(); //角色需求列表
+        public RoleType CreatorRole { get; private set; }
 
-        public CreateActivityCommand(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, decimal fee, List<RoleRequirement> roleRequirements)
+        public CreateActivityCommand(string activityTitle, string activityDescription, Location activityLocation, DateTime activityStartTime, Guid postedByUserId, decimal fee, List<RoleRequirement> roleRequirements, RoleType creatorRole)
         {
             ActivityTitle = activityTitle;
             ActivityDescription = activityDescription;
@@ -28,6 +29,7 @@ namespace AperturePlus.ActivityService.Application.Commands
             PostedByUserId = postedByUserId;
             Fee = fee;
             RoleRequirements = roleRequirements;
+            CreatorRole = creatorRole;
         }
     }
 }
