@@ -28,7 +28,7 @@ export const useActivityStore = defineStore('activity', () => {
       const response = await apiClient.get(`${baseUrl}/activity/GetAllActivity`, {
         params: {
           page: page.value,
-          pagesize: 50, // 每次加载10条
+          pagesize: 10, // 每次加载10条
         },
       })
       console.log(response)

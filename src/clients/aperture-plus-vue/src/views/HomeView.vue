@@ -110,12 +110,12 @@
 </template>
 
 <script setup lang="ts">
-// 文件: HomeView.vue -> <script setup lang="ts">
-
-import { ref, onMounted, onUnmounted } from 'vue' // <-- 导入 onUnmounted
+import { ref, onMounted, onUnmounted, nextTick } from 'vue' // 确保导入了 nextTick
 import { useActivityStore } from '@/stores/activity'
 import ActivityCard from '@/components/activity/ActivityCard.vue'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const activityStore = useActivityStore()
 
@@ -136,8 +136,7 @@ const activityForm = ref({
 const handleCreateActivity = async () => {
   isEnrolling.value = true
   const creationResult = await activityStore.createActivity(activityForm.value)
-
-  if (!creationResult || !creationResult.succeeded) {
+  if (!creationResult || !creationResult.activityId) {
     ElMessage.error('活动创建失败，请稍后再试。')
     isEnrolling.value = false
     return
@@ -145,21 +144,29 @@ const handleCreateActivity = async () => {
   // ... 如果成功，你可能还想关闭弹窗等
   isDialogVisible.value = false
   isEnrolling.value = false
+  activityStore.reset() // 清空旧的列表数据
+  await router.push('/home') // 跳转回首页
+  window.location.reload() // 强制刷新页面以加载新活动
 }
 
 // --- 分页逻辑开始 ---
 
 const loadMoreSentinel = ref<HTMLDivElement | null>(null)
 let observer: IntersectionObserver | null = null
-
-onMounted(() => {
-  if (activityStore.activities.length === 0) {
-    activityStore.fetchActivities()
+/**
+ * 提取出一个设置观察者的函数
+ * 这样可以在不同时机（挂载后、加载后）复用
+ */
+const setupObserver = () => {
+  // 确保在附加新观察者之前断开旧的
+  if (observer) {
+    observer.disconnect()
   }
 
   observer = new IntersectionObserver(
     (entries) => {
       const firstEntry = entries[0]
+      // 当哨兵元素进入视口、不在加载中、且还有更多数据时，加载下一页
       if (firstEntry.isIntersecting && !activityStore.isLoading && activityStore.hasMore) {
         activityStore.fetchActivities()
       }
@@ -167,12 +174,46 @@ onMounted(() => {
     { threshold: 0.1 },
   )
 
-  if (loadMoreSentinel.value) {
-    observer.observe(loadMoreSentinel.value)
+  // 使用 nextTick 确保 DOM 元素 (loadMoreSentinel) 已经渲染完毕
+  nextTick(() => {
+    console.log(
+      '%c[关键日志 2] nextTick 执行。此时 哨兵元素 (loadMoreSentinel) 是:',
+      'color: orange',
+      loadMoreSentinel.value,
+    )
+
+    if (loadMoreSentinel.value) {
+      console.log('%c[关键日志 3] 成功：观察者已附加', 'color: green')
+      observer.observe(loadMoreSentinel.value)
+    } else {
+      console.error('%c[关键日志 3] 失败：哨兵元素是 null！观察者未附加', 'color: red')
+      // 加上这个日志，看看列表里是不是已经有数据了
+      console.log(
+        `%c[关键日志 4] 失败时的状态: activities.length = ${activityStore.activities.length}`,
+        'color: red',
+      )
+    }
+  })
+}
+
+onMounted(() => {
+  if (activityStore.activities.length === 0) {
+    // 关键修复：
+    // 仅在首次加载数据 *完成* 后才设置观察者。
+    // 无论 fetchActivities 成功还是失败，DOM 都会更新
+    // (显示列表或显示“无数据”），此时 loadMoreSentinel ref 才可能被正确设置。
+    activityStore.fetchActivities().finally(() => {
+      setupObserver()
+    })
+  } else {
+    // 如果 store 中已有数据（例如，从其他页面导航回来）
+    // DOM 元素会立即渲染，所以可以直接设置观察者。
+    setupObserver()
   }
 })
 
 onUnmounted(() => {
+  // 组件卸载时，断开观察者连接，防止内存泄漏
   if (observer) {
     observer.disconnect()
   }
