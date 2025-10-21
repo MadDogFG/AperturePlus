@@ -42,13 +42,12 @@ export const useRatingStore = defineStore('rating', () => {
     isPendingLoading.value = true
     try {
       const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL
-      const response = await apiClient.get<Omit<PendingRatingDto, 'score' | 'comments'>[]>(
-        `${baseUrl}/ratings/pending`,
-      )
+      const response = await apiClient.get<any[]>(`${baseUrl}/ratings/pending`)
       // [!code focus start]
       // 关键修复：为每个从后端获取的任务，手动补充前端v-model需要的字段
       pendingRatings.value = response.data.map((p) => ({
         ...p,
+        ratingId: p.pendingRatingId,
         score: 0,
         comments: '',
       }))
@@ -65,7 +64,7 @@ export const useRatingStore = defineStore('rating', () => {
     isSubmitting.value = true
     try {
       const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL
-      await apiClient.post(`${baseUrl}/ratings/submit/${payload.ratingId}`, {
+      await apiClient.post(`${baseUrl}/Ratings/submit/${payload.ratingId}`, {
         score: payload.score,
         comments: payload.comments,
       })

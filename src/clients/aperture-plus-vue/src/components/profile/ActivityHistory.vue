@@ -146,6 +146,7 @@ const handleOpenRatingDialog = (activity: Activity) => {
 }
 
 const handleSubmitRating = async (ratingTask: PendingRatingDto) => {
+  console.log('ratingTask', ratingTask)
   if (!ratingTask.score || ratingTask.score === 0) {
     ElMessage.warning('请至少给出一星评价哦')
     return

@@ -41,7 +41,7 @@ namespace AperturePlus.RatingService.Domain.Entities
             {
                 throw new InvalidOperationException("已评价过，请勿重复评价");
             }
-            if (score <= 1 || score >= 10)
+            if (score < 1 || score > 10)
             {
                 throw new ArgumentOutOfRangeException(nameof(score), "评分要在1到10之间");
             }

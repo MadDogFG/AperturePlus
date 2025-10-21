@@ -27,7 +27,7 @@
             <el-icon v-for="i in rating.score" :key="i" color="#f56c6c"
               ><i-ep-star-filled
             /></el-icon>
-            <el-icon v-for="i in 5 - rating.score" :key="i" color="#dcdfe6"
+            <el-icon v-for="i in 10 - rating.score" :key="i" color="#dcdfe6"
               ><i-ep-star-filled
             /></el-icon>
           </div>
