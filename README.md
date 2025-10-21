@@ -263,11 +263,35 @@ graph TD
 -   `POST /api/portfolios/UploadPhotos/{galleryId}`: 上传照片到相册 (需要认证)
 -   `GET /api/portfolios/GetPortfolioByUserId`: 获取用户的作品集 (需要认证)
 -   `DELETE /api/portfolios/DeleteGallery/{galleryId}`: 删除相册 (需要认证)
-    -   `DELETE /api/portfolios/DeletePhoto/{galleryId}`: 删除照片 (需要认证)
+-   `DELETE /api/portfolios/DeletePhoto/{galleryId}`: 删除照片 (需要认证)
 
 ### RatingService
 
--   `POST /api/ratings/SubmitRating`: 提交评分 (需要认证)
+-   `POST /api/ratings/submit/{ratingId}`: 提交对某次活动的评价 (需要认证)
+-   `GET /api/ratings/pending`: 获取待处理的评价任务 (需要认证)
+-   `GET /api/ratings/my-received-ratings`: 获取我收到的所有评价 (需要认证)
+-   `GET /api/ratings/sent`: 获取我发出的所有评价 (需要认证)
+-   `GET /api/ratings/statistics`: 获取我的评价统计信息 (需要认证)
+
+## ✨ 前端功能
+
+项目包含一个基于 Vue.js 的现代化单页应用 (`aperture-plus-vue`)，为用户提供流畅的交互体验。
+
+- **用户认证**: 提供美观、响应式的注册和登录页面。
+- **活动中心 (首页)**:
+  - 以卡片形式清晰地展示所有可参与的活动。
+  - 实现无限滚动加载，优化用户浏览体验。
+  - 提供“发起新活动”的快捷入口。
+- **活动创建**:
+  - 通过弹出的对话框，引导用户输入活动的完整信息，包括：
+    - 活动标题和详细描述
+    - 开始时间、费用和具体地点
+    - 需要招募的摄影师和模特数量
+- **活动详情**:
+    - 展示活动的完整信息、参与者列表。
+- **个人中心**:
+    - 用户可以查看和管理自己的个人资料、收到的评价、发起的活动等。
+
 ## 📄 许可证
 
 该项目使用 AGPL-3.0 许可证。有关详细信息，请参阅 `LICENSE` 文件。
