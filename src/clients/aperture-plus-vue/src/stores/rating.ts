@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ReceivedRating, PendingRatingDto } from '@/types/rating'
+import type { ReceivedRating, PendingRatingDto, SentRating, RatingStats } from '@/types/rating'
 import apiClient from '@/api/axios'
 import { ElMessage } from 'element-plus'
 
@@ -11,7 +11,10 @@ export const useRatingStore = defineStore('rating', () => {
   const pendingRatings = ref<PendingRatingDto[]>([])
   const isPendingLoading = ref(false)
   const isSubmitting = ref(false)
-
+  const sentRatings = ref<SentRating[]>([])
+  const isSentLoading = ref(false)
+  const stats = ref<RatingStats | null>(null)
+  const isStatsLoading = ref(false)
   // --- Actions ---
   async function fetchReceivedRatings() {
     // 如果已经加载过了，就不重复加载，除非强制刷新
@@ -34,8 +37,41 @@ export const useRatingStore = defineStore('rating', () => {
     }
   }
 
+  async function fetchSentRatings() {
+    if (sentRatings.value.length > 0) return
+    isSentLoading.value = true
+    try {
+      const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL
+      const response = await apiClient.get<SentRating[]>(`${baseUrl}/ratings/sent`)
+      sentRatings.value = response.data
+    } catch (error) {
+      console.error('获取发送的评价列表失败:', error)
+      ElMessage.error('加载已发送评价失败')
+    } finally {
+      isSentLoading.value = false
+    }
+  }
+
+  async function fetchRatingStats() {
+    if (stats.value) return
+    isStatsLoading.value = true
+    try {
+      const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL
+      const response = await apiClient.get<RatingStats>(`${baseUrl}/ratings/statistics`)
+      stats.value = response.data
+    } catch (error) {
+      console.error('获取评价统计失败:', error)
+      ElMessage.error('加载评价统计失败')
+    } finally {
+      isStatsLoading.value = false
+    }
+  }
+
   function clearRatings() {
     receivedRatings.value = []
+    pendingRatings.value = []
+    sentRatings.value = []
+    stats.value = null
   }
 
   async function fetchPendingRatings() {
@@ -93,5 +129,11 @@ export const useRatingStore = defineStore('rating', () => {
     isSubmitting,
     fetchPendingRatings,
     submitRating,
+    sentRatings,
+    isSentLoading,
+    stats,
+    isStatsLoading,
+    fetchSentRatings,
+    fetchRatingStats,
   }
 })

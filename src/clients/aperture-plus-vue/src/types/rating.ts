@@ -20,3 +20,17 @@ export interface PendingRatingDto {
   score?: number
   comments?: string
 }
+
+export interface SentRating {
+  ratingId: string
+  score: number
+  comments: string
+  rateToUserId: string
+  rateToUserName: string
+  submittedAt: string // 注意：后端 DTO 用的是 submittedAt
+}
+
+export interface RatingStats {
+  totalCount: number
+  positiveRate: number
+}

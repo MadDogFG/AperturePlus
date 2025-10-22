@@ -99,21 +99,29 @@ namespace AperturePlus.RatingService.Infrastructure.Repositories
 
         public async Task<RatingStatsDto> GetRatingStatsAsync(Guid userId, CancellationToken cancellationToken)
         {
-            var ratings = await dbContext.Ratings
-                .Where(r => r.RateToUserId == userId && r.Status == RatingStatus.Completed)
-                .Select(r => r.Score)
+            //筛选出所有“已完成”且“有评分”的分数
+            var completedScores = await dbContext.Ratings
+                .Where(r => r.RateToUserId == userId &&
+                            r.Status == RatingStatus.Completed &&
+                            r.Score.HasValue) //确保只包含有评分的记录
+                .Select(r => r.Score.Value) //获取非空的 int 分数
                 .ToListAsync(cancellationToken);
 
-            if (!ratings.Any())
+            //如果没有任何已评分的记录
+            if (!completedScores.Any())
             {
-                return new RatingStatsDto(0, 100.0);
+                // 返回总数为 0，平均分为 0.0
+                return new RatingStatsDto(0, 0.0);
             }
 
-            int totalCount = ratings.Count;
-            int positiveCount = ratings.Count(s => s.HasValue && s.Value >= 4);
-            double positiveRate = (double)positiveCount / totalCount * 100;
+            //计算总数和平均分
+            int totalCount = completedScores.Count;
+            double averageScore = completedScores.Average();
 
-            return new RatingStatsDto(totalCount, Math.Round(positiveRate, 1));
+            //将平均分转换为百分比
+            double averagePercentage = averageScore * 10;
+
+            return new RatingStatsDto(totalCount, Math.Round(averagePercentage, 1));
         }
     }
 }

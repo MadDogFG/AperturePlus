@@ -15,7 +15,7 @@ namespace AperturePlus.RatingService.Application.Handlers
         private readonly IRatingRepository ratingRepository;
         public GetRatingStatsQueryHandler(IRatingRepository ratingRepository) 
         {
-            ratingRepository = ratingRepository;
+            this.ratingRepository = ratingRepository;
         } 
 
         public Task<RatingStatsDto> Handle(GetRatingStatsQuery request, CancellationToken cancellationToken)
