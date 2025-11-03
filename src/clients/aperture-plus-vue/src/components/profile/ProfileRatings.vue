@@ -30,7 +30,7 @@
               <div class="card-header">
                 <span>
                   来自:
-                  <strong>{{ rating.rateByUserName }}</strong>
+                  <UserPopover :user-id="rating.rateByUserId" :user-name="rating.rateByUserName" />
                 </span>
                 <span class="rating-time">
                   {{ new Date(rating.createdAt).toLocaleDateString() }}
@@ -81,7 +81,7 @@
               <div class="card-header">
                 <span>
                   发给:
-                  <strong>{{ rating.rateToUserName }}</strong>
+                  <UserPopover :user-id="rating.rateToUserId" :user-name="rating.rateToUserName" />
                 </span>
                 <span class="rating-time">
                   {{ new Date(rating.submittedAt).toLocaleDateString() }}
@@ -112,38 +112,57 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
-// 1. 【修复】恢复 store 的导入
+import { onMounted, ref, computed, watch } from 'vue' // 【新增】 watch
 import { useRatingStore } from '@/stores/rating'
+import { useRoute } from 'vue-router' // 【新增】 useRoute
+import UserPopover from '@/components/common/UserPopover.vue' // 【新增】 UserPopover
 
-// 2. 【修复】恢复 isOwner prop (由 router 提供)
-defineProps({
+// 1. 接收来自路由的 prop
+const props = defineProps({
   isOwner: {
     type: Boolean,
     default: false,
   },
 })
 
-// 3. 【修复】恢复 store 实例
 const ratingStore = useRatingStore()
+const route = useRoute() // 2. 获取当前路由
 const activeTab = ref('received')
 
-// 4. 【修复】计算属性依赖 store
+// 3. 计算属性依赖 store
 const positiveRate = computed(() => {
   if (!ratingStore.stats || !ratingStore.stats.positiveRate) {
     return 0
   }
-  // 假设后端返回的是 90.0
   return ratingStore.stats.positiveRate.toFixed(1)
 })
 
-// 5. 【修复】恢复 onMounted 数据获取
+// 4. 【核心】在 onMounted 中根据路由获取数据
 onMounted(() => {
-  // 组件加载时，一次性获取所有需要的数据
-  ratingStore.fetchRatingStats()
-  ratingStore.fetchReceivedRatings()
-  ratingStore.fetchSentRatings()
+  fetchDataByRoute()
 })
+
+// 5. 【新增】监听路由变化
+watch(
+  () => route.params.userId,
+  (newUserId, oldUserId) => {
+    if (newUserId !== oldUserId) {
+      fetchDataByRoute()
+    }
+  },
+)
+
+// 6. 【新增】统一的路由数据获取逻辑
+function fetchDataByRoute() {
+  if (props.isOwner) {
+    // A. "我的" 主页，传入 null
+    ratingStore.fetchRatings(null) // 假设 fetchRatings 已在 store 中统一
+  } else {
+    // B. "他人" 主页，从路由参数获取 userId
+    const userId = route.params.userId as string
+    ratingStore.fetchRatings(userId) // 假设 fetchRatings 已在 store 中统一
+  }
+}
 </script>
 
 <style scoped>

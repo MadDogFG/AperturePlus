@@ -20,7 +20,16 @@
           :key="gallery.galleryId"
           class="gallery-card"
         >
-          <router-link :to="`/profile/portfolio/${gallery.galleryId}`" class="gallery-link">
+          <router-link
+            :to="{
+              name: isOwner ? 'gallery-detail' : 'public-gallery-detail',
+              params: {
+                galleryId: gallery.galleryId,
+                userId: portfolioStore.portfolio.userId, // userId 总是传递
+              },
+            }"
+            class="gallery-link"
+          >
             <div class="gallery-cover">
               <img v-if="gallery.coverPhotoUrl" :src="gallery.coverPhotoUrl" alt="相册封面" />
               <div v-else class="empty-cover">
@@ -32,6 +41,7 @@
               <span class="photo-count">{{ gallery.photos.length }} 张</span>
             </div>
           </router-link>
+
           <el-button
             v-if="isOwner"
             class="delete-btn"
@@ -60,45 +70,63 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-// 1. 【修复】恢复 store 的导入
+import { onMounted, ref, watch } from 'vue' // 【新增】 watch
 import { usePortfolioStore } from '@/stores/portfolio'
 import { Delete } from '@element-plus/icons-vue'
+import { useRoute } from 'vue-router' // 【新增】 useRoute
 
-// 2. 【修复】恢复 isOwner prop (由 router 提供)
-defineProps({
+// 1. 接收来自路由的 prop
+const props = defineProps({
   isOwner: {
     type: Boolean,
     default: false,
   },
 })
 
-// 3. 【修复】恢复 store 实例
 const portfolioStore = usePortfolioStore()
+const route = useRoute() // 2. 获取当前路由
 
-// 4. 【修复】恢复 onMounted 数据获取
+// 3. 【核心】在 onMounted 中根据路由获取数据
 onMounted(() => {
-  // force: true 确保每次进入都刷新，或者您可以删除此参数
-  portfolioStore.fetchPortfolio(true)
+  fetchDataByRoute()
 })
 
-// 5. 【修复】恢复弹窗和创建逻辑
+// 4. 【新增】监听路由变化（例如从一个用户主页切换到另一个用户主页）
+watch(
+  () => route.params.userId,
+  (newUserId, oldUserId) => {
+    if (newUserId !== oldUserId) {
+      fetchDataByRoute()
+    }
+  },
+)
+
+// 5. 【新增】统一的路由数据获取逻辑
+function fetchDataByRoute() {
+  if (props.isOwner) {
+    // A. "我的" 主页，传入 null
+    portfolioStore.fetchPortfolio(null)
+  } else {
+    // B. "他人" 主页，从路由参数获取 userId
+    const userId = route.params.userId as string
+    portfolioStore.fetchPortfolio(userId)
+  }
+}
+
+// 6. 弹窗和创建/删除逻辑保持不变
+// 它们仅在 isOwner=true 时可见，所以会正确调用 store 中受保护的 actions
 const isCreateGalleryDialogVisible = ref(false)
 const newGalleryName = ref('')
 
 const handleCreateGallery = async () => {
-  // 直接调用 store 的 action
   const success = await portfolioStore.createGallery(newGalleryName.value)
   if (success) {
     isCreateGalleryDialogVisible.value = false
     newGalleryName.value = ''
-    // store.createGallery 内部会乐观更新，无需手动 fetch
   }
 }
 
-// 6. 【修复】恢复删除逻辑
 const handleDeleteGallery = (galleryId: string) => {
-  // 直接调用 store 的 action
   portfolioStore.deleteGallery(galleryId)
 }
 </script>

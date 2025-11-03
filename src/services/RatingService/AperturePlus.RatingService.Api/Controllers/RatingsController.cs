@@ -106,5 +106,23 @@ namespace AperturePlus.RatingService.Api.Controllers
             var result = await mediator.Send(query);
             return Ok(result);
         }
+
+        [AllowAnonymous]
+        [HttpGet("my-received-ratings/{userId}")]
+        public async Task<IActionResult> GetReceivedRatingsByUserId(Guid userId)
+        {
+            var query = new GetReceivedRatingsQuery(userId);
+            var result = await mediator.Send(query);
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("statistics/{userId}")]
+        public async Task<IActionResult> GetStatisticsByUserId(Guid userId)
+        {
+            var query = new GetRatingStatsQuery(userId);
+            var result = await mediator.Send(query);
+            return Ok(result);
+        }
     }
 }

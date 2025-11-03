@@ -57,23 +57,37 @@
 
     <div v-else>Loading...</div>
 
-    <el-menu v-if="isOwner" class="profile-menu">
-      <RouterLink to="/profile/portfolio" v-slot="{ navigate, isActive }">
+    <el-menu class="profile-menu">
+      <RouterLink
+        :to="{
+          name: isOwner ? 'profile-portfolio' : 'public-portfolio',
+          params: { userId: user?.userId },
+        }"
+        v-slot="{ navigate, isActive }"
+      >
         <el-menu-item :class="{ 'is-active': isActive }" @click="navigate">
           <el-icon><i-ep-picture-rounded /></el-icon>
           <span>作品集</span>
         </el-menu-item>
       </RouterLink>
-      <RouterLink to="/profile/history" v-slot="{ navigate, isActive }">
-        <el-menu-item :class="{ 'is-active': isActive }" @click="navigate">
-          <el-icon><i-ep-clock /></el-icon>
-          <span>活动历史</span>
-        </el-menu-item>
-      </RouterLink>
-      <RouterLink to="/profile/ratings" v-slot="{ navigate, isActive }">
+
+      <RouterLink
+        :to="{
+          name: isOwner ? 'profile-ratings' : 'public-ratings',
+          params: { userId: user?.userId },
+        }"
+        vV-slot="{ navigate, isActive }"
+      >
         <el-menu-item :class="{ 'is-active': isActive }" @click="navigate">
           <el-icon><i-ep-star-filled /></el-icon>
           <span>评价</span>
+        </el-menu-item>
+      </RouterLink>
+
+      <RouterLink v-if="isOwner" to="/profile/history" v-slot="{ navigate, isActive }">
+        <el-menu-item :class="{ 'is-active': isActive }" @click="navigate">
+          <el-icon><i-ep-clock /></el-icon>
+          <span>活动历史</span>
         </el-menu-item>
       </RouterLink>
     </el-menu>
@@ -100,11 +114,11 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, type PropType } from 'vue'
-// 1. 引入 UserProfile 类型
+// 1. 【修改】同时导入 store 和类型
 import { useUserStore, type UserProfile } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-// 2. 定义 Props，移除 useUserStore()
+// 2. 【修复】定义 props，这是最关键的一步
 const props = defineProps({
   user: {
     type: Object as PropType<UserProfile | null>,
@@ -116,20 +130,18 @@ const props = defineProps({
   },
 })
 
-// 3. 【重要】保留 useUserStore 仅用于调用其 "actions"
-// 我们不再用它获取 "profile" state，而是用 props.user
-// 但我们仍需要它来 "更新" 数据
+// 3. 【修复】userStore 仅用于 "isOwner" 时的 "actions"
 const userStore = useUserStore()
 
-// --- 所有编辑相关的 ref 和 computed 保持不变 ---
+// --- 所有编辑相关的 ref ---
 const isEditingBio = ref(false)
-const newBio = ref(props.user?.bio || '')
+const newBio = ref('')
 const isAvatarDialogVisible = ref(false)
-const newAvatarUrl = ref(props.user?.avatarUrl || '')
+const newAvatarUrl = ref('')
 const isAddRoleDialogVisible = ref(false)
-const selectedRoles = ref(props.user?.roles || [])
+const selectedRoles = ref<string[]>([])
 
-// 4. 监听 props.user 的变化，以便在数据加载后更新本地 ref
+// 4. 【修复】监听 props.user 的变化，来更新本地 ref
 watch(
   () => props.user,
   (newUser) => {
@@ -139,11 +151,14 @@ watch(
       selectedRoles.value = newUser.roles || []
     }
   },
-  { immediate: true },
+  { immediate: true }, // 立即执行一次
 )
 
-// 5. 所有 methods 保持不变，因为它们只在 isOwner=true 时被调用
-// 它们会正确地调用 userStore 的 actions
+// --- 所有 methods 保持不变 ---
+// 它们仅在 isOwner=true 时被调用，
+// 此时 props.user === userStore.profile，
+// 调用 userStore.updateProfile() 会同时更新两者，逻辑正确。
+
 const startEditingBio = () => {
   newBio.value = props.user?.bio || ''
   isEditingBio.value = true
@@ -158,8 +173,6 @@ const saveBio = async () => {
   if (success) {
     ElMessage.success('简介已更新')
     isEditingBio.value = false
-    // 注意：userStore.updateProfile 会自动更新 store 里的 profile
-    // 而 props.user 是对 store.profile 的引用，所以 props.user 也会自动更新
   } else {
     ElMessage.error('更新失败')
   }
@@ -176,7 +189,6 @@ const handleUpdateAvatar = async () => {
 }
 
 const rolesToShowInDialog = computed(() => {
-  // 假设有两种角色可供添加
   const allRoles = ['Photographer', 'Model']
   if (!props.user) return []
   return allRoles.filter((role) => !props.user!.roles.includes(role))
@@ -202,7 +214,6 @@ const handleRemoveRole = (roleToRemove: string) => {
 
 const handleSaveRoles = async () => {
   if (!props.user) return
-  // 合并旧角色和新选中的角色，确保 'User' 始终存在
   const newRoles = Array.from(new Set([...props.user.roles, ...selectedRoles.value]))
   const success = await userStore.updateRoles(newRoles)
   if (success) {

@@ -1,23 +1,21 @@
 <template>
   <div class="gallery-detail-container" v-if="gallery">
     <div class="header">
-      <router-link to="/profile/portfolio" class="back-link">
+      <router-link :to="backLink" class="back-link">
         <el-icon><ArrowLeftBold /></el-icon>
         <span>返回作品集</span>
       </router-link>
 
       <h1>{{ gallery.galleryName }}</h1>
 
-      <div class="actions">
+      <div v-if="isOwner" class="actions">
         <el-button type="primary" @click="isUploadDialogVisible = true">
           <el-icon><Upload /></el-icon>
           <span>上传照片</span>
         </el-button>
-
         <el-button :type="isSelectionMode ? 'warning' : 'default'" @click="toggleSelectionMode">
           {{ isSelectionMode ? '取消选择' : '选择' }}
         </el-button>
-
         <el-button
           v-if="isSelectionMode"
           type="danger"
@@ -32,7 +30,7 @@
     <div
       v-if="gallery.photos.length > 0"
       class="photo-grid"
-      :class="{ 'selection-mode': isSelectionMode }"
+      :class="{ 'selection-mode': isOwner && isSelectionMode }"
     >
       <div
         v-for="photo in gallery.photos"
@@ -42,22 +40,21 @@
         @click="handlePhotoClick(photo)"
       >
         <img :src="photo.photoUrl" alt="照片" />
-        <div class="selection-overlay">
+        <div v-if="isOwner" class="selection-overlay">
           <el-icon><Check /></el-icon>
         </div>
       </div>
     </div>
-
     <div v-else class="empty-state">
-      <p>这个相册里还没有照片，快上传一些吧！</p>
+      <p>{{ isOwner ? '这个相册里还没有照片，快上传一些吧！' : '这个相册里还没有照片。' }}</p>
     </div>
   </div>
-
   <div v-else class="loading-state">
     <p>正在加载相册信息...</p>
   </div>
 
   <el-dialog
+    v-if="isOwner"
     v-model="isUploadDialogVisible"
     title="上传照片"
     width="60%"
@@ -75,7 +72,6 @@
         <el-icon><Plus /></el-icon>
       </el-upload>
     </div>
-
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="isUploadDialogVisible = false">取 消</el-button>
@@ -92,236 +88,236 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import type { UploadFile } from 'element-plus'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import type { UploadFile, UploadUserFile } from 'element-plus'
+import { useRouter } from 'vue-router'
 import { usePortfolioStore } from '@/stores/portfolio'
-import type { Gallery, Photo } from '@/types/portfolio'
-import { ElMessage } from 'element-plus'
+import type { Photo } from '@/types/portfolio'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeftBold, Upload, Check, Plus } from '@element-plus/icons-vue'
 
-// --- 状态定义 ---
+const props = defineProps({
+  galleryId: {
+    type: String,
+    required: true,
+  },
+  userId: {
+    type: String,
+    default: null,
+  },
+  isOwner: {
+    type: Boolean,
+    default: false,
+  },
+})
 
-const route = useRoute()
 const router = useRouter()
-const portfolioStore = usePortfolioStore()
+const store = usePortfolioStore()
 
-const gallery = ref<Gallery | null>(null)
+const gallery = computed(() =>
+  store.portfolio?.galleries.find((g) => g.galleryId === props.galleryId),
+)
+
+const backLink = computed(() => {
+  if (props.isOwner) {
+    return '/profile/portfolio'
+  } else {
+    return `/user/${props.userId}/portfolio`
+  }
+})
+
+// --- 状态 ---
+const isSelectionMode = ref(false)
 const selectedPhotos = ref<string[]>([])
-const fileList = ref<UploadFile[]>([])
 const isUploadDialogVisible = ref(false)
+const fileList = ref<UploadUserFile[]>([])
 const isPreviewDialogVisible = ref(false)
 const previewImageUrl = ref('')
 
-// 新增：用于管理选择模式的状态
-const isSelectionMode = ref(false)
+// --- 方法 ---
 
-// --- 计算属性 ---
-const galleryId = computed(() => route.params.galleryId as string)
-
-// --- 业务逻辑 ---
-
-/**
- * 加载并设置当前相册的数据。
- */
-async function loadGallery() {
-  if (!portfolioStore.portfolio) {
-    await portfolioStore.fetchPortfolio()
-  }
-  const foundGallery = portfolioStore.portfolio?.galleries.find(
-    (g) => g.galleryId === galleryId.value,
-  )
-  if (foundGallery) {
-    gallery.value = foundGallery
-  } else {
-    ElMessage.error('找不到指定的相册')
-    router.push('/profile/portfolio')
-  }
-}
-
-/**
- * 切换“选择模式”
- */
-function toggleSelectionMode() {
+const toggleSelectionMode = () => {
+  if (!props.isOwner) return
   isSelectionMode.value = !isSelectionMode.value
-  // 退出选择模式时，清空所有已选项
-  if (!isSelectionMode.value) {
-    selectedPhotos.value = []
-  }
-}
-
-/**
- * 统一的照片点击处理器
- * @param photo - 被点击的照片对象
- */
-function handlePhotoClick(photo: Photo) {
-  if (isSelectionMode.value) {
-    // 如果在选择模式下，执行选中/取消选中逻辑
-    toggleSelection(photo.photoId)
-  } else {
-    // 如果在默认模式下，执行预览逻辑
-    handlePhotoPreview(photo)
-  }
-}
-
-/**
- * 处理照片的选中/取消选中逻辑
- * @param photoId - 照片ID
- */
-function toggleSelection(photoId: string) {
-  const index = selectedPhotos.value.indexOf(photoId)
-  if (index > -1) {
-    selectedPhotos.value.splice(index, 1)
-  } else {
-    selectedPhotos.value.push(photoId)
-  }
-}
-
-/**
- * 处理从相册网格点击照片时的预览
- * @param photo - 照片对象
- */
-function handlePhotoPreview(photo: Photo) {
-  previewImageUrl.value = photo.photoUrl
-  isPreviewDialogVisible.value = true
-}
-
-/**
- * 处理 el-upload 组件中的预览事件
- * @param uploadFile - el-upload 传入的文件对象
- */
-function handlePictureCardPreview(uploadFile: UploadFile) {
-  previewImageUrl.value = uploadFile.url!
-  isPreviewDialogVisible.value = true
-}
-
-/**
- * 处理"确认上传"按钮的点击事件
- */
-async function handleUpload() {
-  const filesToUpload = fileList.value.map((uploadFile) => uploadFile.raw as File)
-  if (filesToUpload.length > 0) {
-    const success = await portfolioStore.uploadPhotos(galleryId.value, filesToUpload)
-    if (success) {
-      isUploadDialogVisible.value = false
-      await portfolioStore.fetchPortfolio(true)
-      await loadGallery()
-    }
-  }
-}
-
-/**
- * 处理删除选中照片的逻辑
- */
-async function handleDeleteSelected() {
-  if (selectedPhotos.value.length === 0) return
-  await portfolioStore.deletePhotos(galleryId.value, selectedPhotos.value)
   selectedPhotos.value = []
-  // 删除后自动退出选择模式
-  isSelectionMode.value = false
 }
 
-/**
- * 当上传弹窗关闭时，清空已选择的文件列表
- */
-function handleDialogClose() {
+//
+// --- 【修复】handlePhotoClick 函数 ---
+//
+const handlePhotoClick = (photo: Photo) => {
+  // 1. 如果是 "Owner" 且处于 "选择模式"
+  if (props.isOwner && isSelectionMode.value) {
+    // 执行选择逻辑
+    const index = selectedPhotos.value.indexOf(photo.photoId)
+    if (index > -1) {
+      selectedPhotos.value.splice(index, 1)
+    } else {
+      selectedPhotos.value.push(photo.photoId)
+    }
+  } else {
+    // 2. 否则 (包括 "非Owner" 或 "非选择模式")
+    // 执行预览逻辑
+    previewImageUrl.value = photo.photoUrl
+    isPreviewDialogVisible.value = true
+  }
+}
+
+const handleDeleteSelected = () => {
+  if (!props.isOwner) return
+  ElMessageBox.confirm(`确定要删除选中的 ${selectedPhotos.value.length} 张照片吗？`, '确认删除', {
+    type: 'warning',
+  })
+    .then(async () => {
+      await store.deletePhotos(props.galleryId, selectedPhotos.value)
+      isSelectionMode.value = false
+      selectedPhotos.value = []
+    })
+    .catch(() => {
+      ElMessage.info('已取消删除')
+    })
+}
+
+// --- 上传相关方法 (保持不变) ---
+const handleDialogClose = () => {
   fileList.value = []
 }
 
-// --- 生命周期钩子 ---
-onMounted(async () => {
-  await loadGallery()
-})
+const handlePictureCardPreview = (file: UploadFile) => {
+  previewImageUrl.value = file.url!
+  isPreviewDialogVisible.value = true
+}
+
+const handleUpload = async () => {
+  if (!props.isOwner) return
+
+  const filesToUpload = fileList.value.map((file) => file.raw as File)
+  if (filesToUpload.length === 0) {
+    ElMessage.warning('请至少选择一个文件')
+    return
+  }
+
+  const success = await store.uploadPhotos(props.galleryId, filesToUpload)
+
+  if (success) {
+    ElMessage.success('上传成功！')
+    isUploadDialogVisible.value = false
+    fileList.value = []
+  } else {
+    ElMessage.error('上传失败')
+  }
+}
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .gallery-detail-container {
-  padding: 1rem;
+  padding: 2rem;
+  box-sizing: border-box;
+  width: 100%;
 }
+
 .header {
   display: flex;
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
+
 .back-link {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-  color: #409eff;
+  gap: 8px;
   font-size: 1rem;
+  color: #606266;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
 }
-.header h1 {
+
+.back-link:hover {
+  background-color: #f0f2f5;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
   margin: 0;
-  flex-grow: 1; /* 让标题占据多余空间，将右侧按钮推到最右边 */
+  flex-grow: 1; /* 占据剩余空间 */
 }
+
 .actions {
   display: flex;
   gap: 1rem;
 }
+
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
 }
+
 .photo-card {
   position: relative;
-  cursor: zoom-in; /* 默认显示放大光标 */
+  aspect-ratio: 1 / 1;
   border-radius: 8px;
   overflow: hidden;
-  padding-top: 100%; /* 关键技巧：创建1:1的宽高比容器 */
-  background-color: #f5f7fa;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
 }
+
 .photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 选择模式下的样式 */
+.photo-grid.selection-mode .photo-card:hover {
+  transform: scale(0.98);
+}
+
+.photo-card .selection-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 保证图片不变形地填满容器 */
-  transition: transform 0.2s ease;
-}
-.photo-card:hover img {
-  transform: scale(1.05); /* 悬停时轻微放大 */
-}
-
-/* 当进入选择模式时，改变光标样式以提示用户 */
-.photo-grid.selection-mode .photo-card {
-  cursor: pointer; /* 在选择模式下，光标是'pointer'表示可点击选择 */
-}
-
-.selection-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(64, 158, 255, 0.5); /* Element Plus 主题蓝色的半透明遮罩 */
-  color: white;
+  background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 28px;
+  color: white;
+  font-size: 40px;
   opacity: 0;
-  transition: opacity 0.2s ease;
-  border: 3px solid #409eff; /* 边框加粗更明显 */
-  box-sizing: border-box;
-}
-.photo-card.selected .selection-overlay {
-  opacity: 1; /* 仅在有 'selected' 类时显示遮罩 */
-}
-.empty-state,
-.loading-state {
-  text-align: center;
-  padding: 3rem;
-  color: #909399;
+  transition: opacity 0.2s;
 }
 
-/* 为弹窗内容区添加滚动条 */
+.photo-card.selected .selection-overlay {
+  opacity: 1;
+  background-color: rgba(64, 158, 255, 0.7); /* 蓝色选中 */
+}
+
+.photo-grid.selection-mode .photo-card:not(.selected):hover .selection-overlay {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.3); /* 灰色悬浮 */
+}
+
+.loading-state,
+.empty-state {
+  padding: 4rem;
+  text-align: center;
+  color: #909399;
+  font-size: 1.1rem;
+}
+
 .upload-dialog-content {
-  max-height: 60vh; /* 设置一个最大高度，例如视窗高度的60% */
-  overflow-y: auto; /* 当内容超出最大高度时，显示垂直滚动条 */
-  padding: 10px; /* 增加一点内边距，防止滚动条过于贴近预览图 */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 </style>

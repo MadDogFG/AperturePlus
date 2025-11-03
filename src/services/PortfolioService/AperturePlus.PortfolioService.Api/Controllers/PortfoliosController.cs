@@ -78,29 +78,41 @@ namespace AperturePlus.PortfolioService.Api.Controllers
             }
         }
 
-        [AllowAnonymous]
-        [HttpGet("GetPortfolioByUserId")]
-        public async Task<IActionResult> GetPortfolioByUserId()
+        [Authorize]
+        [HttpGet("GetMyPortfolio")]
+        public async Task<IActionResult> GetMyPortfolio()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (String.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
             {
                 return Unauthorized(new { Message = "无效的用户ID" });
             }
+
+            var query = new GetPortfolioByUserIdQuery(userId);
             try
             {
-                var query = new GetPortfolioByUserIdQuery(userId);
                 var result = await mediator.Send(query);
-                if (result == null)
-                {
-                    return NotFound();
-                }
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                return NotFound(new { Message = "未能找到您的作品集", Error = ex.Message });
+            }
+        }
 
-                return BadRequest("查询失败");
+        [AllowAnonymous]
+        [HttpGet("GetPortfolioByUserId/{userId}")]
+        public async Task<IActionResult> GetPortfolioByUserId(Guid userId)
+        {
+            var query = new GetPortfolioByUserIdQuery(userId);
+            try
+            {
+                var result = await mediator.Send(query);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = "未能找到该用户的作品集", Error = ex.Message });
             }
         }
 
