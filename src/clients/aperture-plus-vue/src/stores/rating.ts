@@ -17,14 +17,10 @@ export const useRatingStore = defineStore('rating', () => {
   const isStatsLoading = ref(false)
   // --- Actions ---
   async function fetchReceivedRatings() {
-    // 如果已经加载过了，就不重复加载，除非强制刷新
-    if (receivedRatings.value.length > 0) return
-
+    // 【修复】移除 "if (receivedRatings.value.length > 0) return"
     isLoading.value = true
     try {
-      // **注意**: 后端 RatingsController.cs 中可能需要添加一个接口来获取当前用户收到的所有评价
-      // 这里我们假设接口是 GET /api/ratings/my-received-ratings
-      const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL // 需要在 .env 文件中配置
+      const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL
       const response = await apiClient.get<ReceivedRating[]>(
         `${baseUrl}/ratings/my-received-ratings`,
       )
@@ -38,7 +34,7 @@ export const useRatingStore = defineStore('rating', () => {
   }
 
   async function fetchSentRatings() {
-    if (sentRatings.value.length > 0) return
+    // 【修复】移除 "if (sentRatings.value.length > 0) return"
     isSentLoading.value = true
     try {
       const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL
@@ -53,7 +49,7 @@ export const useRatingStore = defineStore('rating', () => {
   }
 
   async function fetchRatingStats() {
-    if (stats.value) return
+    // 【修复】移除 "if (stats.value) return"
     isStatsLoading.value = true
     try {
       const baseUrl = import.meta.env.VITE_API_RATING_BASE_URL

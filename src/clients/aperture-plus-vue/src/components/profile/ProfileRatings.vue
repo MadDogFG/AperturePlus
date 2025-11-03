@@ -1,6 +1,6 @@
 <template>
   <div class="ratings-container">
-    <h1>我的评价</h1>
+    <h1>{{ isOwner ? '我的评价' : 'TA 的评价' }}</h1>
 
     <el-card class="stats-card" shadow="never" v-loading="ratingStore.isStatsLoading">
       <el-row :gutter="20">
@@ -67,7 +67,7 @@
         <el-empty v-else description="还没有收到任何评价哦" />
       </el-tab-pane>
 
-      <el-tab-pane label="我发送的评价" name="sent">
+      <el-tab-pane v-if="isOwner" label="我发送的评价" name="sent">
         <div v-if="ratingStore.isSentLoading" class="loading-state">
           <el-skeleton :rows="5" animated />
         </div>
@@ -113,19 +113,31 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
+// 1. 【修复】恢复 store 的导入
 import { useRatingStore } from '@/stores/rating'
 
+// 2. 【修复】恢复 isOwner prop (由 router 提供)
+defineProps({
+  isOwner: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+// 3. 【修复】恢复 store 实例
 const ratingStore = useRatingStore()
 const activeTab = ref('received')
 
-// 计算好评率
+// 4. 【修复】计算属性依赖 store
 const positiveRate = computed(() => {
   if (!ratingStore.stats || !ratingStore.stats.positiveRate) {
     return 0
   }
+  // 假设后端返回的是 90.0
   return ratingStore.stats.positiveRate.toFixed(1)
 })
 
+// 5. 【修复】恢复 onMounted 数据获取
 onMounted(() => {
   // 组件加载时，一次性获取所有需要的数据
   ratingStore.fetchRatingStats()
@@ -135,10 +147,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .ratings-container {
   padding: 1rem 2rem;
-  width: 100%; /* 确保容器占满 */
-  box-sizing: border-box; /* 关键修复：让 padding 包含在 width: 100% 内 */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .stats-card {

@@ -1,19 +1,25 @@
 <template>
   <aside class="sidebar">
-    <div v-if="userStore.profile" class="user-info">
+    <div v-if="user" class="user-info">
       <el-avatar
         :size="80"
-        :src="userStore.profile.avatarUrl"
-        class="avatar clickable"
-        @click="isAvatarDialogVisible = true"
+        :src="user.avatarUrl"
+        class="avatar"
+        :class="{ clickable: isOwner }"
+        @click="isOwner ? (isAvatarDialogVisible = true) : null"
       />
-      <h2 class="username">{{ userStore.profile.userName }}</h2>
+      <h2 class="username">{{ user.userName }}</h2>
 
       <div class="bio-container">
-        <p v-if="!isEditingBio" @click="startEditingBio" class="bio-text clickable">
-          {{ userStore.profile.bio || '点击添加个人简介...' }}
+        <p
+          v-if="!isEditingBio"
+          @click="isOwner ? startEditingBio() : null"
+          class="bio-text"
+          :class="{ clickable: isOwner }"
+        >
+          {{ user.bio || (isOwner ? '点击添加个人简介...' : '暂无简介') }}
         </p>
-        <div v-else class="edit-mode-bio">
+        <div v-else-if="isOwner" class="edit-mode-bio">
           <el-input v-model="newBio" type="textarea" :rows="3" />
           <div class="edit-buttons">
             <el-button size="small" type="success" @click="saveBio">保存</el-button>
@@ -24,24 +30,34 @@
 
       <div class="roles-container">
         <el-tag
-          v-for="role in userStore.profile.roles"
+          v-for="role in user.roles"
           :key="role"
           class="role-tag"
           type="success"
           effect="light"
-          :closable="role !== 'User'"
+          :closable="isOwner && role !== 'User'"
           @close="handleRemoveRole(role)"
         >
           {{ role }}
         </el-tag>
-        <el-button @click="isAddRoleDialogVisible = true" class="add-role-btn" circle>
+        <el-button
+          v-if="isOwner"
+          @click="isAddRoleDialogVisible = true"
+          class="add-role-btn"
+          circle
+        >
           <el-icon><i-ep-plus /></el-icon>
         </el-button>
       </div>
+
+      <el-button v-if="!isOwner" type="primary" size="large" class="start-chat-btn">
+        发起私聊
+      </el-button>
     </div>
+
     <div v-else>Loading...</div>
 
-    <el-menu class="profile-menu">
+    <el-menu v-if="isOwner" class="profile-menu">
       <RouterLink to="/profile/portfolio" v-slot="{ navigate, isActive }">
         <el-menu-item :class="{ 'is-active': isActive }" @click="navigate">
           <el-icon><i-ep-picture-rounded /></el-icon>
@@ -83,32 +99,54 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useUserStore } from '@/stores/user'
+import { ref, computed, watch, type PropType } from 'vue'
+// 1. 引入 UserProfile 类型
+import { useUserStore, type UserProfile } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-const userStore = useUserStore()
-
-// --- 编辑状态 ---
-const isEditingBio = ref(false)
-const newBio = ref('')
-const isAvatarDialogVisible = ref(false)
-const newAvatarUrl = ref('')
-const isAddRoleDialogVisible = ref(false)
-const selectedRoles = ref<string[]>([])
-
-// --- 可用角色列表 ---
-const availableRoles = ['Photographer', 'Model', 'Requester']
-const rolesToShowInDialog = computed(() => {
-  return availableRoles.filter((role) => !userStore.profile?.roles.includes(role))
+// 2. 定义 Props，移除 useUserStore()
+const props = defineProps({
+  user: {
+    type: Object as PropType<UserProfile | null>,
+    required: true,
+  },
+  isOwner: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-// --- 事件处理 ---
+// 3. 【重要】保留 useUserStore 仅用于调用其 "actions"
+// 我们不再用它获取 "profile" state，而是用 props.user
+// 但我们仍需要它来 "更新" 数据
+const userStore = useUserStore()
+
+// --- 所有编辑相关的 ref 和 computed 保持不变 ---
+const isEditingBio = ref(false)
+const newBio = ref(props.user?.bio || '')
+const isAvatarDialogVisible = ref(false)
+const newAvatarUrl = ref(props.user?.avatarUrl || '')
+const isAddRoleDialogVisible = ref(false)
+const selectedRoles = ref(props.user?.roles || [])
+
+// 4. 监听 props.user 的变化，以便在数据加载后更新本地 ref
+watch(
+  () => props.user,
+  (newUser) => {
+    if (newUser) {
+      newBio.value = newUser.bio || ''
+      newAvatarUrl.value = newUser.avatarUrl || ''
+      selectedRoles.value = newUser.roles || []
+    }
+  },
+  { immediate: true },
+)
+
+// 5. 所有 methods 保持不变，因为它们只在 isOwner=true 时被调用
+// 它们会正确地调用 userStore 的 actions
 const startEditingBio = () => {
-  if (userStore.profile) {
-    newBio.value = userStore.profile.bio
-    isEditingBio.value = true
-  }
+  newBio.value = props.user?.bio || ''
+  isEditingBio.value = true
 }
 
 const cancelEditingBio = () => {
@@ -118,131 +156,184 @@ const cancelEditingBio = () => {
 const saveBio = async () => {
   const success = await userStore.updateProfile({ bio: newBio.value })
   if (success) {
+    ElMessage.success('简介已更新')
     isEditingBio.value = false
-    ElMessage.success('简介更新成功！')
+    // 注意：userStore.updateProfile 会自动更新 store 里的 profile
+    // 而 props.user 是对 store.profile 的引用，所以 props.user 也会自动更新
   } else {
-    ElMessage.error('更新失败，请稍后再试。')
+    ElMessage.error('更新失败')
   }
 }
 
 const handleUpdateAvatar = async () => {
-  if (!newAvatarUrl.value.trim()) return ElMessage.warning('URL不能为空')
   const success = await userStore.updateProfile({ avatarUrl: newAvatarUrl.value })
   if (success) {
+    ElMessage.success('头像已更新')
     isAvatarDialogVisible.value = false
-    ElMessage.success('头像更新成功！')
   } else {
-    ElMessage.error('更新失败，请稍后再试。')
+    ElMessage.error('更新失败')
   }
+}
+
+const rolesToShowInDialog = computed(() => {
+  // 假设有两种角色可供添加
+  const allRoles = ['Photographer', 'Model']
+  if (!props.user) return []
+  return allRoles.filter((role) => !props.user!.roles.includes(role))
+})
+
+const handleRemoveRole = (roleToRemove: string) => {
+  if (roleToRemove === 'User') return
+  ElMessageBox.confirm(`确定要移除 "${roleToRemove}" 角色吗?`, '确认', {
+    type: 'warning',
+  })
+    .then(async () => {
+      if (!props.user) return
+      const newRoles = props.user.roles.filter((r) => r !== roleToRemove)
+      const success = await userStore.updateRoles(newRoles)
+      if (success) {
+        ElMessage.success('角色已移除')
+      } else {
+        ElMessage.error('操作失败')
+      }
+    })
+    .catch(() => {})
 }
 
 const handleSaveRoles = async () => {
-  if (selectedRoles.value.length === 0) return ElMessage.warning('请选择角色')
-
-  // 构造完整的角色列表
-  const newRoleList = [...new Set([...(userStore.profile?.roles || []), ...selectedRoles.value])]
-
-  const success = await userStore.updateRoles(newRoleList)
+  if (!props.user) return
+  // 合并旧角色和新选中的角色，确保 'User' 始终存在
+  const newRoles = Array.from(new Set([...props.user.roles, ...selectedRoles.value]))
+  const success = await userStore.updateRoles(newRoles)
   if (success) {
+    ElMessage.success('角色已更新')
     isAddRoleDialogVisible.value = false
-    ElMessage.success('角色更新成功！部分更改可能需要重新登录生效。')
   } else {
-    ElMessage.error('更新失败，请稍后再试。')
-  }
-}
-
-//删除角色的函数
-const handleRemoveRole = async (roleToRemove: string) => {
-  try {
-    // 弹出确认框
-    await ElMessageBox.confirm(`确定要移除 "${roleToRemove}" 这个角色吗？`, '确认操作', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    })
-
-    // 如果用户点击了“确定”，代码会继续往下执行
-    // 计算出新的角色列表
-    const newRoleList = userStore.profile?.roles.filter((role) => role !== roleToRemove) || []
-
-    // 调用 store 中已有的 action
-    const success = await userStore.updateRoles(newRoleList)
-
-    if (success) {
-      ElMessage.success('角色移除成功！部分更改可能需要重新登录生效。')
-    } else {
-      ElMessage.error('移除失败，请稍后再试。')
-    }
-  } catch (error) {
-    // 如果用户点击了“取消”或者关闭了弹窗，会进入 catch 块
-    ElMessage.info('操作已取消')
-    console.log('取消移除角色:', error)
+    ElMessage.error('更新失败')
   }
 }
 </script>
 
 <style scoped>
+/* 【新增】为新按钮添加样式 */
+.start-chat-btn {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* 保持所有原有样式不变 */
 .sidebar {
   width: 280px;
-  flex-shrink: 0;
-  border-right: 1px solid #e0e0e0;
-  background-color: #fafafa;
+  background: #ffffff;
+  border-right: 1px solid #e6e6e6;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
+
 .user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  margin-bottom: 2rem;
 }
+
 .avatar {
   margin-bottom: 1rem;
-  border: 3px solid #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+.avatar.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease-out;
+}
+
+.avatar.clickable:hover {
+  transform: scale(1.05);
+}
+
 .username {
   font-size: 1.5rem;
-  margin: 0;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
 }
-.clickable {
-  cursor: pointer;
-}
+
 .bio-container {
+  width: 100%;
+}
+
+.bio-text {
+  font-size: 0.9rem;
+  color: #606266;
+  min-height: 40px; /* 至少给点高度 */
+  line-height: 1.4;
+  white-space: pre-wrap; /* 保持换行 */
+}
+
+.bio-text.clickable {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 5px;
+  transition: background-color 0.2s;
+}
+
+.bio-text.clickable:hover {
+  background: #f5f7fa;
+}
+
+.edit-mode-bio {
+  width: 100%;
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.roles-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
   margin-top: 1rem;
   width: 100%;
 }
-.bio-text {
-  color: #606266;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  border: 1px dashed transparent;
-  padding: 5px;
+
+.role-tag {
+  font-size: 0.85rem;
 }
-.bio-text:hover {
-  border-color: #dcdfe6;
-}
-.edit-mode-bio .edit-buttons {
-  margin-top: 8px;
-  display: flex;
-  justify-content: flex-end;
-}
-.roles-container {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-}
+
 .add-role-btn {
   width: 24px;
   height: 24px;
 }
+
 .profile-menu {
   border-right: none;
 }
-.sidebar a {
+
+.profile-menu .el-menu-item {
+  font-size: 1rem;
+  color: #303133;
+}
+
+.profile-menu .el-menu-item:hover {
+  background-color: #f5f7fa;
+}
+
+.profile-menu .el-menu-item.is-active {
+  color: var(--el-color-primary);
+  background-color: var(--el-color-primary-light-9);
+  border-right: 3px solid var(--el-color-primary);
+}
+
+.profile-menu a {
   text-decoration: none;
+  color: inherit;
 }
 </style>

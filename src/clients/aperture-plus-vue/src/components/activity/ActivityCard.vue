@@ -2,13 +2,15 @@
   <div class="activity-card">
     <div class="card-header">
       <div class="user-info">
-        <span class="username">{{ activity.postedByUser.userName }}</span>
+        <UserPopover
+          :user-id="activity.postedByUser.userId"
+          :user-name="activity.postedByUser.userName"
+        />
       </div>
       <el-tag :type="activity.fee > 0 ? 'warning' : 'success'" class="fee-tag" effect="dark">
         {{ activity.fee > 0 ? `¥ ${activity.fee}` : '免费' }}
       </el-tag>
     </div>
-
     <div class="card-content">
       <h3 class="title">{{ activity.activityTitle }}</h3>
       <p class="description">{{ activity.activityDescription }}</p>
@@ -21,11 +23,11 @@
           size="small"
           class="role-req-tag"
         >
-          {{ role.role === 'Photographer' ? '摄影师' : '模特' }} x {{ role.quantity }}
+          {{ role.role === 'Photographer' ? '摄影师' : '模特' }} x
+          {{ role.quantity }}
         </el-tag>
       </div>
     </div>
-
     <div class="card-footer">
       <div class="info-item">
         <el-icon><i-ep-calendar /></el-icon>
@@ -38,7 +40,8 @@
       <div class="info-item participants-info">
         <el-icon><User /></el-icon>
         <span class="participants-text">
-          {{ activity.approvedParticipantsCount }} / {{ activity.totalRequiredCount }}
+          {{ activity.approvedParticipantsCount }} /
+          {{ activity.totalRequiredCount }}
           <span v-if="activity.pendingParticipantsCount > 0" class="pending-text">
             ({{ activity.pendingParticipantsCount }}人待审)
           </span>
@@ -50,102 +53,117 @@
 
 <script setup lang="ts">
 import type { Activity } from '@/types/activity'
-// 导入 User 图标，用于显示报名人数
-import { User } from '@element-plus/icons-vue'
+// 【新增】导入新组件
+import UserPopover from '@/components/common/UserPopover.vue'
+import { User } from '@element-plus/icons-vue' // 确保 User 图标已导入
 
-defineProps<{
-  activity: Activity
-}>()
+defineProps({
+  activity: {
+    type: Object as () => Activity,
+    required: true,
+  },
+})
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .activity-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out;
+  cursor: pointer;
 }
 
 .activity-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid #f0f2f5;
 }
 
 .user-info {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
-.username {
-  font-weight: bold;
-  margin-left: 8px; /* 如果有头像，这里可以调整 */
+/* 我们不再需要 .username 样式
+  因为 UserPopover 有自己的 .user-link 样式
+*/
+
+.card-content {
+  padding: 1.25rem;
 }
 
-.fee-tag {
-  font-weight: bold;
-}
-
-.card-content .title {
-  margin: 0 0 8px 0;
+.title {
   font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  color: #303133;
+  /* 标题截断 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.card-content .description {
-  color: #606266;
+.description {
   font-size: 0.9rem;
+  color: #606266;
+  margin: 0 0 1rem 0;
   line-height: 1.5;
-  margin-bottom: 12px;
+  /* 描述截断 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 40px; /* 保持 2 行的高度 */
 }
 
 .roles-info {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-  font-size: 14px;
+  gap: 0.5rem;
+  font-size: 0.9rem;
   color: #606266;
 }
 
+.role-req-tag {
+  font-weight: 500;
+}
+
 .card-footer {
-  margin-top: auto; /* 让 footer 总是贴近底部 */
-  padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #909399;
+  padding: 0.8rem 1.25rem;
+  background-color: #fcfcfc;
+  border-top: 1px solid #f0f2f5;
   font-size: 0.85rem;
+  color: #909399;
 }
 
 .info-item {
   display: flex;
   align-items: center;
+  gap: 6px;
 }
 
-.info-item .el-icon {
-  margin-right: 6px;
-}
-
-.participants-text {
-  display: flex;
-  align-items: center;
+.participants-info .participants-text {
+  color: #606266;
+  font-weight: 500;
 }
 
 .participants-info .pending-text {
   color: #e6a23c;
+  font-size: 0.9em;
   margin-left: 4px;
-  font-size: 12px;
 }
 </style>

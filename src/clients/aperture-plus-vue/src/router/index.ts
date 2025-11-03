@@ -1,13 +1,20 @@
+// src/router/index.ts
+
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import HomeView from '../views/HomeView.vue'
+
+// 1. 导入所有 Profile 相关的视图
 import ProfileView from '../views/ProfileView.vue'
 import ProfilePortfolio from '@/components/profile/ProfilePortfolio.vue'
 import ProfileRatings from '@/components/profile/ProfileRatings.vue'
 import GalleryDetailView from '../views/GalleryDetailView.vue'
 import ActivityDetailView from '../views/ActivityDetailView.vue'
 import ActivityHistory from '@/components/profile/ActivityHistory.vue'
+
+// 2. 导入新的 PublicProfileView
+import PublicProfileView from '../views/PublicProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +27,7 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: true }, // **关键！** 我们给这个路由加了一个元信息
+      meta: { requiresAuth: true },
     },
     {
       path: '/login',
@@ -33,21 +40,23 @@ const router = createRouter({
       component: RegisterView,
     },
     {
+      // "我的主页" 路由
       path: '/profile',
       name: 'profile',
       component: ProfileView,
-      meta: { requiresAuth: true }, // 同样需要登录保护
-      // ↓↓↓ 这就是嵌套路由 ↓↓↓
+      meta: { requiresAuth: true },
       children: [
         {
-          // 默认子路由: 当访问 /profile 时，重定向到作品集
           path: '',
           redirect: { name: 'profile-portfolio' },
         },
         {
-          path: 'portfolio', // 匹配 /profile/portfolio
+          path: 'portfolio',
           name: 'profile-portfolio',
           component: ProfilePortfolio,
+          // 3. 【修改】传递 isOwner prop
+          // 注意：Portfolio 组件内部仍从 store 获取数据
+          props: { isOwner: true },
         },
         {
           path: 'portfolio/:galleryId',
@@ -55,38 +64,45 @@ const router = createRouter({
           component: GalleryDetailView,
         },
         {
-          path: 'ratings', // 匹配 /profile/ratings
+          path: 'ratings',
           name: 'profile-ratings',
           component: ProfileRatings,
+          // 4. 【修改】传递 isOwner prop
+          props: { isOwner: true },
         },
         {
-          path: 'history', // 匹配 /profile/history
+          path: 'history',
           name: 'profile-history',
           component: ActivityHistory,
         },
       ],
     },
     {
-      path: '/activity/:id', // 使用动态路由匹配活动ID
+      // 5. 【新增】"他人主页" 路由
+      path: '/user/:userId',
+      name: 'public-profile',
+      component: PublicProfileView,
+      meta: { requiresAuth: true },
+      // 注意：这个视图不使用子路由，它自己组合了所有组件
+    },
+    {
+      path: '/activity/:id',
       name: 'activity-detail',
       component: ActivityDetailView,
       meta: { requiresAuth: true },
     },
   ],
 })
-import { useAuthStore } from '@/stores/auth'
 
-// 全局前置守卫
+// 路由守卫 (保持不变)
+import { useAuthStore } from '@/stores/auth'
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
-
-  // 检查目标路由是否需要认证
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    // 如果用户未认证，则重定向到登录页
     next({ name: 'login' })
   } else {
-    // 否则，允许导航
     next()
   }
 })
+
 export default router
