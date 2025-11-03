@@ -62,7 +62,11 @@
         <div v-for="task in pendingRatingsForActivity" :key="task.ratingId" class="rating-task">
           <div class="user-info">
             <div class="name-role">
-              <span class="name">{{ task.rateToUserName }}</span>
+              <UserPopover
+                class="name"
+                :user-id="task.rateToUserId"
+                :user-name="task.rateToUserName"
+              />
               <span class="role">{{ task.ratedUserRole }}</span>
             </div>
           </div>
@@ -111,6 +115,7 @@ import { useActivityStore } from '@/stores/activity'
 import { useRatingStore } from '@/stores/rating'
 import type { Activity } from '@/types/activity'
 import type { PendingRatingDto } from '@/types/rating'
+import UserPopover from '@/components/common/UserPopover.vue'
 
 const activityStore = useActivityStore()
 const ratingStore = useRatingStore()

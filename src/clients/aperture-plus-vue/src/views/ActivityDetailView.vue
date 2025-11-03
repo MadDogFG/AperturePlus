@@ -13,8 +13,14 @@
         <p class="description">{{ store.activity.activityDescription }}</p>
         <el-divider />
         <div class="info-grid">
-          <div><strong>发布者:</strong> {{ store.activity.postedByUser.userName }}</div>
-          <div><strong>状态:</strong> {{ activitystatusText(store.activity.status) }}</div>
+          <span class="info-item">
+            <strong>发布者:</strong>
+            <UserPopover
+              :user-id="store.activity.postedByUser.userId"
+              :user-name="store.activity.postedByUser.userName"
+            />
+          </span>
+          <span><strong>状态:</strong> {{ activitystatusText(store.activity.status) }}</span>
           <div>
             <strong>时间:</strong> {{ new Date(store.activity.activityStartTime).toLocaleString() }}
           </div>
@@ -60,7 +66,7 @@
         <el-table :data="store.activity.participants" stripe style="width: 100%">
           <el-table-column label="用户">
             <template #default="{ row }">
-              <span>{{ row.userName }}</span>
+              <UserPopover :user-id="row.userId" :user-name="row.userName" />
             </template>
           </el-table-column>
           <el-table-column label="申请角色" width="120">
@@ -109,9 +115,13 @@
       <el-card v-else class="box-card">
         <template #header><strong>已加入成员</strong></template>
         <div v-if="approvedParticipants.length > 0" class="participant-list">
-          <el-tag v-for="p in approvedParticipants" :key="p.userId" size="large">{{
-            p.userName
-          }}</el-tag>
+          <UserPopover
+            v-for="p in approvedParticipants"
+            :key="p.userId"
+            :user-id="p.userId"
+            :user-name="p.userName"
+            class="participant-popover"
+          />
         </div>
         <el-empty v-else description="暂无成员加入" />
 
@@ -172,6 +182,7 @@ import { useActivityDetailStore } from '@/stores/activityDetail'
 import { useUserStore } from '@/stores/user'
 import type { RoleType, ParticipantStatus } from '@/types/activity'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import UserPopover from '@/components/common/UserPopover.vue'
 
 const route = useRoute()
 const store = useActivityDetailStore()
@@ -351,9 +362,16 @@ const activitystatusText = (status: string) => {
 }
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 12px;
-  color: #303133;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+.info-grid .info-item,
+.info-grid span {
+  display: flex; /* 使用 flex 布局 */
+  align-items: center; /* 垂直居中对齐 */
+  gap: 8px; /* 标签和文字之间的间距 */
 }
 .role-requirements {
   display: flex;
@@ -399,5 +417,11 @@ const activitystatusText = (status: string) => {
 }
 .status-tip {
   color: #909399;
+}
+
+.participant-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px; /* 设置间距 */
 }
 </style>
