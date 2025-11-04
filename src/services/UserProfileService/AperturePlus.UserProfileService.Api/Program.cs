@@ -2,6 +2,7 @@
 using AperturePlus.UserProfileService.Api.BackgroundServices;
 using AperturePlus.UserProfileService.Application.Commands;
 using AperturePlus.UserProfileService.Application.Interfaces;
+using AperturePlus.UserProfileService.Infrastructure.MessageBus;
 using AperturePlus.UserProfileService.Infrastructure.Persistence;
 using AperturePlus.UserProfileService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -104,6 +105,7 @@ namespace AperturePlus.UserProfileService.Api
             builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
+            builder.Services.AddSingleton<IMessageBus, RabbitMQMessageBus>();
 
             var app = builder.Build();
 

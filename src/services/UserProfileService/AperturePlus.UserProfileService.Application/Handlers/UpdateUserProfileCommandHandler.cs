@@ -1,5 +1,6 @@
 ﻿using AperturePlus.UserProfileService.Application.Commands;
 using AperturePlus.UserProfileService.Application.Interfaces;
+using Contracts;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,13 @@ namespace AperturePlus.UserProfileService.Application.Handlers
     {
         private readonly IUserProfileRepository userProfileRepository;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMessageBus messageBus;
 
         public UpdateUserProfileCommandHandler(IUserProfileRepository userProfileRepository, IUnitOfWork unitOfWork)
         {
             this.userProfileRepository = userProfileRepository;
             this.unitOfWork = unitOfWork;
+            this.messageBus = messageBus;
         }
 
         public async Task<bool> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
@@ -30,6 +33,17 @@ namespace AperturePlus.UserProfileService.Application.Handlers
             userProfile.UpdateUserProfile(request.Bio, request.AvatarUrl);
             userProfileRepository.UpdateUserProfile(userProfile);
             int result = await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            if (result > 0)
+            {
+                var profileUpdatedEvent = new UserProfileUpdatedIntegrationEvent(
+                    userProfile.UserId,
+                    userProfile.UserName,
+                    userProfile.AvatarUrl
+                );
+                await messageBus.Publish("user_events", "user.profile.updated", profileUpdatedEvent);
+            }
+
             return result > 0;
         }
     }
