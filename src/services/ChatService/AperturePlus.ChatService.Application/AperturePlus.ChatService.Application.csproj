@@ -11,4 +11,8 @@
     <ProjectReference Include="..\AperturePlus.ChatService.Domain\AperturePlus.ChatService.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="13.0.0" />
+  </ItemGroup>
+
 </Project>
