@@ -61,6 +61,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.RatingService.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.RatingService.Infrastructure", "src\services\RatingService\AperturePlus.RatingService.Infrastructure\AperturePlus.RatingService.Infrastructure.csproj", "{3975FA8D-ECB1-039D-54F2-0130707E7459}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChatService", "ChatService", "{D98FAA0A-709E-4A30-88BD-2F475AC2A8C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.ChatService.Api", "src\services\ChatService\AperturePlus.ChatService.Api\AperturePlus.ChatService.Api.csproj", "{9A0D0B69-016E-46CE-A734-A7254715AA9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.ChatService.Domain", "src\services\ChatService\AperturePlus.ChatService.Domain\AperturePlus.ChatService.Domain.csproj", "{B24D4F14-D0CC-4A6F-9360-5BF35F164EFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.ChatService.Application", "src\services\ChatService\AperturePlus.ChatService.Application\AperturePlus.ChatService.Application.csproj", "{0BAF85A5-F5DE-48AC-A777-88424FD7FC33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AperturePlus.ChatService.Infrastructure", "src\services\ChatService\AperturePlus.ChatService.Infrastructure\AperturePlus.ChatService.Infrastructure.csproj", "{329F18AD-4D4A-482E-8A6C-4EB31991E0FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +161,22 @@ Global
 		{3975FA8D-ECB1-039D-54F2-0130707E7459}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3975FA8D-ECB1-039D-54F2-0130707E7459}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3975FA8D-ECB1-039D-54F2-0130707E7459}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A0D0B69-016E-46CE-A734-A7254715AA9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A0D0B69-016E-46CE-A734-A7254715AA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A0D0B69-016E-46CE-A734-A7254715AA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A0D0B69-016E-46CE-A734-A7254715AA9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B24D4F14-D0CC-4A6F-9360-5BF35F164EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B24D4F14-D0CC-4A6F-9360-5BF35F164EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B24D4F14-D0CC-4A6F-9360-5BF35F164EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B24D4F14-D0CC-4A6F-9360-5BF35F164EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BAF85A5-F5DE-48AC-A777-88424FD7FC33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BAF85A5-F5DE-48AC-A777-88424FD7FC33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BAF85A5-F5DE-48AC-A777-88424FD7FC33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BAF85A5-F5DE-48AC-A777-88424FD7FC33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{329F18AD-4D4A-482E-8A6C-4EB31991E0FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{329F18AD-4D4A-482E-8A6C-4EB31991E0FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{329F18AD-4D4A-482E-8A6C-4EB31991E0FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{329F18AD-4D4A-482E-8A6C-4EB31991E0FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,6 +210,11 @@ Global
 		{9D345E5E-3EC7-45A3-BFA4-FC1843C53FAD} = {90C39323-5E62-486C-9343-DFB68B7631DF}
 		{694ACF1C-36CB-4BF5-A8EB-BD5CF1F20BA5} = {90C39323-5E62-486C-9343-DFB68B7631DF}
 		{3975FA8D-ECB1-039D-54F2-0130707E7459} = {90C39323-5E62-486C-9343-DFB68B7631DF}
+		{D98FAA0A-709E-4A30-88BD-2F475AC2A8C2} = {B33AE0A3-632F-492B-BCB8-E932696B9C75}
+		{9A0D0B69-016E-46CE-A734-A7254715AA9F} = {D98FAA0A-709E-4A30-88BD-2F475AC2A8C2}
+		{B24D4F14-D0CC-4A6F-9360-5BF35F164EFF} = {D98FAA0A-709E-4A30-88BD-2F475AC2A8C2}
+		{0BAF85A5-F5DE-48AC-A777-88424FD7FC33} = {D98FAA0A-709E-4A30-88BD-2F475AC2A8C2}
+		{329F18AD-4D4A-482E-8A6C-4EB31991E0FF} = {D98FAA0A-709E-4A30-88BD-2F475AC2A8C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7680315-BDAD-415C-B570-D58AEDF48454}

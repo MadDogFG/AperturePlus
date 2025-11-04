@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\EventBus\Contracts\Contracts.csproj" />
+    <ProjectReference Include="..\AperturePlus.ChatService.Application\AperturePlus.ChatService.Application.csproj" />
+    <ProjectReference Include="..\AperturePlus.ChatService.Infrastructure\AperturePlus.ChatService.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
