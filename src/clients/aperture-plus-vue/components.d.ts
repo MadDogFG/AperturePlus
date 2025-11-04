@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ActivityCard: typeof import('./src/components/activity/ActivityCard.vue')['default']
     ActivityHistory: typeof import('./src/components/profile/ActivityHistory.vue')['default']
+    ChatWindow: typeof import('./src/components/chat/ChatWindow.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']

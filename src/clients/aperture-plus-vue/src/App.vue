@@ -1,14 +1,31 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import TheHeader from '@/components/TheHeader.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useChatStore } from '@/stores/chat'
+import ChatWindow from '@/components/chat/ChatWindow.vue'
 
 const authStore = useAuthStore()
+const chatStore = useChatStore()
 
 onMounted(() => {
   authStore.init()
 })
+
+watch(
+  () => authStore.isAuthenticated,
+  (isAuth) => {
+    if (isAuth) {
+      // 如果用户已登录 (isAuthenticated 变为 true)
+      // 立即开始连接 SignalR
+      chatStore.startConnection()
+    } else {
+      // (可选) 在 chatStore 中添加 stopConnection() 并在登出时调用
+    }
+  },
+  { immediate: true },
+) // 立即执行一次，确保页面加载时如果已登录就连接
 </script>
 
 <template>
@@ -17,6 +34,7 @@ onMounted(() => {
     <main class="main-content">
       <RouterView />
     </main>
+    <ChatWindow />
   </div>
 </template>
 

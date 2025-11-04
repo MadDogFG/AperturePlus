@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@microsoft/signalr": "^9.0.6",
     "axios": "^1.12.2",
     "element-plus": "^2.11.3",
     "jwt-decode": "^4.0.0",

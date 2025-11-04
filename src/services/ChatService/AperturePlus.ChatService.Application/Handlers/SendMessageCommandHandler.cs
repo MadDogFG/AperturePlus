@@ -1,6 +1,5 @@
 ﻿using AperturePlus.ChatService.Application.Commands;
 using AperturePlus.ChatService.Application.Interfaces;
-using AperturePlus.ChatService.Application.DTOs;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,14 +10,14 @@ using AperturePlus.ChatService.Domain.Entities;
 
 namespace AperturePlus.ChatService.Application.Handlers
 {
-    public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, MessageDto>
+    public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, Message>
     {
         private readonly IConversationRepository conversationRepository;
         public SendMessageCommandHandler(IConversationRepository conversationRepository)
         {
             this.conversationRepository = conversationRepository;
         }
-        public async Task<MessageDto> Handle(SendMessageCommand request, CancellationToken cancellationToken)
+        public async Task<Message> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
             var conversation = await conversationRepository.GetByIdAsync(request.ConversationId, cancellationToken);
             if (conversation == null)
@@ -35,7 +34,7 @@ namespace AperturePlus.ChatService.Application.Handlers
 
             await conversationRepository.UpdateAsync(conversation, cancellationToken);
 
-            return new MessageDto(message.MessageId,message.SenderId,message.Content,message.Timestamp);
+            return message;
         }
     }
 }

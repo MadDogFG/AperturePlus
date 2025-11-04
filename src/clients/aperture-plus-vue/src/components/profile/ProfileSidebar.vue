@@ -50,7 +50,14 @@
         </el-button>
       </div>
 
-      <el-button v-if="!isOwner" type="primary" size="large" class="start-chat-btn">
+      <el-button
+        v-if="!isOwner"
+        type="primary"
+        size="large"
+        class="start-chat-btn"
+        @click="handleStartChat"
+        :loading="isChatLoading"
+      >
         发起私聊
       </el-button>
     </div>
@@ -114,11 +121,10 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, type PropType } from 'vue'
-// 1. 【修改】同时导入 store 和类型
 import { useUserStore, type UserProfile } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useChatStore } from '@/stores/chat'
 
-// 2. 【修复】定义 props，这是最关键的一步
 const props = defineProps({
   user: {
     type: Object as PropType<UserProfile | null>,
@@ -130,10 +136,9 @@ const props = defineProps({
   },
 })
 
-// 3. 【修复】userStore 仅用于 "isOwner" 时的 "actions"
 const userStore = useUserStore()
-
-// --- 所有编辑相关的 ref ---
+const chatStore = useChatStore()
+const isChatLoading = ref(false)
 const isEditingBio = ref(false)
 const newBio = ref('')
 const isAvatarDialogVisible = ref(false)
@@ -141,7 +146,21 @@ const newAvatarUrl = ref('')
 const isAddRoleDialogVisible = ref(false)
 const selectedRoles = ref<string[]>([])
 
-// 4. 【修复】监听 props.user 的变化，来更新本地 ref
+const handleStartChat = async () => {
+  if (props.user) {
+    isChatLoading.value = true
+    try {
+      // 4. 【修改】await 调用并添加 try/catch
+      await chatStore.openChatWithUser(props.user.userId)
+    } catch (error) {
+      console.error(error)
+      ElMessage.error('发起聊天失败，请稍后再试。')
+    } finally {
+      isChatLoading.value = false
+    }
+  }
+}
+
 watch(
   () => props.user,
   (newUser) => {

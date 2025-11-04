@@ -73,6 +73,7 @@ namespace AperturePlus.ChatService.Api.Hubs
             var messageDto = new
             {
                 message.MessageId,
+                ConversationId = conversationId,
                 message.SenderId,
                 SenderName = sender?.UserName ?? "未知用户",
                 message.Content,
@@ -81,6 +82,11 @@ namespace AperturePlus.ChatService.Api.Hubs
 
             // 3. 将消息广播给组内的所有连接（包括发送者自己）
             await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", messageDto);
+        }
+
+        public async Task JoinGroup(string groupName)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
