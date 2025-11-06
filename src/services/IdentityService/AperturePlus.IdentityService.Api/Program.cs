@@ -1,3 +1,4 @@
+using AperturePlus.IdentityService.Api.Filters;
 using AperturePlus.IdentityService.Api.Options;
 using AperturePlus.IdentityService.Application.Commands;
 using AperturePlus.IdentityService.Application.Interfaces;
@@ -8,12 +9,14 @@ using AperturePlus.IdentityService.Infrastructure.MessageBus;
 using AperturePlus.IdentityService.Infrastructure.Persistence;
 using AperturePlus.IdentityService.Infrastructure.Services;
 using AperturePlus.IdentityService.Infrastructure.Settings;
+using Exceptionless;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using Serilog;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -25,9 +28,17 @@ namespace AperturePlus.IdentityService.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Host.UseSerilog((context, services, configuration) => configuration
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext());
             // Add services to the container.
 
-            builder.Services.AddControllers();
+
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<GlobalExceptionFilter>(); //注册全局异常过滤器
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -137,7 +148,7 @@ namespace AperturePlus.IdentityService.Api
                           .AllowAnyMethod();
                 });
             });
-
+            builder.Services.AddExceptionless(builder.Configuration);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -164,6 +175,7 @@ namespace AperturePlus.IdentityService.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseExceptionless();
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -11,6 +11,7 @@ AperturePlus 是一个基于 .NET 构建的现代化微服务后端解决方案�
 - **UserProfileService**: 负责管理用户的个人资料、简介和头像。
 - **PortfolioService**: 负责管理用户的作品集、相册和照片。
 - **RatingService**: 负责管理已完成活动中，参与者之间的互相评价。
+- **ChatService**: 提供实时的用户间聊天功能。
 
 ## ✨ 系统架构
 
@@ -57,6 +58,13 @@ graph TD
                 Domain4["Domain Layer"]
                 Infra4["Infrastructure Layer"]
             end
+
+            subgraph "ChatService"
+                Api5["Api Layer"]
+                App5["Application Layer"]
+                Domain5["Domain Layer"]
+                Infra5["Infrastructure Layer"]
+            end
         end
 
         subgraph "共享基础设施 (Shared Infrastructure)"
@@ -88,11 +96,17 @@ graph TD
         App4 -- "依赖 (Depends on)" --> Domain4
         Infra4 -- "实现 (Implements)" --> App4
         Infra4 -- "引用 (References)" --> Domain4
+
+        Api5 -- "依赖 (Depends on)" --> App5
+        App5 -- "依赖 (Depends on)" --> Domain5
+        Infra5 -- "实现 (Implements)" --> App5
+        Infra5 -- "引用 (References)" --> Domain5
         
         Infra1 --> SQLServer
         Infra2 --> SQLServer
         Infra3 --> SQLServer
         Infra4 --> SQLServer
+        Infra5 --> Mongo
         
         Api1 --> RabbitMQ
         Api2 --> RabbitMQ
@@ -103,10 +117,12 @@ graph TD
     WebApp --> Api2
     WebApp --> Api3
     WebApp --> Api4
+    WebApp --> Api5
     MobileApp --> Api1
     MobileApp --> Api2
     MobileApp --> Api3
     MobileApp --> Api4
+    MobileApp --> Api5
 ```
 
 ## 🛠️ 技术栈
@@ -115,6 +131,7 @@ graph TD
 - **架构模式**: Microservices, Clean Architecture, DDD, CQRS
 - **数据库**: SQL Server, Redis, MongoDB
 - **数据访问**: Entity Framework Core 8
+- **实时通信**: SignalR
 - **消息队列**: RabbitMQ
 - **对象存储**: MinIO (S3-Compatible)
 - **身份认证**: JWT (JSON Web Tokens)
@@ -157,6 +174,7 @@ graph TD
     -   `src/services/ActivityService/Api/appsettings.Development.json`
     -   `src/services/UserProfileService/AperturePlus.UserProfileService.Api/appsettings.Development.json`
     -   `src/services/PortfolioService/AperturePlus.PortfolioService.Api/appsettings.Development.json`
+    -   `src/services/ChatService/AperturePlus.ChatService.Api/appsettings.Development.json`
 
     将 `ConnectionStrings.DefaultConnection` 修改为：
     ```json
@@ -190,6 +208,9 @@ graph TD
 
         # 启动 RatingService
         dotnet run --project src/services/RatingService/AperturePlus.RatingService.Api
+
+        # 启动 ChatService
+        dotnet run --project src/services/ChatService/AperturePlus.ChatService.Api
         ```
 
     3.  **启动 Vue.js 前端**
@@ -218,6 +239,7 @@ graph TD
     # 为 RatingService 应用迁移
     dotnet ef database update --project src/services/RatingService/AperturePlus.RatingService.Infrastructure --startup-project src/services/RatingService/AperturePlus.RatingService.Api
     ```
+    > **注意**: `ChatService` 使用 MongoDB，它是一个 NoSQL 数据库，通常不需要像 SQL 数据库那样的迁移。
 
 ### 4. 服务运行地址
 
@@ -226,6 +248,7 @@ graph TD
 - **UserProfileService**: `http://localhost:5034`
 - **PortfolioService**: `http://localhost:5106`
 - **RatingService**: `http://localhost:5239`
+- **ChatService**: `http://localhost:5199`
 - **RabbitMQ Management** UI: `http://localhost:15672`
 - **MinIO Console**: `http://localhost:9001`
 
@@ -272,6 +295,20 @@ graph TD
 -   `GET /api/ratings/my-received-ratings`: 获取我收到的所有评价 (需要认证)
 -   `GET /api/ratings/sent`: 获取我发出的所有评价 (需要认证)
 -   `GET /api/ratings/statistics`: 获取我的评价统计信息 (需要认证)
+
+### ChatService
+
+`ChatService` 使用 **SignalR** 进行实时消息通信，并提供以下 REST API 来管理会话。
+
+-   **SignalR Hub**: `ws://localhost:5199/chathub`
+    -   **`StartChat(recipientId)`**: (客户端调用) 与另一个用户发起或获取现有聊天。
+    -   **`SendMessage(conversationId, content)`**: (客户端调用) 发送消息到指定会话。
+    -   **`ReceiveMessage(messageDto)`**: (服务端广播) 接收新消息。
+
+-   **REST API Endpoints**:
+    -   `GET /api/conversations`: 获取当前用户的所有会话列表。
+    -   `GET /api/conversations/{id}`: 根据 ID 获取单个会话的详细信息（包含消息历史）。
+    -   `GET /api/conversations/with/{recipientId}`: 获取或创建一个与指定用户的会话。
 
 ## ✨ 前端功能
 
