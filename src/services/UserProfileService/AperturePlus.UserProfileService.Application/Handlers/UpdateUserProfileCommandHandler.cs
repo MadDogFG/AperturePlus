@@ -2,6 +2,8 @@
 using AperturePlus.UserProfileService.Application.Interfaces;
 using Contracts;
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +17,16 @@ namespace AperturePlus.UserProfileService.Application.Handlers
         private readonly IUserProfileRepository userProfileRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMessageBus messageBus;
+        private readonly IDistributedCache cache;
+        private readonly ILogger<UpdateUserProfileCommandHandler> logger;
 
-        public UpdateUserProfileCommandHandler(IUserProfileRepository userProfileRepository, IUnitOfWork unitOfWork)
-        {
+        public UpdateUserProfileCommandHandler(IUserProfileRepository userProfileRepository, IUnitOfWork unitOfWork, IMessageBus messageBus,IDistributedCache cache, ILogger<UpdateUserProfileCommandHandler> logger)
+        {                                                                                                          
             this.userProfileRepository = userProfileRepository;
             this.unitOfWork = unitOfWork;
             this.messageBus = messageBus;
+            this.cache = cache;
+            this.logger = logger;
         }
 
         public async Task<bool> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
@@ -36,6 +42,17 @@ namespace AperturePlus.UserProfileService.Application.Handlers
 
             if (result > 0)
             {
+                //在数据库更新成功后，立即失效缓存
+                try
+                {
+                    string cacheKey = $"user:{request.UserId}";
+                    await cache.RemoveAsync(cacheKey, cancellationToken);
+                    logger.LogInformation("缓存失效成功, CacheKey: {CacheKey}", cacheKey);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Redis 缓存删除失败, CacheKey: user:{UserId}", request.UserId);
+                }
                 var profileUpdatedEvent = new UserProfileUpdatedIntegrationEvent(
                     userProfile.UserId,
                     userProfile.UserName,

@@ -100,7 +100,12 @@ namespace AperturePlus.UserProfileService.Api
                           .AllowAnyMethod();
                 });
             });
-            
+
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+                options.InstanceName = "AperturePlus_UserProfile_"; // 为所有键添加统一前缀
+            });
 
             builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
