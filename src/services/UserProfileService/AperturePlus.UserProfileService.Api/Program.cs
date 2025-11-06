@@ -8,6 +8,9 @@ using AperturePlus.UserProfileService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using Serilog;
+using Exceptionless;
+
 
 namespace AperturePlus.UserProfileService.Api
 {
@@ -16,7 +19,10 @@ namespace AperturePlus.UserProfileService.Api
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Host.UseSerilog((context, services, configuration) => configuration
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext());
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -111,7 +117,7 @@ namespace AperturePlus.UserProfileService.Api
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddHostedService<UserEventsConsumer>();//注册后台消费者服务
             builder.Services.AddSingleton<IMessageBus, RabbitMQMessageBus>();
-
+            builder.Services.AddExceptionless(builder.Configuration);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -122,7 +128,7 @@ namespace AperturePlus.UserProfileService.Api
             }
 
             app.UseHttpsRedirection();
-
+            app.UseExceptionless();
             app.UseAuthorization();
 
             app.UseCors("AllowVueApp"); // 启用CORS策略
