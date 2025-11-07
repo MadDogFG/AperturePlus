@@ -4,6 +4,7 @@ using AperturePlus.ActivityService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AperturePlus.ActivityService.Infrastructure.Migrations
 {
     [DbContext(typeof(ActivityServiceDbContext))]
-    partial class ActivityServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251107152621_addrowversion")]
+    partial class addrowversion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

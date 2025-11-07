@@ -21,6 +21,7 @@ namespace AperturePlus.ActivityService.Domain.Entities
         public Decimal Fee { get; private set; } = 0; //活动费用，默认0
         public List<RoleRequirement> RoleRequirements { get; private set; } = new List<RoleRequirement>(); //角色需求列表
         public List<Participant> Participants { get; private set; } = new List<Participant>(); //参与者列表
+        public byte[] RowVersion { get; private set; }//用于乐观锁
 
         private Activity() : base()
         {

@@ -30,7 +30,8 @@ namespace AperturePlus.ActivityService.Infrastructure.Configurations
                 pb.HasKey("ActivityId", "UserId");
             });
 
-            builder.Property(a => a.Fee).HasColumnType("decimal(18,4)");//指定精度
+            builder.Property(a => a.Fee).HasColumnType("decimal(18,4)");//指定精度          
+            builder.Property(a => a.RowVersion).IsRowVersion();//配置 RowVersion 属性为乐观锁并发令牌
         }
     }
 }
